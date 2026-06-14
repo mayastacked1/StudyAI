@@ -15,18 +15,21 @@ const client = new Cerebras({ apiKey: 'csk-rwm3c49pr8krmdf2td5we6dj6kkvp3kn6dh53
 
 app.post('/api/chat', async (req, res) => {
   try {
-    const { prompt } = req.body;
+    const { prompt, history } = req.body;
     if (!prompt) return res.status(400).json({ error: "Prompt is required" });
 
-    // Updated system prompt for conciseness and scannability
+    // Prepare full conversation including system prompt and history
+    const messages = [
+      { 
+        role: 'system', 
+        content: 'You are StudyAI, a friendly, encouraging, and professional academic assistant. RULES: 1. Always be brief and prioritize scannability. 2. Use bullet points or short tables for data; avoid long paragraphs. 3. NEVER introduce yourself unless asked. 4. If asked who you are, say "I am StudyAI, your friendly study assistant."' 
+      },
+      ...(history || []), // Inject previous conversation history
+      { role: 'user', content: prompt }
+    ];
+
     const completion = await client.chat.completions.create({
-      messages: [
-        { 
-          role: 'system', 
-          content: 'You are StudyAI, a friendly, encouraging, and professional academic assistant. RULES: 1. Always be brief and prioritize scannability. 2. Use bullet points or short tables for data; avoid long paragraphs. 3. NEVER introduce yourself unless asked. 4. If asked who you are, say "I am StudyAI, your friendly study assistant."' 
-        },
-        { role: 'user', content: prompt }
-      ],
+      messages,
       model: 'gpt-oss-120b',
     });
     
