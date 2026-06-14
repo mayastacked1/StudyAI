@@ -1,18 +1,27 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const Cerebras = require('@cerebras/cerebras_cloud_sdk');
 
-// --- THIS LINE IS REQUIRED ---
-app.use(express.json()); 
-// -----------------------------
+// Middleware to parse JSON
+app.use(express.json());
 
+// Serve static files (HTML, CSS, JS) from the 'public' folder
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Route to serve the main UI
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Initialize Cerebras Client
 const client = new Cerebras({ apiKey: process.env.CEREBRAS_API_KEY });
 
+// Chat API Endpoint
 app.post('/api/chat', async (req, res) => {
   try {
     const { prompt } = req.body;
     
-    // Safety check
     if (!prompt) return res.status(400).json({ error: "Prompt is required" });
 
     const completion = await client.chat.completions.create({
@@ -27,6 +36,5 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// Add your app.listen(port) at the very bottom
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
