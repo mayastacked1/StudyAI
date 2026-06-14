@@ -10,6 +10,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Using your API Key
 const client = new Cerebras({ apiKey: 'csk-rwm3c49pr8krmdf2td5we6dj6kkvp3kn6dh53kk36mjk4tjm' });
 
 app.post('/api/chat', async (req, res) => {
@@ -17,16 +18,16 @@ app.post('/api/chat', async (req, res) => {
     const { prompt } = req.body;
     if (!prompt) return res.status(400).json({ error: "Prompt is required" });
 
-    // Using the model confirmed to be authorized for your account
+    // Using the authorized model confirmed from your logs
     const completion = await client.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],
-      model: 'gpt-oss-120b', 
+      model: 'gpt-oss-120b',
     });
     
     res.json({ reply: completion.choices[0].message.content });
   } catch (error) {
     console.error("API Error:", error);
-    res.status(500).json({ error: "Cerebras API Error: " + error.message });
+    res.status(500).json({ error: "API Error: " + error.message });
   }
 });
 
