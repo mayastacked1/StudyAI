@@ -13,7 +13,7 @@
 <body class="h-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-all">
 
     <div class="flex h-full overflow-hidden">
-        <aside id="sidebar" class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col p-4 z-20 absolute md:relative h-full hidden md:flex">
+        <aside id="sidebar" class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col p-4 z-30 absolute md:relative h-full hidden md:flex">
             <button onclick="createNewChat()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl shadow-lg shadow-indigo-500/20 mb-6 transition-all">
                 + New Chat
             </button>
@@ -36,7 +36,7 @@
                 <div class="relative bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 focus-within:ring-2 ring-indigo-500 flex items-center pr-3">
                     <input id="user-input" type="text" placeholder="Type your study question..." 
                         class="w-full bg-transparent px-6 py-4 outline-none">
-                    <button onclick="handleSend()" class="p-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all">
+                    <button id="send-btn" onclick="handleSend()" class="p-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </button>
                 </div>
@@ -57,26 +57,32 @@
 
     <script>
         function toggleSettings() { document.getElementById('settings-modal').classList.toggle('hidden'); }
-        function createNewChat() { document.getElementById('messages').innerHTML = ''; }
+        function createNewChat() { 
+            document.getElementById('messages').innerHTML = ''; 
+            if (window.innerWidth < 768) document.getElementById('sidebar').classList.add('hidden');
+        }
 
         async function handleSend() {
             const input = document.getElementById('user-input');
+            const btn = document.getElementById('send-btn');
             const prompt = input.value.trim();
             if (!prompt) return;
 
             const chat = document.getElementById('messages');
-            chat.innerHTML += `<div class="flex justify-end"><div class="bg-indigo-600 text-white px-5 py-3 rounded-2xl">${prompt}</div></div>`;
+            chat.innerHTML += `<div class="flex justify-end"><div class="bg-indigo-600 text-white px-5 py-3 rounded-2xl shadow-md">${prompt}</div></div>`;
             input.value = '';
+            btn.disabled = true;
             
             const res = await fetch('/api/chat', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ prompt })});
             const data = await res.json();
+            
             chat.innerHTML += `<div class="flex justify-start"><div class="bg-slate-100 dark:bg-slate-700 px-5 py-3 rounded-2xl">${data.reply}</div></div>`;
             chat.scrollTop = chat.scrollHeight;
+            btn.disabled = false;
+            input.focus();
         }
 
-        document.getElementById('user-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleSend();
-        });
+        document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
     </script>
 </body>
 </html>
