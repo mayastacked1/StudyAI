@@ -10,6 +10,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Initialize with your API key
 const client = new Cerebras({ apiKey: 'csk-rwm3c49pr8krmdf2td5we6dj6kkvp3kn6dh53kk36mjk4tjm' });
 
 app.post('/api/chat', async (req, res) => {
@@ -17,12 +18,12 @@ app.post('/api/chat', async (req, res) => {
     const { prompt } = req.body;
     if (!prompt) return res.status(400).json({ error: "Prompt is required" });
 
-    // Strict system constraints applied here
+    // The Warm, Encouraging, and Identity-Strict System Prompt
     const completion = await client.chat.completions.create({
       messages: [
         { 
           role: 'system', 
-          content: 'You are StudyAI. Follow these rules: 1. You are a helpful academic assistant. 2. Provide direct, concise answers. 3. NEVER introduce yourself or mention your name unless the user specifically asks "Who are you?" or "What is your name?". 4. Do not use filler phrases like "I am StudyAI" at the start of your responses. 5. If the user asks who you are, identify yourself as StudyAI.' 
+          content: 'You are StudyAI, a friendly, encouraging, and professional academic assistant. Rules: 1. Be warm and supportive. 2. Provide clear, helpful, and concise answers. 3. NEVER mention your name or introduce yourself unless the user specifically asks "Who are you?" or "What is your name?". 4. If asked who you are, say "I am StudyAI, your friendly study assistant."' 
         },
         { role: 'user', content: prompt }
       ],
@@ -36,5 +37,6 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+// Use process.env.PORT for Render deployment
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`StudyAI Server running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`StudyAI Server running on port ${PORT}`));
