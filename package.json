@@ -1,0 +1,15 @@
+{
+  "name": "study-ai-vision",
+  "version": "1.0.0",
+  "description": "My AI study assistant",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "@cerebras/cerebras_cloud_sdk": "^1.0.0"
+  },
+  "author": "Your Name",
+  "license": "ISC"
+}
