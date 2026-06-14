@@ -5,16 +5,14 @@ const Cerebras = require('@cerebras/cerebras_cloud_sdk');
 
 app.use(express.json());
 
-// Serve static files from the CURRENT directory
 app.use(express.static(__dirname));
 
-// Serve index.html from the current directory
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Using your provided API key
-const client = new Cerebras({ apiKey: 'csk-cfnyfhfeved2k4yfnvfxeyfnwr5mpe5xmn2d3yc88ttvnmwp' });
+// Using your new API key
+const client = new Cerebras({ apiKey: 'csk-rwm3c49pr8krmdf2td5we6dj6kkvp3kn6dh53kk36mjk4tjm' });
 
 app.post('/api/chat', async (req, res) => {
   try {
@@ -23,13 +21,12 @@ app.post('/api/chat', async (req, res) => {
 
     const completion = await client.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],
-      // Use the updated model string
-      model: 'llama-3.1-8b',
+      // Using llama-3.3-70b, a highly compatible model
+      model: 'llama-3.3-70b', 
     });
     
     res.json({ reply: completion.choices[0].message.content });
   } catch (error) {
-    // UPDATED: This sends the actual error message back to the frontend
     const errorMessage = error.message || "Unknown error occurred";
     console.error("Detailed API Error:", error);
     res.status(500).json({ error: "Cerebras API Error: " + errorMessage });
