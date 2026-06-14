@@ -23,13 +23,16 @@ app.post('/api/chat', async (req, res) => {
 
     const completion = await client.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],
-      model: 'llama3-8b',
+      // Use the updated model string
+      model: 'llama-3.1-8b',
     });
     
     res.json({ reply: completion.choices[0].message.content });
   } catch (error) {
-    console.error("API Error:", error);
-    res.status(500).json({ error: "Failed to fetch from Cerebras" });
+    // UPDATED: This sends the actual error message back to the frontend
+    const errorMessage = error.message || "Unknown error occurred";
+    console.error("Detailed API Error:", error);
+    res.status(500).json({ error: "Cerebras API Error: " + errorMessage });
   }
 });
 
