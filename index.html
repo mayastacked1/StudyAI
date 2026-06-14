@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyAI by Vision</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+</head>
+<body class="bg-gray-50 h-screen flex flex-col items-center justify-center p-4">
+
+    <header class="w-full max-w-2xl mb-6 text-center">
+        <h1 class="text-3xl font-extrabold text-indigo-900 tracking-tight">StudyAI <span class="text-indigo-500">by Vision</span></h1>
+        <p class="text-gray-500 mt-2">Your intelligent companion for smarter learning.</p>
+    </header>
+
+    <div id="chat-box" class="w-full max-w-2xl h-[60vh] bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col border border-gray-100">
+        <div id="messages" class="flex-1 overflow-y-auto p-6 space-y-4">
+            </div>
+
+        <div class="p-4 border-t border-gray-100 bg-white">
+            <div class="flex gap-2">
+                <input id="user-input" type="text" placeholder="Ask a study question..." 
+                    class="flex-1 px-4 py-3 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                <button id="send-btn" class="bg-indigo-600 text-white px-6 py-3 rounded-full hover:bg-indigo-700 transition font-semibold">
+                    Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('messages');
+        const input = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        function addMessage(text, isUser) {
+            const div = document.createElement('div');
+            div.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+            div.innerHTML = `
+                <div class="max-w-[80%] px-5 py-3 rounded-2xl ${isUser ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'} shadow-sm">
+                    ${text}
+                </div>
+            `;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        sendBtn.addEventListener('click', async () => {
+            const text = input.value;
+            if (!text) return;
+            
+            addMessage(text, true);
+            input.value = '';
+
+            // Send to your backend
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: text })
+            });
+            const data = await response.json();
+            addMessage(data.reply, false);
+        });
+    </script>
+</body>
+</html>
