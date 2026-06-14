@@ -14,22 +14,19 @@ const client = new Cerebras({ apiKey: 'csk-rwm3c49pr8krmdf2td5we6dj6kkvp3kn6dh53
 
 app.post('/api/chat', async (req, res) => {
   try {
-    // 1. Fetch the list of allowed models for your account
-    const models = await client.models.list();
-    console.log("AUTHORIZED MODELS:", JSON.stringify(models));
-
     const { prompt } = req.body;
-    // 2. We will try using the first available model from your own account list
-    const modelToUse = models.data[0].id; 
-    
+    if (!prompt) return res.status(400).json({ error: "Prompt is required" });
+
+    // Using the model confirmed to be authorized for your account
     const completion = await client.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],
-      model: modelToUse, 
+      model: 'gpt-oss-120b', 
     });
     
     res.json({ reply: completion.choices[0].message.content });
   } catch (error) {
-    res.status(500).json({ error: "API Error: " + error.message });
+    console.error("API Error:", error);
+    res.status(500).json({ error: "Cerebras API Error: " + error.message });
   }
 });
 
