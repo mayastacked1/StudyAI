@@ -1,82 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyAI | Premium</title>
+    <title>StudyAI | Pro Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' };
+    </script>
     <style>
-        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
-        .message-bubble { line-height: 1.6; transition: all 0.3s ease; }
-        #messages::-webkit-scrollbar { width: 6px; }
-        #messages::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        .transition-all { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     </style>
 </head>
-<body class="bg-[#f8f9fa] h-screen flex flex-col items-center">
+<body class="h-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-all">
 
-    <header class="w-full p-4 max-w-3xl">
-        <h1 class="text-xl font-bold text-gray-800 tracking-tight">StudyAI</h1>
-    </header>
-
-    <div id="messages" class="flex-1 w-full max-w-3xl overflow-y-auto p-4 space-y-6"></div>
-
-    <div class="w-full max-w-3xl p-4">
-        <div class="relative bg-white rounded-2xl shadow-lg border border-gray-100">
-            <input id="user-input" type="text" placeholder="Ask a study question..." 
-                class="w-full px-6 py-4 rounded-2xl focus:outline-none bg-transparent">
-            <button id="send-btn" class="absolute right-3 top-3 p-2 text-indigo-600 hover:scale-105 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
+    <div class="flex h-full overflow-hidden">
+        <aside id="sidebar" class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col p-4 z-20">
+            <button onclick="createNewChat()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl shadow-lg shadow-indigo-500/20 mb-6 transition-all">
+                + New Chat
             </button>
+            <div id="history-list" class="flex-1 space-y-2 overflow-y-auto"></div>
+            <button onclick="toggleSettings()" class="flex items-center gap-2 p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all">
+                ⚙️ Settings
+            </button>
+        </aside>
+
+        <main class="flex-1 flex flex-col relative">
+            <header class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                <button onclick="document.getElementById('sidebar').classList.toggle('hidden')" class="md:hidden">☰</button>
+                <h1 class="font-semibold text-lg">StudyAI</h1>
+                <div class="w-6"></div>
+            </header>
+            
+            <div id="messages" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 max-w-3xl mx-auto w-full"></div>
+
+            <div class="p-4 md:p-8 max-w-3xl mx-auto w-full">
+                <div class="relative bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 focus-within:ring-2 ring-indigo-500">
+                    <input id="user-input" type="text" placeholder="Type your study question..." 
+                        class="w-full bg-transparent px-6 py-4 outline-none">
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl w-full max-w-sm shadow-2xl">
+            <h2 class="text-xl font-bold mb-6">Preferences</h2>
+            <div class="flex justify-between items-center mb-6">
+                <span>Dark Mode</span>
+                <button onclick="document.documentElement.classList.toggle('dark')" class="w-12 h-6 bg-slate-200 dark:bg-indigo-500 rounded-full transition-all"></button>
+            </div>
+            <button onclick="toggleSettings()" class="w-full py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-medium">Done</button>
         </div>
-        <p class="text-[10px] text-center text-gray-400 mt-3">Powered by StudyAI • Minimalist Interface</p>
     </div>
 
     <script>
-        const chatBox = document.getElementById('messages');
-        const input = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-btn');
+        function toggleSettings() { document.getElementById('settings-modal').classList.toggle('hidden'); }
+        function createNewChat() { document.getElementById('messages').innerHTML = ''; }
 
-        function addMessage(text, isUser) {
-            const div = document.createElement('div');
-            div.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
-            div.innerHTML = `
-                <div class="message-bubble max-w-[85%] px-5 py-3 rounded-2xl ${isUser ? 'bg-indigo-600 text-white shadow-md' : 'bg-white border border-gray-200 text-gray-800 shadow-sm'}">
-                    ${text}
-                </div>
-            `;
-            chatBox.appendChild(div);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        async function sendMessage() {
-            const text = input.value.trim();
-            if (!text) return;
-            addMessage(text, true);
-            input.value = '';
-
-            const loadingId = 'loading-' + Date.now();
-            chatBox.insertAdjacentHTML('beforeend', `<div id="${loadingId}" class="text-sm text-gray-400 italic px-2">Thinking...</div>`);
-
-            try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: text })
-                });
-                const data = await response.json();
-                document.getElementById(loadingId)?.remove();
-                addMessage(data.reply || data.error, false);
-            } catch (err) {
-                document.getElementById(loadingId)?.remove();
-                addMessage("Connection error, please try again.", false);
+        document.getElementById('user-input').addEventListener('keypress', async (e) => {
+            if (e.key === 'Enter' && e.target.value) {
+                const prompt = e.target.value;
+                const chat = document.getElementById('messages');
+                
+                chat.innerHTML += `<div class="flex justify-end"><div class="bg-indigo-600 text-white px-5 py-3 rounded-2xl">${prompt}</div></div>`;
+                e.target.value = '';
+                
+                const res = await fetch('/api/chat', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ prompt })});
+                const data = await res.json();
+                chat.innerHTML += `<div class="flex justify-start"><div class="bg-slate-100 dark:bg-slate-700 px-5 py-3 rounded-2xl">${data.reply}</div></div>`;
+                chat.scrollTop = chat.scrollHeight;
             }
-        }
-
-        sendBtn.addEventListener('click', sendMessage);
-        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+        });
     </script>
 </body>
 </html>
