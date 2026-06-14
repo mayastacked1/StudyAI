@@ -18,12 +18,12 @@ app.post('/api/chat', async (req, res) => {
     const { prompt } = req.body;
     if (!prompt) return res.status(400).json({ error: "Prompt is required" });
 
-    // The Warm, Encouraging, and Identity-Strict System Prompt
+    // Updated system prompt for conciseness and scannability
     const completion = await client.chat.completions.create({
       messages: [
         { 
           role: 'system', 
-          content: 'You are StudyAI, a friendly, encouraging, and professional academic assistant. Rules: 1. Be warm and supportive. 2. Provide clear, helpful, and concise answers. 3. NEVER mention your name or introduce yourself unless the user specifically asks "Who are you?" or "What is your name?". 4. If asked who you are, say "I am StudyAI, your friendly study assistant."' 
+          content: 'You are StudyAI, a friendly, encouraging, and professional academic assistant. RULES: 1. Always be brief and prioritize scannability. 2. Use bullet points or short tables for data; avoid long paragraphs. 3. NEVER introduce yourself unless asked. 4. If asked who you are, say "I am StudyAI, your friendly study assistant."' 
         },
         { role: 'user', content: prompt }
       ],
