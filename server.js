@@ -6,12 +6,12 @@ const Cerebras = require('@cerebras/cerebras_cloud_sdk');
 // Middleware to parse JSON
 app.use(express.json());
 
-// Serve static files (HTML, CSS, JS) from the 'public' folder
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files from the CURRENT directory (the root)
+app.use(express.static(__dirname));
 
-// Route to serve the main UI
+// Route to serve the main UI from index.html in the root
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Initialize Cerebras Client
