@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudyAI by Vision</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
 </head>
 <body class="bg-gray-50 h-screen flex flex-col items-center justify-center p-4">
 
@@ -15,8 +14,7 @@
     </header>
 
     <div id="chat-box" class="w-full max-w-2xl h-[60vh] bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col border border-gray-100">
-        <div id="messages" class="flex-1 overflow-y-auto p-6 space-y-4">
-            </div>
+        <div id="messages" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
 
         <div class="p-4 border-t border-gray-100 bg-white">
             <div class="flex gap-2">
@@ -47,20 +45,41 @@
         }
 
         sendBtn.addEventListener('click', async () => {
-            const text = input.value;
+            const text = input.value.trim();
             if (!text) return;
             
             addMessage(text, true);
             input.value = '';
+            
+            // Add a temporary "Thinking..." message
+            const loadingId = 'loading-msg';
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = loadingId;
+            loadingDiv.className = 'text-sm text-gray-400 italic px-6';
+            loadingDiv.innerText = 'AI is thinking...';
+            chatBox.appendChild(loadingDiv);
 
-            // Send to your backend
-            const response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: text })
-            });
-            const data = await response.json();
-            addMessage(data.reply, false);
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: text })
+                });
+                
+                const data = await response.json();
+                
+                // Remove "Thinking..."
+                document.getElementById(loadingId)?.remove();
+
+                if (data.reply) {
+                    addMessage(data.reply, false);
+                } else {
+                    addMessage("Error: " + (data.error || "No response from AI"), false);
+                }
+            } catch (err) {
+                document.getElementById(loadingId)?.remove();
+                addMessage("Critical error: Could not reach the server.", false);
+            }
         });
     </script>
 </body>
