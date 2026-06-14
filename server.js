@@ -1,50 +1,35 @@
-<script>
-    // Load history on startup
-    window.onload = () => {
-        const savedChat = localStorage.getItem('studyAI_chat');
-        if (savedChat) document.getElementById('messages').innerHTML = savedChat;
-    };
+const express = require('express');
+const path = require('path');
+const app = express();
+const Cerebras = require('@cerebras/cerebras_cloud_sdk');
 
-    function toggleSettings() { document.getElementById('settings-modal').classList.toggle('hidden'); }
+app.use(express.json());
+app.use(express.static(__dirname));
 
-    function createNewChat() {
-        document.getElementById('messages').innerHTML = '';
-        localStorage.removeItem('studyAI_chat'); // Wipe saved data
-        if (window.innerWidth < 768) document.getElementById('sidebar').classList.add('hidden');
-    }
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
-    async function handleSend() {
-        const input = document.getElementById('user-input');
-        const btn = document.getElementById('send-btn');
-        const prompt = input.value.trim();
-        if (!prompt) return;
+// Using your API Key
+const client = new Cerebras({ apiKey: 'csk-rwm3c49pr8krmdf2td5we6dj6kkvp3kn6dh53kk36mjk4tjm' });
 
-        const chat = document.getElementById('messages');
-        chat.innerHTML += `<div class="flex justify-end"><div class="bg-indigo-600 text-white px-5 py-3 rounded-2xl shadow-md">${prompt}</div></div>`;
-        input.value = '';
-        btn.disabled = true;
-        
-        try {
-            const res = await fetch('/api/chat', { 
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify({ prompt })
-            });
-            const data = await res.json();
-            
-            chat.innerHTML += `<div class="flex justify-start"><div class="bg-slate-100 dark:bg-slate-700 px-5 py-3 rounded-2xl">${data.reply}</div></div>`;
-            
-            // Save to LocalStorage
-            localStorage.setItem('studyAI_chat', chat.innerHTML);
-            
-            chat.scrollTop = chat.scrollHeight;
-        } catch (err) {
-            alert("Error sending message.");
-        } finally {
-            btn.disabled = false;
-            input.focus();
-        }
-    }
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { prompt } = req.body;
+    if (!prompt) return res.status(400).json({ error: "Prompt is required" });
 
-    document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
-</script>
+    // Using the authorized model confirmed from your logs
+    const completion = await client.chat.completions.create({
+      messages: [{ role: 'user', content: prompt }],
+      model: 'gpt-oss-120b',
+    });
+    
+    res.json({ reply: completion.choices[0].message.content });
+  } catch (error) {
+    console.error("API Error:", error);
+    res.status(500).json({ error: "API Error: " + error.message });
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
