@@ -13,7 +13,8 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-const client = new Cerebras({ apiKey: process.env.CEREBRAS_API_KEY });
+// Using your provided API key
+const client = new Cerebras({ apiKey: 'csk-cfnyfhfeved2k4yfnvfxeyfnwr5mpe5xmn2d3yc88ttvnmwp' });
 
 app.post('/api/chat', async (req, res) => {
   try {
@@ -25,7 +26,6 @@ app.post('/api/chat', async (req, res) => {
       model: 'llama3-8b',
     });
     
-    // Ensure we send back the object with the 'reply' key
     res.json({ reply: completion.choices[0].message.content });
   } catch (error) {
     console.error("API Error:", error);
