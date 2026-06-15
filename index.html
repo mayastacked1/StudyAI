@@ -205,13 +205,28 @@
         let conversationHistory = [];
         let currentChatId = Date.now().toString();
         let attachedFile = null;
-        const chats = JSON.parse(localStorage.getItem('studyai_chats')) || {};
+        
+        // --- BULLETPROOF STORAGE INITIALIZATION ---
+        let chats = {};
+        try {
+            const storedChats = localStorage.getItem('studyai_chats');
+            if (storedChats) chats = JSON.parse(storedChats) || {};
+        } catch (e) {
+            console.error("Failed to load chat history. Resetting data.", e);
+            localStorage.removeItem('studyai_chats'); // Clear corrupted data
+            chats = {};
+        }
 
-        if (Object.keys(chats).length > 0) {
-            const lastId = Object.keys(chats)[Object.keys(chats).length - 1];
-            loadChat(lastId);
-        } else {
-            renderHistoryList();
+        try {
+            if (Object.keys(chats).length > 0) {
+                const lastId = Object.keys(chats)[Object.keys(chats).length - 1];
+                loadChat(lastId);
+            } else {
+                renderHistoryList();
+            }
+        } catch (e) {
+            console.error("Failed to load last chat, starting fresh.", e);
+            createNewChat();
         }
 
         function getShortTitle(text) {
@@ -231,7 +246,11 @@
         function saveCurrentChat() {
             if (conversationHistory.length === 0) return;
             chats[currentChatId] = { id: currentChatId, title: chats[currentChatId]?.title || "New Chat", history: conversationHistory, timestamp: Date.now() };
-            localStorage.setItem('studyai_chats', JSON.stringify(chats));
+            try {
+                localStorage.setItem('studyai_chats', JSON.stringify(chats));
+            } catch (e) {
+                console.error("Could not save to localStorage. Storage might be full.", e);
+            }
             renderHistoryList();
         }
 
@@ -259,10 +278,25 @@
         }
 
         function loadChat(id) {
-            currentChatId = id; conversationHistory = chats[id].history || [];
-            const chatContainer = document.getElementById('messages'); const welcome = document.getElementById('welcome-state'); if(welcome) welcome.style.display = 'none';
-            chatContainer.innerHTML = ''; conversationHistory.forEach(msg => { createMessageElement(msg.role, msg.content, false); });
-            renderHistoryList(); requestAnimationFrame(() => { setTimeout(() => { chatContainer.scrollTop = chatContainer.scrollHeight; }, 50); }); if (window.innerWidth < 768) toggleSidebar(false);
+            try {
+                if (!chats[id] || !chats[id].history) {
+                    createNewChat(); // Fallback if data is missing
+                    return;
+                }
+                currentChatId = id; 
+                conversationHistory = chats[id].history || [];
+                const chatContainer = document.getElementById('messages'); 
+                const welcome = document.getElementById('welcome-state'); 
+                if(welcome) welcome.style.display = 'none';
+                chatContainer.innerHTML = ''; 
+                conversationHistory.forEach(msg => { createMessageElement(msg.role, msg.content, false); });
+                renderHistoryList(); 
+                requestAnimationFrame(() => { setTimeout(() => { chatContainer.scrollTop = chatContainer.scrollHeight; }, 50); }); 
+                if (window.innerWidth < 768) toggleSidebar(false);
+            } catch (e) {
+                console.error("Error rendering history, starting fresh.", e);
+                createNewChat();
+            }
         }
 
         function createNewChat() { 
@@ -336,7 +370,6 @@
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    // FIX: Only send the last 4 messages of history to prevent 429 Token Limits!
                     body: JSON.stringify({ prompt: text, history: conversationHistory.slice(-5, -1) })
                 });
 
@@ -414,7 +447,6 @@
             return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsText(file); });
         }
 
-        // FIX: Corrected the typo from !e.shitKey to !e.shiftKey
         document.getElementById('user-input').addEventListener('keydown', (e) => { 
             if (e.key === 'Enter' && !e.shiftKey) { 
                 e.preventDefault(); 
