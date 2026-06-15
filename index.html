@@ -62,6 +62,25 @@
         .thinking-dots span:nth-child(3) { animation-delay: 0s; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
+        /* Image Generation Loading Animation */
+        .image-generating-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #3b82f6; 
+            margin: 0 3px;
+            animation: imagePulse 1.4s infinite ease-in-out both;
+        }
+        .dark .image-generating-dots span { background-color: #60a5fa; }
+        .image-generating-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .image-generating-dots span:nth-child(2) { animation-delay: -0.16s; }
+        .image-generating-dots span:nth-child(3) { animation-delay: 0s; }
+        @keyframes imagePulse {
+            0%, 80%, 100% { transform: scale(0.5); opacity: 0.4; }
+            40% { transform: scale(1.2); opacity: 1; }
+        }
+
         .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
         .dark .glass { background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid rgba(255,255,255,0.05); }
 
@@ -311,6 +330,7 @@
 
             let aiResponseText = '';
             const chat = document.getElementById('messages');
+            let isGeneratingImage = false;
 
             try {                
                 const response = await fetch('/api/chat', {
@@ -347,8 +367,19 @@
                                 const parsed = JSON.parse(data);
                                 if (parsed.content) {
                                     aiResponseText += parsed.content;
-                                    // Image rendering fix: Only render text while streaming to prevent broken image icons
-                                    bubble.textContent = aiResponseText;
+                                    
+                                    // Detect if AI is generating an image link
+                                    if (aiResponseText.includes('pollinations.ai')) {
+                                        if (!isGeneratingImage) {
+                                            isGeneratingImage = true;
+                                            bubble.classList.remove('cursor-blink'); // Remove text cursor
+                                        }
+                                        // Show loading animation instead of ugly raw markdown link
+                                        bubble.innerHTML = `<span class="text-brand-600 dark:text-brand-400 font-medium">Generating image for you please wait</span> <span class="image-generating-dots"><span></span><span></span><span></span></span>`;
+                                    } else {
+                                        // Normal text streaming
+                                        bubble.textContent = aiResponseText;
+                                    }
                                     chat.scrollTop = chat.scrollHeight;
                                 }
                                 if (parsed.error) throw new Error(parsed.error);
@@ -363,7 +394,7 @@
                 conversationHistory.push({ role: 'assistant', content: aiResponseText.trim() });
                 saveCurrentChat();
 
-                // Once streaming is done, render the full markdown (including images)
+                // Once streaming is done, render the full markdown (replacing the loading animation with the actual image)
                 bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText.trim(), { renderer }));
                 chat.scrollTop = chat.scrollHeight;
 
