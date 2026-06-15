@@ -97,7 +97,7 @@
         .logo-hover { transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 0 0px rgba(59, 130, 246, 0); }
         .logo-hover:hover { transform: rotate(-10deg) scale(1.1); box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
 
-        /* --- INITIAL LOADING SCREEN --- */
+        /* LOADING SCREEN */
         #loading-screen { position: fixed; inset: 0; z-index: 9999; background-color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-out, visibility 0.5s ease-out; }
         .dark #loading-screen { background-color: #343541; }
         #loading-screen.hidden-loader { opacity: 0; visibility: hidden; }
@@ -107,6 +107,12 @@
         .dark .loader-bar-container { background-color: #40414f; }
         .loader-bar { height: 100%; width: 40%; background-color: #3b82f6; border-radius: 9999px; animation: loaderSlide 1.5s ease-in-out infinite; }
         @keyframes loaderSlide { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
+
+        /* FAQ Accordion */
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out, padding 0.3s ease-out; }
+        .faq-answer.open { max-height: 200px; }
+        .faq-icon { transition: transform 0.3s ease; }
+        .faq-icon.open { transform: rotate(45deg); }
     </style>
 </head>
 
@@ -161,38 +167,53 @@
                 <!-- LANDING PAGE / WELCOME STATE -->
                 <div id="welcome-state" class="flex flex-col items-center justify-center min-h-full py-12 text-center px-4">
                     
-                    <!-- Top Free Badges -->
-                    <div class="flex flex-wrap justify-center gap-2 mb-6">
-                        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">100% Free</span>
-                        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">No Sign-up Required</span>
-                        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">Unlimited Study Help</span>
+                    <!-- Hero Section -->
+                    <h2 class="text-3xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white tracking-tight">Study Smarter with AI</h2>
+                    <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-xl mb-6">Get instant answers, explanations, summaries, and study help for any subject.</p>
+                    
+                    <div class="flex flex-col md:flex-row gap-2 md:gap-6 mb-8 text-sm text-gray-700 dark:text-gray-300">
+                        <span class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg> Completely Free</span>
+                        <span class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg> No Signup Required</span>
+                        <span class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg> Available 24/7</span>
                     </div>
 
-                    <!-- Headline -->
-                    <h2 class="text-3xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white tracking-tight">Study smarter with AI</h2>
-                    <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-xl mb-8">Upload notes, ask questions, get explanations, summaries, and quizzes—instantly and for free.</p>
+                    <!-- Trust Banner -->
+                    <div class="bg-brand-50 dark:bg-brand-900/20 border border-brand-100 dark:border-brand-800/40 px-6 py-3 rounded-full mb-10 text-sm font-medium text-brand-700 dark:text-brand-300">
+                        🎓 Trusted by students for fast, free, and accessible AI-powered learning. No account required.
+                    </div>
 
-                    <!-- Feature Cards -->
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-3xl w-full mb-10">
+                    <!-- Why StudyAI Section -->
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Why Choose StudyAI?</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 max-w-2xl w-full mb-10">
                         <div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
-                            <div class="text-2xl mb-2">📄</div>
-                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">Upload Notes</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">TXT files processed instantly</p>
-                        </div>
-                        <div class="p-4 bg-white dark:bg-[#A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
-                            <div class="text-2xl mb-2">📝</div>
-                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">Summarize Lessons</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Get the key points fast</p>
+                            <div class="text-2xl mb-2">🚀</div>
+                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">Instant Help</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">AI-powered study assistance</p>
                         </div>
                         <div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
-                            <div class="text-2xl mb-2">🧠</div>
-                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">Generate Quizzes</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Test your knowledge</p>
+                            <div class="text-2xl mb-2">💯</div>
+                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">100% Free</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">No subscriptions, ever</p>
                         </div>
                         <div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
-                            <div class="text-2xl mb-2">✏️</div>
-                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">Explain Simply</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Complex concepts made easy</p>
+                            <div class="text-2xl mb-2">🔒</div>
+                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">Zero Friction</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">No account required</p>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="text-2xl mb-2">📚</div>
+                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">All Subjects</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Math, Science, History & more</p>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="text-2xl mb-2">📱</div>
+                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">Any Device</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Phone, tablet, or desktop</p>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="text-2xl mb-2">⏰</div>
+                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">Always Available</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Study anytime, anywhere</p>
                         </div>
                     </div>
 
@@ -213,7 +234,91 @@
                         </button>
                     </div>
 
-                    <!-- Privacy & File Info -->
+                    <!-- FAQ Section -->
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Frequently Asked Questions</h3>
+                    <div class="max-w-2xl w-full space-y-2 mb-10 text-left">
+                        <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                            <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">
+                                <span>Is StudyAI completely free?</span>
+                                <span class="faq-icon text-xl text-gray-400">+</span>
+                            </button>
+                            <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400">
+                                <div class="pb-4">Yes. StudyAI is completely free to use. There are no subscriptions, hidden fees, or paywalls.</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                            <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">
+                                <span>Do I need to create an account?</span>
+                                <span class="faq-icon text-xl text-gray-400">+</span>
+                            </button>
+                            <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400">
+                                <div class="pb-4">No. You can start studying immediately without creating an account or signing in.</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                            <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">
+                                <span>What can StudyAI help me with?</span>
+                                <span class="faq-icon text-xl text-gray-400">+</span>
+                            </button>
+                            <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400">
+                                <div class="pb-4">StudyAI can assist with homework, explanations, studying, research, note summaries, quiz generation, and exam preparation.</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                            <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">
+                                <span>Which subjects are supported?</span>
+                                <span class="faq-icon text-xl text-gray-400">+</span>
+                            </button>
+                            <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400">
+                                <div class="pb-4">StudyAI supports a wide range of subjects including Mathematics, Science, English, History, Computer Science, Business, and more.</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                            <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">
+                                <span>Can StudyAI solve math problems?</span>
+                                <span class="faq-icon text-xl text-gray-400">+</span>
+                            </button>
+                            <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400">
+                                <div class="pb-4">Yes. StudyAI can provide step-by-step explanations to help you understand how answers are reached.</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                            <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">
+                                <span>Does StudyAI replace teachers or textbooks?</span>
+                                <span class="faq-icon text-xl text-gray-400">+</span>
+                            </button>
+                            <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400">
+                                <div class="pb-4">No. StudyAI is designed to be a learning companion that helps explain concepts and supports your studies.</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                            <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">
+                                <span>Is my information stored?</span>
+                                <span class="faq-icon text-xl text-gray-400">+</span>
+                            </button>
+                            <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400">
+                                <div class="pb-4">No account is required. StudyAI is designed to provide quick access to AI-powered learning without requiring personal information. Conversations are saved locally in your browser.</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                            <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">
+                                <span>Can I use StudyAI on mobile devices?</span>
+                                <span class="faq-icon text-xl text-gray-400">+</span>
+                            </button>
+                            <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400">
+                                <div class="pb-4">Yes. StudyAI works on desktops, tablets, and smartphones.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Privacy & File Info Footer -->
                     <div class="max-w-xl w-full text-center mb-4">
                         <div class="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
@@ -263,169 +368,53 @@
         let currentChatId = Date.now().toString();
         let attachedFile = null;
         
-        // BULLETPROOF STORAGE
         let chats = {};
-        try {
-            const storedChats = localStorage.getItem('studyai_chats');
-            if (storedChats) chats = JSON.parse(storedChats) || {};
-        } catch (e) {
-            console.error("Failed to load chat history. Resetting data.", e);
-            localStorage.removeItem('studyai_chats');
-            chats = {};
-        }
+        try { const storedChats = localStorage.getItem('studyai_chats'); if (storedChats) chats = JSON.parse(storedChats) || {}; } catch (e) { console.error("Failed to load chat history. Resetting data.", e); localStorage.removeItem('studyai_chats'); chats = {}; }
 
         try {
-            if (Object.keys(chats).length > 0) {
-                const lastId = Object.keys(chats)[Object.keys(chats).length - 1];
-                loadChat(lastId);
-            } else {
-                renderHistoryList();
-            }
-        } catch (e) {
-            console.error("Failed to load last chat, starting fresh.", e);
-            createNewChat();
+            if (Object.keys(chats).length > 0) { const lastId = Object.keys(chats)[Object.keys(chats).length - 1]; loadChat(lastId); } else { renderHistoryList(); }
+        } catch (e) { console.error("Failed to load last chat, starting fresh.", e); createNewChat(); }
+
+        window.addEventListener('load', () => { setTimeout(() => { const loader = document.getElementById('loading-screen'); if (loader) loader.classList.add('hidden-loader'); }, 800); });
+
+        function toggleFaq(button) {
+            const answer = button.nextElementSibling;
+            const icon = button.querySelector('.faq-icon');
+            answer.classList.toggle('open');
+            icon.classList.toggle('open');
         }
 
-        // REMOVE LOADING SCREEN
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const loader = document.getElementById('loading-screen');
-                if (loader) loader.classList.add('hidden-loader');
-            }, 800);
-        });
-
-        // FILL PROMPT FROM EXAMPLE BUTTONS
         function setPrompt(text) {
             const input = document.getElementById('user-input');
-            input.value = text;
-            input.focus();
-            input.style.height = 'auto';
-            input.style.height = input.scrollHeight + 'px';
+            input.value = text; input.focus(); input.style.height = 'auto'; input.style.height = input.scrollHeight + 'px';
         }
 
-        function getShortTitle(text) {
-            if (!text) return "New Chat";
-            const words = text.replace(/[\n\r]/g, ' ').trim().split(/\s+/);
-            const shortText = words.slice(0, 3).join(' ');
-            return words.length > 3 ? shortText + '...' : shortText;
-        }
+        function getShortTitle(text) { if (!text) return "New Chat"; const words = text.replace(/[\n\r]/g, ' ').trim().split(/\s+/); const shortText = words.slice(0, 3).join(' '); return words.length > 3 ? shortText + '...' : shortText; }
 
         const fileInput = document.getElementById('file-input');
         const fileNameDisplay = document.getElementById('file-name');
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) { attachedFile = file; fileNameDisplay.textContent = file.name; fileNameDisplay.classList.remove('hidden'); }
-        });
+        fileInput.addEventListener('change', (e) => { const file = e.target.files[0]; if (file) { attachedFile = file; fileNameDisplay.textContent = file.name; fileNameDisplay.classList.remove('hidden'); } });
 
-        function saveCurrentChat() {
-            if (conversationHistory.length === 0) return;
-            chats[currentChatId] = { id: currentChatId, title: chats[currentChatId]?.title || "New Chat", history: conversationHistory, timestamp: Date.now() };
-            try { localStorage.setItem('studyai_chats', JSON.stringify(chats)); } catch (e) { console.error("Could not save.", e); }
-            renderHistoryList();
-        }
+        function saveCurrentChat() { if (conversationHistory.length === 0) return; chats[currentChatId] = { id: currentChatId, title: chats[currentChatId]?.title || "New Chat", history: conversationHistory, timestamp: Date.now() }; try { localStorage.setItem('studyai_chats', JSON.stringify(chats)); } catch (e) { console.error("Could not save.", e); } renderHistoryList(); }
 
-        function renderHistoryList() {
-            const list = document.getElementById('history-list');
-            list.innerHTML = '';
-            const sortedChats = Object.values(chats).sort((a, b) => b.timestamp - a.timestamp);
-            sortedChats.forEach(chat => {
-                const btn = document.createElement('button');
-                const isActive = chat.id === currentChatId;
-                btn.className = `history-item flex-1 text-left px-3 py-2 rounded-lg text-sm transition-colors truncate flex items-center justify-between group ${isActive ? 'bg-gray-200 dark:bg-[#2A2B32] text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#2A2B32]'}`;
-                const textSpan = document.createElement('span'); textSpan.className = "truncate"; textSpan.textContent = chat.title;
-                const delIcon = document.createElement('span'); delIcon.innerHTML = '&times;'; delIcon.className = "text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 px-2 text-lg font-light transition-all";
-                delIcon.onclick = (e) => { e.stopPropagation(); deleteChat(chat.id); };
-                btn.appendChild(textSpan); btn.appendChild(delIcon); btn.onclick = () => loadChat(chat.id); list.appendChild(btn);
-            });
-        }
+        function renderHistoryList() { const list = document.getElementById('history-list'); list.innerHTML = ''; const sortedChats = Object.values(chats).sort((a, b) => b.timestamp - a.timestamp); sortedChats.forEach(chat => { const btn = document.createElement('button'); const isActive = chat.id === currentChatId; btn.className = `history-item flex-1 text-left px-3 py-2 rounded-lg text-sm transition-colors truncate flex items-center justify-between group ${isActive ? 'bg-gray-200 dark:bg-[#2A2B32] text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#2A2B32]'}`; const textSpan = document.createElement('span'); textSpan.className = "truncate"; textSpan.textContent = chat.title; const delIcon = document.createElement('span'); delIcon.innerHTML = '&times;'; delIcon.className = "text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 px-2 text-lg font-light transition-all"; delIcon.onclick = (e) => { e.stopPropagation(); deleteChat(chat.id); }; btn.appendChild(textSpan); btn.appendChild(delIcon); btn.onclick = () => loadChat(chat.id); list.appendChild(btn); }); }
 
-        function deleteChat(id) {
-            if(confirm('Delete this conversation?')) { delete chats[id]; localStorage.setItem('studyai_chats', JSON.stringify(chats)); if (id === currentChatId) createNewChat(); else renderHistoryList(); }
-        }
+        function deleteChat(id) { if(confirm('Delete this conversation?')) { delete chats[id]; localStorage.setItem('studyai_chats', JSON.stringify(chats)); if (id === currentChatId) createNewChat(); else renderHistoryList(); } }
 
-        async function generateTitle(firstPrompt) {
-            setTimeout(() => { if(chats[currentChatId]) { chats[currentChatId].title = getShortTitle(firstPrompt); localStorage.setItem('studyai_chats', JSON.stringify(chats)); renderHistoryList(); } }, 500);
-        }
+        async function generateTitle(firstPrompt) { setTimeout(() => { if(chats[currentChatId]) { chats[currentChatId].title = getShortTitle(firstPrompt); localStorage.setItem('studyai_chats', JSON.stringify(chats)); renderHistoryList(); } }, 500); }
 
-        function loadChat(id) {
-            try {
-                if (!chats[id] || !chats[id].history) { createNewChat(); return; }
-                currentChatId = id; 
-                conversationHistory = chats[id].history || [];
-                const chatContainer = document.getElementById('messages'); 
-                const welcome = document.getElementById('welcome-state'); 
-                if(welcome) welcome.style.display = 'none';
-                chatContainer.innerHTML = ''; 
-                conversationHistory.forEach(msg => { createMessageElement(msg.role, msg.content, false); });
-                renderHistoryList(); 
-                requestAnimationFrame(() => { setTimeout(() => { chatContainer.scrollTop = chatContainer.scrollHeight; }, 50); }); 
-                if (window.innerWidth < 768) toggleSidebar(false);
-            } catch (e) { console.error("Error rendering history, starting fresh.", e); createNewChat(); }
-        }
+        function loadChat(id) { try { if (!chats[id] || !chats[id].history) { createNewChat(); return; } currentChatId = id; conversationHistory = chats[id].history || []; const chatContainer = document.getElementById('messages'); const welcome = document.getElementById('welcome-state'); if(welcome) welcome.style.display = 'none'; chatContainer.innerHTML = ''; conversationHistory.forEach(msg => { createMessageElement(msg.role, msg.content, false); }); renderHistoryList(); requestAnimationFrame(() => { setTimeout(() => { chatContainer.scrollTop = chatContainer.scrollHeight; }, 50); }); if (window.innerWidth < 768) toggleSidebar(false); } catch (e) { console.error("Error rendering history, starting fresh.", e); createNewChat(); } }
 
-        function createNewChat() { 
-            currentChatId = Date.now().toString(); conversationHistory = [];
-            const chatContainer = document.getElementById('messages');
-            chatContainer.innerHTML = `<div id="welcome-state" class="flex flex-col items-center justify-center min-h-full py-12 text-center px-4"><div class="flex flex-wrap justify-center gap-2 mb-6"><span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">100% Free</span><span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">No Sign-up Required</span><span class="px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">Unlimited Study Help</span></div><h2 class="text-3xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white tracking-tight">Study smarter with AI</h2><p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-xl mb-8">Upload notes, ask questions, get explanations, summaries, and quizzes—instantly and for free.</p><div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-3xl w-full mb-10"><div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow"><div class="text-2xl mb-2">📄</div><h3 class="font-semibold text-sm text-gray-900 dark:text-white">Upload Notes</h3><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">TXT files processed instantly</p></div><div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow"><div class="text-2xl mb-2">📝</div><h3 class="font-semibold text-sm text-gray-900 dark:text-white">Summarize Lessons</h3><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Get the key points fast</p></div><div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow"><div class="text-2xl mb-2">🧠</div><h3 class="font-semibold text-sm text-gray-900 dark:text-white">Generate Quizzes</h3><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Test your knowledge</p></div><div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow"><div class="text-2xl mb-2">✏️</div><h3 class="font-semibold text-sm text-gray-900 dark:text-white">Explain Simply</h3><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Complex concepts made easy</p></div></div><h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">Try asking...</h3><div class="flex flex-col md:flex-row flex-wrap justify-center gap-2 max-w-2xl mb-10"><button onclick="setPrompt('Explain photosynthesis like I\\\\'m 15.')" class="text-left px-4 py-2.5 bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">"Explain photosynthesis like I'm 15."</button><button onclick="setPrompt('Create a 10-question quiz about World War II.')" class="text-left px-4 py-2.5 bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">"Create a 10-question quiz about WWII."</button><button onclick="setPrompt('Summarize these lecture notes.')" class="text-left px-4 py-2.5 bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">"Summarize these lecture notes."</button><button onclick="setPrompt('Help me solve this algebra problem step by step:')" class="text-left px-4 py-2.5 bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">"Solve this algebra step by step:"</button></div><div class="max-w-xl w-full text-center mb-4"><div class="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg><span>Conversations are stored locally in your browser. Uploaded files are not saved permanently.</span></div><div class="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg><span>Supports TXT file uploads. Files processed only to answer your questions.</span></div></div></div>`;
-            renderHistoryList(); if (window.innerWidth < 768) toggleSidebar(false);
-        }
+        function createNewChat() { currentChatId = Date.now().toString(); conversationHistory = []; const chatContainer = document.getElementById('messages'); chatContainer.innerHTML = `<div id="welcome-state" class="flex flex-col items-center justify-center min-h-full py-12 text-center px-4"><h2 class="text-3xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white tracking-tight">Study Smarter with AI</h2><p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-xl mb-6">Get instant answers, explanations, summaries, and study help for any subject.</p><div class="flex flex-col md:flex-row gap-2 md:gap-6 mb-8 text-sm text-gray-700 dark:text-gray-300"><span class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg> Completely Free</span><span class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg> No Signup Required</span><span class="flex items-center gap-2"><svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg> Available 24/7</span></div><div class="bg-brand-50 dark:bg-brand-900/20 border border-brand-100 dark:border-brand-800/40 px-6 py-3 rounded-full mb-10 text-sm font-medium text-brand-700 dark:text-brand-300">🎓 Trusted by students for fast, free, and accessible AI-powered learning. No account required.</div></div>`; renderHistoryList(); if (window.innerWidth < 768) toggleSidebar(false); }
 
-        function toggleSidebar(forceState) {
-            const sidebar = document.getElementById('sidebar'); const overlay = document.getElementById('sidebar-overlay');
-            const isHidden = sidebar.classList.contains('-translate-x-full'); const shouldShow = forceState !== undefined ? forceState : isHidden;
-            if (shouldShow) { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); setTimeout(() => overlay.classList.remove('opacity-0'), 10); document.body.style.overflow = 'hidden'; }
-            else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('opacity-0'); setTimeout(() => overlay.classList.add('hidden'), 300); document.body.style.overflow = ''; }
-        }
+        function toggleSidebar(forceState) { const sidebar = document.getElementById('sidebar'); const overlay = document.getElementById('sidebar-overlay'); const isHidden = sidebar.classList.contains('-translate-x-full'); const shouldShow = forceState !== undefined ? forceState : isHidden; if (shouldShow) { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); setTimeout(() => overlay.classList.remove('opacity-0'), 10); document.body.style.overflow = 'hidden'; } else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('opacity-0'); setTimeout(() => overlay.classList.add('hidden'), 300); document.body.style.overflow = ''; } }
 
-        // CUSTOM MARKDOWN RENDERER
-        const renderer = new marked.Renderer();
-        const originalImage = renderer.image;
-        renderer.image = function(href, title, text) {
-            if (typeof href === 'string' && href.includes('pollinations.ai')) { return `<div class="my-4"><img src="${href}" alt="${text}" class="rounded-xl max-w-full shadow-lg border border-gray-200 dark:border-gray-700" onerror="this.alt='⚠️ Image failed to load'; this.style.display='none'"><p class="text-xs text-gray-500 mt-1 italic">${text || ''}</p></div>`; }
-            return originalImage.call(this, href, title, text);
-        };
+        const renderer = new marked.Renderer(); const originalImage = renderer.image; renderer.image = function(href, title, text) { if (typeof href === 'string' && href.includes('pollinations.ai')) { return `<div class="my-4"><img src="${href}" alt="${text}" class="rounded-xl max-w-full shadow-lg border border-gray-200 dark:border-gray-700" onerror="this.alt='⚠️ Image failed to load'; this.style.display='none'"><p class="text-xs text-gray-500 mt-1 italic">${text || ''}</p></div>`; } return originalImage.call(this, href, title, text); };
         DOMPurify.addHook('uponSanitizeAttribute', function(node, data) { if (data.attrName === 'src' && data.attrValue && data.attrValue.includes('pollinations.ai')) { data.forceKeepAttr = true; } });
 
-        function createMessageElement(role, text = '', isStreaming = false) {
-            const chat = document.getElementById('messages'); const welcome = document.getElementById('welcome-state'); if(welcome) welcome.style.display = 'none';
-            const wrapper = document.createElement('div'); wrapper.className = `w-full text-gray-800 dark:text-gray-100 border-b border-black/5 dark:border-white/5 py-6 ${role === 'user' ? 'bg-white dark:bg-[#444654]' : ''} ${role === 'user' ? 'animate-slide-in-right' : 'animate-slide-in-left'}`;
-            const inner = document.createElement('div'); inner.className = `flex gap-4 md:gap-6 max-w-3xl mx-auto px-4 ${role === 'user' ? 'flex-row-reverse' : 'flex-row'}`;
-            const avatar = document.createElement('div'); avatar.className = `w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center ${role === 'user' ? 'bg-brand-600 text-white mt-1' : 'bg-emerald-600 text-white'}`;
-            avatar.innerHTML = role === 'user' ? 'U' : 'AI';
-            const bubble = document.createElement('div'); bubble.className = `prose-content leading-7 text-[15px] w-full overflow-hidden ${isStreaming ? 'cursor-blink' : ''}`;
-            if (!isStreaming && text) bubble.innerHTML = DOMPurify.sanitize(marked.parse(text, { renderer }));
-            inner.appendChild(avatar); inner.appendChild(bubble); wrapper.appendChild(inner); chat.appendChild(wrapper);
-            requestAnimationFrame(() => { chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' }); });
-            return { wrapper, bubble };
-        }
+        function createMessageElement(role, text = '', isStreaming = false) { const chat = document.getElementById('messages'); const welcome = document.getElementById('welcome-state'); if(welcome) welcome.style.display = 'none'; const wrapper = document.createElement('div'); wrapper.className = `w-full text-gray-800 dark:text-gray-100 border-b border-black/5 dark:border-white/5 py-6 ${role === 'user' ? 'bg-white dark:bg-[#444654]' : ''} ${role === 'user' ? 'animate-slide-in-right' : 'animate-slide-in-left'}`; const inner = document.createElement('div'); inner.className = `flex gap-4 md:gap-6 max-w-3xl mx-auto px-4 ${role === 'user' ? 'flex-row-reverse' : 'flex-row'}`; const avatar = document.createElement('div'); avatar.className = `w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center ${role === 'user' ? 'bg-brand-600 text-white mt-1' : 'bg-emerald-600 text-white'}`; avatar.innerHTML = role === 'user' ? 'U' : 'AI'; const bubble = document.createElement('div'); bubble.className = `prose-content leading-7 text-[15px] w-full overflow-hidden ${isStreaming ? 'cursor-blink' : ''}`; if (!isStreaming && text) bubble.innerHTML = DOMPurify.sanitize(marked.parse(text, { renderer })); inner.appendChild(avatar); inner.appendChild(bubble); wrapper.appendChild(inner); chat.appendChild(wrapper); requestAnimationFrame(() => { chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' }); }); return { wrapper, bubble }; }
 
-        async function handleSend() {
-            const input = document.getElementById('user-input'); const btn = document.getElementById('send-btn');
-            let text = input.value.trim(); if (!text && !attachedFile) return;
-            if (attachedFile) { const fileText = await readFileAsText(attachedFile); text += `\n\n[File Attached: ${attachedFile.name}]\n${fileText}`; attachedFile = null; fileInput.value = ''; fileNameDisplay.classList.add('hidden'); }
-            if (!chats[currentChatId]) { chats[currentChatId] = { id: currentChatId, title: getShortTitle(text), history: [], timestamp: Date.now() }; renderHistoryList(); }
-            createMessageElement('user', text); conversationHistory.push({ role: 'user', content: text }); saveCurrentChat();
-            input.value = ''; input.style.height = 'auto'; btn.disabled = true;
-            const { bubble } = createMessageElement('assistant', '', false);
-            bubble.classList.add('thinking-dots'); bubble.innerHTML = '<span></span><span></span><span></span>';
-            let aiResponseText = ''; const chat = document.getElementById('messages'); let isGeneratingImage = false;
-            try {                
-                const response = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: text, history: conversationHistory.slice(-5, -1) }) });
-                if (!response.ok) throw new Error("Network response was not ok");
-                bubble.classList.remove('thinking-dots'); bubble.classList.add('cursor-blink'); bubble.innerHTML = '';
-                const reader = response.body.getReader(); const decoder = new TextDecoder(); let buffer = '';
-                while (true) {
-                    const { done, value } = await reader.read(); if (done) break;
-                    buffer += decoder.decode(value, { stream: true }); const lines = buffer.split('\n'); buffer = lines.pop(); 
-                    for (const line of lines) {
-                        if (line.startsWith('data: ')) { const data = line.slice(6).trim(); if (data === '[DONE]') continue; try { const parsed = JSON.parse(data); if (parsed.content) { aiResponseText += parsed.content; if (aiResponseText.includes('pollinations.ai')) { if (!isGeneratingImage) { isGeneratingImage = true; bubble.classList.remove('cursor-blink'); } bubble.innerHTML = `<span class="text-brand-600 dark:text-brand-400 font-medium">Generating image for you please wait</span> <span class="image-generating-dots"><span></span><span></span><span></span></span>`; } else { bubble.textContent = aiResponseText; } chat.scrollTop = chat.scrollHeight; } if (parsed.error) throw new Error(parsed.error); } catch (e) { console.error("Stream Parse Error:", e); } }
-                    }
-                }
-                bubble.classList.remove('cursor-blink'); conversationHistory.push({ role: 'assistant', content: aiResponseText.trim() }); saveCurrentChat();
-                bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText.trim(), { renderer })); chat.scrollTop = chat.scrollHeight;
-                if (conversationHistory.length === 2 && chats[currentChatId].title.includes("...")) { generateTitle(text); }
-            } catch (error) { bubble.textContent = "Connection error: " + error.message; bubble.classList.add('text-red-500'); bubble.classList.remove('cursor-blink', 'thinking-dots'); console.error(error); } finally { btn.disabled = false; input.focus(); }
-        }
+        async function handleSend() { const input = document.getElementById('user-input'); const btn = document.getElementById('send-btn'); let text = input.value.trim(); if (!text && !attachedFile) return; if (attachedFile) { const fileText = await readFileAsText(attachedFile); text += `\n\n[File Attached: ${attachedFile.name}]\n${fileText}`; attachedFile = null; fileInput.value = ''; fileNameDisplay.classList.add('hidden'); } if (!chats[currentChatId]) { chats[currentChatId] = { id: currentChatId, title: getShortTitle(text), history: [], timestamp: Date.now() }; renderHistoryList(); } createMessageElement('user', text); conversationHistory.push({ role: 'user', content: text }); saveCurrentChat(); input.value = ''; input.style.height = 'auto'; btn.disabled = true; const { bubble } = createMessageElement('assistant', '', false); bubble.classList.add('thinking-dots'); bubble.innerHTML = '<span></span><span></span><span></span>'; let aiResponseText = ''; const chat = document.getElementById('messages'); let isGeneratingImage = false; try { const response = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: text, history: conversationHistory.slice(-5, -1) }) }); if (!response.ok) throw new Error("Network response was not ok"); bubble.classList.remove('thinking-dots'); bubble.classList.add('cursor-blink'); bubble.innerHTML = ''; const reader = response.body.getReader(); const decoder = new TextDecoder(); let buffer = ''; while (true) { const { done, value } = await reader.read(); if (done) break; buffer += decoder.decode(value, { stream: true }); const lines = buffer.split('\n'); buffer = lines.pop(); for (const line of lines) { if (line.startsWith('data: ')) { const data = line.slice(6).trim(); if (data === '[DONE]') continue; try { const parsed = JSON.parse(data); if (parsed.content) { aiResponseText += parsed.content; if (aiResponseText.includes('pollinations.ai')) { if (!isGeneratingImage) { isGeneratingImage = true; bubble.classList.remove('cursor-blink'); } bubble.innerHTML = `<span class="text-brand-600 dark:text-brand-400 font-medium">Generating image for you please wait</span> <span class="image-generating-dots"><span></span><span></span><span></span></span>`; } else { bubble.textContent = aiResponseText; } chat.scrollTop = chat.scrollHeight; } if (parsed.error) throw new Error(parsed.error); } catch (e) { console.error("Stream Parse Error:", e); } } } } bubble.classList.remove('cursor-blink'); conversationHistory.push({ role: 'assistant', content: aiResponseText.trim() }); saveCurrentChat(); bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText.trim(), { renderer })); chat.scrollTop = chat.scrollHeight; if (conversationHistory.length === 2 && chats[currentChatId].title.includes("...")) { generateTitle(text); } } catch (error) { bubble.textContent = "Connection error: " + error.message; bubble.classList.add('text-red-500'); bubble.classList.remove('cursor-blink', 'thinking-dots'); console.error(error); } finally { btn.disabled = false; input.focus(); } }
 
         function readFileAsText(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsText(file); }); }
         document.getElementById('user-input').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
