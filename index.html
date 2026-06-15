@@ -34,55 +34,45 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        /* Custom Scrollbar for sleek look */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
         .dark ::-webkit-scrollbar-thumb { background-color: #3f3f46; }
         
-        /* Markdown-like styling for AI text */
-        .prose p { margin-bottom: 0.75rem; }
-        .prose p:last-child { margin-bottom: 0; }
-        .prose code { background: rgba(0,0,0,0.1); padding: 2px 4px; border-radius: 4px; font-size: 0.9em; }
-        .dark .prose code { background: rgba(255,255,255,0.1); }
+        /* Cursor blinking animation for streaming text */
+        .cursor-blink::after {
+            content: '▋';
+            display: inline-block;
+            margin-left: 2px;
+            animation: blink 1s step-start infinite;
+            color: #3b82f6;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
     </style>
 </head>
 <body class="h-full bg-zinc-50 dark:bg-dark-bg text-zinc-900 dark:text-zinc-100 transition-colors duration-300 selection:bg-primary-500 selection:text-white">
 
     <div class="flex h-full overflow-hidden">
-        
-        <!-- Sidebar: Glassmorphism & Cleaner Borders -->
+        <!-- Sidebar -->
         <aside id="sidebar" class="w-72 bg-white/80 dark:bg-dark-surface/80 backdrop-blur-md border-r border-zinc-200 dark:border-dark-border flex flex-col z-30 absolute md:relative h-full transition-transform duration-300 -translate-x-full md:translate-x-0">
             <div class="p-6 pb-2">
                 <button onclick="createNewChat()" class="group w-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-medium py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2">
                     <span class="text-xl group-hover:rotate-90 transition-transform duration-300">+</span> New Chat
                 </button>
             </div>
-
             <div class="px-4 py-2 text-xs font-semibold text-zinc-400 uppercase tracking-wider">History</div>
-            <div id="history-list" class="flex-1 overflow-y-auto px-3 space-y-1 py-2">
-                <!-- Mock History Item -->
-                <button class="w-full text-left px-4 py-3 rounded-lg text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors truncate border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700">
-                    Quantum Physics Basics
-                </button>
-                <button class="w-full text-left px-4 py-3 rounded-lg text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors truncate border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700">
-                    Romeo & Juliet Analysis
-                </button>
-            </div>
-
+            <div id="history-list" class="flex-1 overflow-y-auto px-3 space-y-1 py-2"></div>
+            
             <div class="p-4 border-t border-zinc-200 dark:border-dark-border">
                 <button onclick="toggleSettings()" class="flex items-center gap-3 w-full px-4 py-3 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all text-sm font-medium text-zinc-600 dark:text-zinc-300">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary-500 to-purple-500 flex items-center justify-center text-white text-xs">JS</div>
-                    <span>John Student</span>
-                    <svg class="w-4 h-4 ml-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary-500 to-purple-500 flex items-center justify-center text-white text-xs">AI</div>
+                    <span>Study Assistant</span>
                 </button>
             </div>
         </aside>
 
         <!-- Main Content -->
         <main class="flex-1 flex flex-col relative w-full bg-white dark:bg-dark-bg">
-            
-            <!-- Header: Floating Blur -->
             <header class="absolute top-0 left-0 right-0 p-4 z-20 bg-white/70 dark:bg-dark-bg/70 backdrop-blur-sm border-b border-zinc-200/50 dark:border-dark-border/50 flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <button onclick="toggleSidebar()" class="md:hidden p-2 -ml-2 text-zinc-500 hover:text-zinc-800 dark:hover:text-white">
@@ -96,27 +86,22 @@
                     </div>
                 </div>
                 <button onclick="document.documentElement.classList.toggle('dark')" class="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
-                    <!-- Sun Icon -->
                     <svg class="w-5 h-5 hidden dark:block text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                    <!-- Moon Icon -->
                     <svg class="w-5 h-5 block dark:hidden text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                 </button>
             </header>
             
-            <!-- Chat Area -->
             <div id="messages" class="flex-1 overflow-y-auto p-4 md:p-8 pt-24 pb-4 space-y-8 max-w-4xl mx-auto w-full scroll-smooth">
-                
-                <!-- Welcome Message -->
+                <!-- Welcome State -->
                 <div class="flex flex-col items-center justify-center mt-10 opacity-50 select-none pointer-events-none">
                     <div class="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-4">
                         <svg class="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
                     </div>
                     <p class="text-sm font-medium text-zinc-400">Start a new conversation</p>
                 </div>
-
             </div>
 
-            <!-- Input Area: Floating Card -->
+            <!-- Input Area -->
             <div class="p-4 md:p-8 max-w-4xl mx-auto w-full z-10">
                 <div class="relative bg-white dark:bg-zinc-900 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-zinc-200 dark:border-zinc-700 focus-within:ring-2 ring-primary-500/50 transition-all duration-300 group">
                     <textarea id="user-input" rows="1" placeholder="Ask anything about your studies..." 
@@ -132,56 +117,19 @@
                         </button>
                     </div>
                 </div>
-                <div class="text-center mt-3">
-                    <p class="text-[10px] text-zinc-400 font-medium uppercase tracking-wide">StudyAI can make mistakes. Consider checking important information.</p>
-                </div>
             </div>
         </main>
     </div>
 
-    <!-- Settings Modal (Sleeker version) -->
-    <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="if(event.target === this) toggleSettings()">
-        <div class="bg-white dark:bg-zinc-900 p-8 rounded-3xl w-full max-w-sm shadow-2xl transform scale-95 transition-transform duration-300 border border-zinc-100 dark:border-zinc-800">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-xl font-bold tracking-tight">Preferences</h2>
-                <button onclick="toggleSettings()" class="text-zinc-400 hover:text-zinc-600">✕</button>
-            </div>
-            
-            <div class="space-y-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <div class="font-medium">Dark Mode</div>
-                        <div class="text-xs text-zinc-500">Easier on the eyes</div>
-                    </div>
-                    <button onclick="document.documentElement.classList.toggle('dark')" class="w-12 h-7 bg-zinc-200 dark:bg-primary-600 rounded-full relative transition-colors duration-300">
-                        <div class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-300 dark:translate-x-5"></div>
-                    </button>
-                </div>
-                <div class="flex justify-between items-center">
-                    <div>
-                        <div class="font-medium">Stream Responses</div>
-                        <div class="text-xs text-zinc-500">Show text as it generates</div>
-                    </div>
-                    <button class="w-12 h-7 bg-primary-600 rounded-full relative transition-colors duration-300">
-                        <div class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-300 translate-x-5"></div>
-                    </button>
-                </div>
-            </div>
-
-            <button onclick="toggleSettings()" class="mt-8 w-full py-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-xl font-medium hover:opacity-90 transition-opacity">Done</button>
-        </div>
-    </div>
-
     <script>
-        // --- Sidebar Logic ---
+        // State Management
+        let conversationHistory = [];
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const isHidden = sidebar.classList.contains('-translate-x-full');
-            if (isHidden) {
-                sidebar.classList.remove('-translate-x-full');
-            } else {
-                sidebar.classList.add('-translate-x-full');
-            }
+            if (isHidden) sidebar.classList.remove('-translate-x-full');
+            else sidebar.classList.add('-translate-x-full');
         }
 
         function createNewChat() { 
@@ -192,14 +140,17 @@
                         <svg class="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
                     </div>
                     <p class="text-sm font-medium text-zinc-400">Start a new conversation</p>
-                </div>`; 
+                </div>`;
+            conversationHistory = []; // Clear history
             if (window.innerWidth < 768) toggleSidebar();
         }
 
-        // --- Chat Logic (Secure & Animated) ---
-        function addMessage(role, text) {
+        // --- CHAT LOGIC WITH STREAMING ---
+        
+        // Helper to create a message bubble. If isStreaming is true, adds a blinking cursor.
+        function createMessageElement(role, text = '', isStreaming = false) {
             const chat = document.getElementById('messages');
-            const welcomeMsg = chat.querySelector('.select-none'); // Remove welcome msg if exists
+            const welcomeMsg = chat.querySelector('.select-none');
             if(welcomeMsg) welcomeMsg.remove();
 
             const wrapper = document.createElement('div');
@@ -212,22 +163,21 @@
                 : '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>';
 
             const bubble = document.createElement('div');
-            // Use prose classes for AI text styling
-            bubble.className = `max-w-[80%] leading-relaxed text-[15px] px-5 py-3 rounded-2xl shadow-sm ${
+            bubble.className = `max-w-[85%] leading-relaxed text-[15px] px-5 py-3 rounded-2xl shadow-sm break-words overflow-hidden ${
                 role === 'user' 
                 ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-tr-sm' 
-                : 'text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-700/50 rounded-tl-sm'
+                : 'text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-700/50 rounded-tl-sm ' + (isStreaming ? 'cursor-blink' : '')
             }`;
             
-            // Secure text insertion
-            bubble.textContent = text;
+            // For safety, we use textContent for static text, but for streaming we append carefully
+            if (!isStreaming) bubble.textContent = text;
 
             wrapper.appendChild(avatar);
             wrapper.appendChild(bubble);
             chat.appendChild(wrapper);
+            chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' }); // Auto scroll
             
-            // Scroll to bottom
-            chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+            return { wrapper, bubble };
         }
 
         async function handleSend() {
@@ -236,47 +186,70 @@
             const text = input.value.trim();
             if (!text) return;
 
-            addMessage('user', text);
+            // 1. Add User Message to UI
+            createMessageElement('user', text);
+            
+            // 2. Add User Message to History
+            conversationHistory.push({ role: 'user', content: text });
+
             input.value = '';
-            input.style.height = 'auto'; // Reset height
+            input.style.height = 'auto';
             btn.disabled = true;
 
-            // Fake loading bubble
-            const chat = document.getElementById('messages');
-            const loadingId = 'loading-' + Date.now();
-            const loadingWrapper = document.createElement('div');
-            loadingWrapper.id = loadingId;
-            loadingWrapper.className = 'flex gap-4 animate-fade-in';
-            loadingWrapper.innerHTML = `
-                <div class="w-8 h-8 rounded-lg bg-primary-600 flex-shrink-0 flex items-center justify-center text-white">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                </div>
-                <div class="bg-white dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-700/50 rounded-2xl rounded-tl-sm px-5 py-3 shadow-sm flex gap-1 items-center h-11">
-                    <span class="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce"></span>
-                    <span class="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
-                    <span class="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
-                </div>
-            `;
-            chat.appendChild(loadingWrapper);
-            chat.scrollTop = chat.scrollHeight;
+            // 3. Create Placeholder for AI Message
+            const { bubble } = createMessageElement('assistant', '', true);
 
             try {
-                // Replace this URL with your actual API
-                const res = await fetch('/api/chat', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ prompt: text })});
-                
-                // MOCK RESPONSE FOR DEMO PURPOSES (Remove this block in production)
-                if (!res.ok) throw new Error("API Not Found (Mock Mode)");
-                // const data = await res.json(); 
-                // addMessage('ai', data.reply);
-                
-                // MOCKING A RESPONSE SO YOU CAN SEE IT WORK:
-                await new Promise(r => setTimeout(r, 1500)); 
-                document.getElementById(loadingId).remove();
-                addMessage('ai', "This is a professional response. Since this is a static demo, I'm simulating the AI backend. The UI is now ready to connect to your real API endpoint.");
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: text, history: conversationHistory })
+                });
+
+                if (!response.ok) throw new Error("Server error");
+
+                // 4. Read Stream
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let aiResponseText = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const dataStr = line.slice(6);
+                            if (dataStr === '[DONE]') break;
+                            
+                            try {
+                                const data = JSON.parse(dataStr);
+                                if (data.content) {
+                                    aiResponseText += data.content;
+                                    bubble.textContent = aiResponseText;
+                                    
+                                    // Auto scroll only if near bottom
+                                    const chat = document.getElementById('messages');
+                                    chat.scrollTop = chat.scrollHeight;
+                                }
+                            } catch (e) {
+                                console.error('Error parsing stream data', e);
+                            }
+                        }
+                    }
+                }
+
+                // 5. Finalize
+                bubble.classList.remove('cursor-blink'); // Stop blinking
+                conversationHistory.push({ role: 'assistant', content: aiResponseText });
 
             } catch (error) {
-                document.getElementById(loadingId).remove();
-                addMessage('system', 'Connection failed. Please check your console.');
+                bubble.textContent = "Error: Could not connect to server.";
+                bubble.classList.add('text-red-500');
+                bubble.classList.remove('cursor-blink');
                 console.error(error);
             } finally {
                 btn.disabled = false;
@@ -284,34 +257,12 @@
             }
         }
 
-        // Handle Shift+Enter for new line, Enter for send
         document.getElementById('user-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 handleSend();
             }
         });
-
-        // Modal Animation
-        function toggleSettings() {
-            const modal = document.getElementById('settings-modal');
-            const content = modal.firstElementChild;
-            
-            if (modal.classList.contains('hidden')) {
-                modal.classList.remove('hidden');
-                // Small delay to allow display:block to apply before opacity transition
-                setTimeout(() => {
-                    modal.classList.remove('opacity-0');
-                    content.classList.remove('scale-95');
-                    content.classList.add('scale-100');
-                }, 10);
-            } else {
-                modal.classList.add('opacity-0');
-                content.classList.remove('scale-100');
-                content.classList.add('scale-95');
-                setTimeout(() => modal.classList.add('hidden'), 300);
-            }
-        }
     </script>
 </body>
 </html>
