@@ -260,6 +260,26 @@
             else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('opacity-0'); setTimeout(() => overlay.classList.add('hidden'), 300); document.body.style.overflow = ''; }
         }
 
+        // --- CUSTOM MARKDOWN RENDERER FOR AI IMAGES ---
+        const renderer = new marked.Renderer();
+        const originalImage = renderer.image;
+        
+        renderer.image = function(href, title, text) {
+            // If the AI outputs a pollinations link, render it as a real image
+            if (typeof href === 'string' && href.includes('pollinations.ai')) {
+                return `<div class="my-4"><img src="${href}" alt="${text}" class="rounded-xl max-w-full shadow-lg border border-gray-200 dark:border-gray-700" onerror="this.alt='⚠️ Image failed to load'; this.style.display='none'"><p class="text-xs text-gray-500 mt-1 italic">${text || ''}</p></div>`;
+            }
+            // Otherwise, use the default image renderer
+            return originalImage.call(this, href, title, text);
+        };
+
+        // Override DOMPurify to allow images from pollinations
+        DOMPurify.addHook('uponSanitizeAttribute', function(node, data) {
+            if (data.attrName === 'src' && data.attrValue && data.attrValue.includes('pollinations.ai')) {
+                data.forceKeepAttr = true;
+            }
+        });
+
         function createMessageElement(role, text = '', isStreaming = false) {
             const chat = document.getElementById('messages'); const welcome = document.getElementById('welcome-state'); if(welcome) welcome.style.display = 'none';
             const wrapper = document.createElement('div'); wrapper.className = `w-full text-gray-800 dark:text-gray-100 border-b border-black/5 dark:border-white/5 py-6 ${role === 'user' ? 'bg-white dark:bg-[#444654]' : ''} ${role === 'user' ? 'animate-slide-in-right' : 'animate-slide-in-left'}`;
@@ -267,7 +287,7 @@
             const avatar = document.createElement('div'); avatar.className = `w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center ${role === 'user' ? 'bg-brand-600 text-white mt-1' : 'bg-emerald-600 text-white'}`;
             avatar.innerHTML = role === 'user' ? 'U' : 'AI';
             const bubble = document.createElement('div'); bubble.className = `prose-content leading-7 text-[15px] w-full overflow-hidden ${isStreaming ? 'cursor-blink' : ''}`;
-            if (!isStreaming && text) bubble.innerHTML = DOMPurify.sanitize(marked.parse(text));
+            if (!isStreaming && text) bubble.innerHTML = DOMPurify.sanitize(marked.parse(text, { renderer }));
             inner.appendChild(avatar); inner.appendChild(bubble); wrapper.appendChild(inner); chat.appendChild(wrapper);
             requestAnimationFrame(() => { chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' }); });
             return { wrapper, bubble };
@@ -343,7 +363,7 @@
                 conversationHistory.push({ role: 'assistant', content: aiResponseText.trim() });
                 saveCurrentChat();
 
-                bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText.trim()));
+                bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText.trim(), { renderer }));
                 chat.scrollTop = chat.scrollHeight;
 
                 if (conversationHistory.length === 2 && chats[currentChatId].title.includes("...")) { generateTitle(text); }
