@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>StudyAI | Pro Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Add Marked (Markdown Parser) and DOMPurify (Security) -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
     
@@ -45,7 +44,7 @@
         html { scroll-behavior: smooth; }
         
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; } /* Added height for code blocks */
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
         .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
@@ -70,7 +69,6 @@
             background: rgba(15, 23, 42, 0.7);
         }
 
-        /* Mobile Input Safe Area */
         @supports (padding-bottom: env(safe-area-inset-bottom)) {
             .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
         }
@@ -89,6 +87,7 @@
             border-radius: 4px; 
             font-size: 0.9em; 
             font-family: 'Menlo', monospace;
+            word-break: break-all; /* Prevents code from overflowing bubbles */
         }
         .dark .prose-content code { 
             background: rgba(255,255,255,0.15); 
@@ -99,7 +98,7 @@
             color: #d4d4d4; 
             padding: 1rem; 
             border-radius: 0.5rem; 
-            overflow-x: auto; 
+            overflow-x: auto; /* Allows horizontal scrolling for code */
             margin-bottom: 0.75rem;
         }
         .prose-content pre code { 
@@ -107,6 +106,8 @@
             color: inherit; 
             padding: 0; 
             font-size: 0.9em;
+            word-break: normal; /* Don't break words inside code blocks */
+            white-space: pre; /* Preserve formatting */
         }
         .prose-content blockquote {
             border-left: 4px solid #cbd5e1;
@@ -143,10 +144,7 @@
             </div>
 
             <div class="px-4 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">History</div>
-            
-            <div id="history-list" class="flex-1 overflow-y-auto px-3 space-y-1 pb-4">
-                <!-- History items injected here -->
-            </div>
+            <div id="history-list" class="flex-1 overflow-y-auto px-3 space-y-1 pb-4"></div>
             
             <div class="p-4 border-t border-slate-200 dark:border-dark-border">
                 <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
@@ -182,8 +180,8 @@
             </header>
             
             <!-- Chat Container -->
-            <div id="messages" class="flex-1 overflow-y-auto p-4 md:p-8 pt-24 pb-32 space-y-6 max-w-4xl mx-auto w-full scroll-smooth">
-                <!-- Welcome State -->
+            <!-- FIX: Increased pb-32 to pb-48 to ensure messages don't get hidden behind the input box -->
+            <div id="messages" class="flex-1 overflow-y-auto p-4 md:p-8 pt-24 pb-48 space-y-6 max-w-4xl mx-auto w-full scroll-smooth">
                 <div id="welcome-state" class="flex flex-col items-center justify-center h-[60vh] opacity-60 select-none">
                     <div class="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center justify-center mb-6 shadow-xl animate-float">
                         <svg class="w-10 h-10 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
@@ -304,7 +302,6 @@
             } catch (e) { console.log("Could not generate title", e); }
         }
 
-        // --- UPDATED: PARSE MARKDOWN ON LOAD ---
         function loadChat(id) {
             currentChatId = id;
             conversationHistory = chats[id].history || [];
@@ -358,7 +355,6 @@
             }
         }
 
-        // --- UPDATED: MARKDOWN PARSING ---
         function createMessageElement(role, text = '', isStreaming = false) {
             const chat = document.getElementById('messages');
             const welcome = document.getElementById('welcome-state');
@@ -377,15 +373,14 @@
                 : '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>';
 
             const bubble = document.createElement('div');
-            // Added prose-content class for markdown styling
-            bubble.className = `prose-content max-w-[85%] leading-relaxed text-[15px] px-5 py-3.5 rounded-3xl shadow-sm break-words overflow-hidden ${
+            // FIX: Removed 'overflow-hidden' to prevent text clipping. Added 'break-words' for long text.
+            bubble.className = `prose-content max-w-[85%] leading-relaxed text-[15px] px-5 py-3.5 rounded-3xl shadow-sm break-words ${
                 role === 'user' 
                 ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-tr-md' 
                 : 'text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-tl-md ' + (isStreaming ? 'cursor-blink' : '')
             }`;
             
             if (!isStreaming) {
-                // Parse Markdown for static messages (loading history)
                 bubble.innerHTML = DOMPurify.sanitize(marked.parse(text));
             }
 
@@ -450,7 +445,6 @@
                                 const data = JSON.parse(dataStr);
                                 if (data.content) {
                                     aiResponseText += data.content;
-                                    // Use textContent during stream for performance & visual stability
                                     bubble.textContent = aiResponseText;
                                     const chat = document.getElementById('messages');
                                     chat.scrollTop = chat.scrollHeight;
@@ -464,7 +458,6 @@
                 conversationHistory.push({ role: 'assistant', content: aiResponseText });
                 saveCurrentChat();
 
-                // --- CRITICAL FIX: Parse Markdown after streaming finishes ---
                 bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText));
 
                 if (conversationHistory.length === 2 && chats[currentChatId].title.includes("...")) {
