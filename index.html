@@ -1,64 +1,88 @@
-<script>
-    // State management
-    let chatHistory = JSON.parse(localStorage.getItem('studyAI_chatHistory')) || [];
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyAI | Pro Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: 'class' };</script>
+    <style>
+        .transition-all { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-all">
 
-    // Render logic
-    function renderChat() {
-        const chatBox = document.getElementById('messages');
-        chatBox.innerHTML = chatHistory.map(msg => `
-            <div class="flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}">
-                <div class="${msg.role === 'user' ? 'bg-indigo-600 text-white' : 'bg-slate-200 dark:bg-slate-700'} px-5 py-3 rounded-2xl shadow-sm max-w-[85%]">
-                    ${msg.content}
+    <div class="flex h-full overflow-hidden">
+        <aside id="sidebar" class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col p-4 z-30 absolute md:relative h-full hidden md:flex">
+            <button onclick="createNewChat()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl shadow-lg shadow-indigo-500/20 mb-6 transition-all">
+                + New Chat
+            </button>
+            <div id="history-list" class="flex-1 space-y-2 overflow-y-auto"></div>
+            <button onclick="toggleSettings()" class="flex items-center gap-2 p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all text-sm">
+                ⚙️ Settings
+            </button>
+        </aside>
+
+        <main class="flex-1 flex flex-col relative w-full">
+            <header class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                <button onclick="document.getElementById('sidebar').classList.toggle('hidden')" class="md:hidden p-2">☰</button>
+                <h1 class="font-semibold text-lg">StudyAI</h1>
+                <div class="w-10"></div>
+            </header>
+            
+            <div id="messages" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 max-w-3xl mx-auto w-full"></div>
+
+            <div class="p-4 md:p-8 max-w-3xl mx-auto w-full">
+                <div class="relative bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 focus-within:ring-2 ring-indigo-500 flex items-center pr-3">
+                    <input id="user-input" type="text" placeholder="Type your study question..." 
+                        class="w-full bg-transparent px-6 py-4 outline-none">
+                    <button id="send-btn" onclick="handleSend()" class="p-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
                 </div>
             </div>
-        `).join('');
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
+        </main>
+    </div>
 
-    // Send logic
-    async function handleSend() {
-        const input = document.getElementById('user-input');
-        const btn = document.getElementById('send-btn');
-        const prompt = input.value.trim();
-        if (!prompt) return;
+    <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl w-full max-w-sm shadow-2xl">
+            <h2 class="text-xl font-bold mb-6">Preferences</h2>
+            <div class="flex justify-between items-center mb-6">
+                <span>Dark Mode</span>
+                <button onclick="document.documentElement.classList.toggle('dark')" class="w-12 h-6 bg-slate-200 dark:bg-indigo-500 rounded-full transition-all"></button>
+            </div>
+            <button onclick="toggleSettings()" class="w-full py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-medium">Done</button>
+        </div>
+    </div>
 
-        // Add user message to state
-        chatHistory.push({ role: 'user', content: prompt });
-        renderChat();
-        input.value = '';
-        btn.disabled = true;
+    <script>
+        function toggleSettings() { document.getElementById('settings-modal').classList.toggle('hidden'); }
+        function createNewChat() { 
+            document.getElementById('messages').innerHTML = ''; 
+            if (window.innerWidth < 768) document.getElementById('sidebar').classList.add('hidden');
+        }
 
-        try {
-            const res = await fetch('/api/chat', { 
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify({ prompt, history: chatHistory.slice(0, -1) })
-            });
+        async function handleSend() {
+            const input = document.getElementById('user-input');
+            const btn = document.getElementById('send-btn');
+            const prompt = input.value.trim();
+            if (!prompt) return;
+
+            const chat = document.getElementById('messages');
+            chat.innerHTML += `<div class="flex justify-end"><div class="bg-indigo-600 text-white px-5 py-3 rounded-2xl shadow-md">${prompt}</div></div>`;
+            input.value = '';
+            btn.disabled = true;
+            
+            const res = await fetch('/api/chat', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ prompt })});
             const data = await res.json();
             
-            // Add AI response to state
-            chatHistory.push({ role: 'assistant', content: data.reply });
-            localStorage.setItem('studyAI_chatHistory', JSON.stringify(chatHistory));
-            renderChat();
-        } catch (err) {
-            alert("Error: Unable to connect to StudyAI.");
-        } finally {
+            chat.innerHTML += `<div class="flex justify-start"><div class="bg-slate-100 dark:bg-slate-700 px-5 py-3 rounded-2xl">${data.reply}</div></div>`;
+            chat.scrollTop = chat.scrollHeight;
             btn.disabled = false;
             input.focus();
         }
-    }
 
-    // UI Utilities
-    function toggleSettings() { document.getElementById('settings-modal').classList.toggle('hidden'); }
-    
-    function createNewChat() {
-        chatHistory = [];
-        localStorage.removeItem('studyAI_chatHistory');
-        renderChat();
-        if (window.innerWidth < 768) document.getElementById('sidebar').classList.add('hidden');
-    }
-
-    // Initialize
-    window.onload = renderChat;
-    document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
-</script>
+        document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
+    </script>
+</body>
+</html>
