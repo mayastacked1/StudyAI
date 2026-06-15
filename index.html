@@ -15,203 +15,153 @@
                 extend: {
                     colors: {
                         brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' },
-                        dark: { bg: '#0f172a', surface: '#1e293b', border: '#334155' }
+                        // ChatGPT-like colors
+                        gpt: {
+                            bg: '#ffffff',
+                            sidebar: '#202123',
+                            input: '#ffffff',
+                            inputDark: '#40414f',
+                            textMain: '#343541',
+                            textDark: '#ececf1',
+                            border: '#e5e5e5',
+                            borderDark: '#565869'
+                        }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Söhne', 'ui-sans-serif', 'system-ui', '-apple-system', 'Inter', 'sans-serif'],
                     },
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'pulse-glow': 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'slide-in-right': 'slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'slide-in-left': 'slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                    },
-                    keyframes: {
-                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
-                        pulseGlow: { '0%, 100%': { opacity: 1, boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)' }, '50%': { opacity: .5, boxShadow: '0 0 10px rgba(59, 130, 246, 0.2)' } },
-                        slideInRight: { '0%': { opacity: 0, transform: 'translateX(20px) scale(0.95)' }, '100%': { opacity: 1, transform: 'translateX(0) scale(1)' } },
-                        slideInLeft: { '0%': { opacity: 0, transform: 'translateX(-20px)' }, '100%': { opacity: 1, transform: 'translateX(0)' } },
+                    boxShadow: {
+                        'gpt': '0 0 15px rgba(0,0,0,0.1)',
+                        'gpt-dark': '0 0 15px rgba(0,0,0,0.3)',
                     }
                 }
             }
         }
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        html { scroll-behavior: smooth; }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
-        .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        /* Hide Scrollbar but allow scroll */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Streaming Cursor */
-        .cursor-blink::after {
-            content: '▋';
-            display: inline-block;
-            margin-left: 2px;
-            animation: blink 1s step-start infinite;
-            color: #3b82f6;
-        }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        /* Glassmorphism */
-        .glass {
-            background: rgba(255, 255, 255, 0.95); /* Increased opacity to 95% for solid feel */
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-        .dark .glass {
-            background: rgba(15, 23, 42, 0.95);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        @supports (padding-bottom: env(safe-area-inset-bottom)) {
-            .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
-        }
-
-        /* --- MARKDOWN STYLING --- */
-        .prose-content p { margin-bottom: 0.75rem; line-height: 1.6; }
-        .prose-content p:last-child { margin-bottom: 0; }
-        .prose-content strong { font-weight: 600; color: inherit; }
-        .prose-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 0.75rem; }
-        .prose-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 0.75rem; }
-        .prose-content li { margin-bottom: 0.25rem; }
+        /* Markdown Styling - Clean */
+        .prose-content { line-height: 1.6; color: inherit; }
+        .prose-content p { margin-bottom: 1rem; }
+        .prose-content ul { list-style-type: disc; padding-left: 1.2rem; margin-bottom: 1rem; }
+        .prose-content ol { list-style-type: decimal; padding-left: 1.2rem; margin-bottom: 1rem; }
+        .prose-content li { margin-bottom: 0.4rem; }
         .prose-content code { 
-            background: rgba(0,0,0,0.06); 
-            color: #eb5757; 
-            padding: 0.2em 0.4em; 
-            border-radius: 4px; 
-            font-size: 0.9em; 
-            font-family: 'Menlo', monospace;
-            word-break: break-all; 
+            font-family: 'Menlo', monospace; background: rgba(0,0,0,0.1); 
+            color: #eb5757; padding: 0.2em 0.4em; border-radius: 3px; font-size: 0.9em;
         }
-        .dark .prose-content code { 
-            background: rgba(255,255,255,0.15); 
-            color: #ff6b6b; 
-        }
+        .dark .prose-content code { background: rgba(255,255,255,0.15); color: #ff6b6b; }
         .prose-content pre { 
-            background: #1e1e1e; 
-            color: #d4d4d4; 
-            padding: 1rem; 
-            border-radius: 0.5rem; 
-            overflow-x: auto; 
-            margin-bottom: 0.75rem;
+            background: #000; color: #fff; padding: 1rem; border-radius: 0.5rem; 
+            overflow-x: auto; margin-bottom: 1rem; 
         }
-        .prose-content pre code { 
-            background: transparent; 
-            color: inherit; 
-            padding: 0; 
-            font-size: 0.9em;
-            word-break: normal; 
-            white-space: pre; 
-        }
-        .prose-content blockquote {
-            border-left: 4px solid #cbd5e1;
-            padding-left: 1rem;
-            color: #64748b;
-            font-style: italic;
-        }
-        .dark .prose-content blockquote {
-            border-left-color: #475569;
-            color: #94a3b8;
-        }
+        .prose-content pre code { background: transparent; color: inherit; padding: 0; }
+        .prose-content h1, .prose-content h2, .prose-content h3 { font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
     </style>
 </head>
-<body class="h-full bg-slate-50 dark:bg-dark-bg text-slate-900 dark:text-slate-100 transition-colors duration-500 selection:bg-brand-500 selection:text-white overflow-hidden">
+<body class="h-full bg-gpt-bg dark:bg-[#343541] text-gpt-textMain dark:text-gpt-textDark transition-colors duration-200 overflow-hidden">
 
     <div class="flex h-full w-full relative">
         
         <!-- Mobile Overlay -->
-        <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/20 dark:bg-black/50 backdrop-blur-sm z-20 hidden md:hidden transition-opacity opacity-0"></div>
+        <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden transition-opacity opacity-0 backdrop-blur-sm"></div>
 
-        <!-- Sidebar -->
-        <aside id="sidebar" class="absolute md:relative z-30 h-full w-80 bg-white dark:bg-dark-surface border-r border-slate-200 dark:border-dark-border transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-out flex flex-col shadow-2xl md:shadow-none">
-            <div class="p-6 pb-2">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="w-10 h-10 rounded-xl bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-slate-900 shadow-lg">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                    </div>
-                    <h1 class="text-2xl font-bold tracking-tight">StudyAI</h1>
-                </div>
-
-                <button onclick="createNewChat()" class="group w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold py-3.5 rounded-2xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2 active:scale-95">
-                    <span class="text-xl group-hover:rotate-90 transition-transform duration-300">+</span> New Chat
+        <!-- Sidebar (Dark by default for GPT vibe in light mode too, or adaptive) -->
+        <!-- We will make it adaptive: Light mode = Light Gray, Dark mode = Dark Gray -->
+        <aside id="sidebar" class="absolute md:relative z-30 h-full w-[260px] bg-white dark:bg-[#202123] border-r border-black/10 dark:border-white/10 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out flex flex-col">
+            <!-- New Chat Button -->
+            <div class="p-3">
+                <button onclick="createNewChat()" class="w-full flex items-center gap-2 px-3 py-3 border border-black/10 dark:border-white/10 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2A2B32] transition-colors text-sm text-left">
+                    <svg class="w-4 h-4 text-black dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <span class="font-medium text-black dark:text-white">New chat</span>
                 </button>
             </div>
 
-            <div class="px-4 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">History</div>
-            <div id="history-list" class="flex-1 overflow-y-auto px-3 space-y-1 pb-4"></div>
-            
-            <div class="p-4 border-t border-slate-200 dark:border-dark-border">
-                <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
-                    <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">AI</div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium truncate">Aiserie</p>
-                        <p class="text-xs text-slate-500 truncate">Online</p>
+            <!-- History -->
+            <div class="flex-1 overflow-y-auto overflow-x-hidden px-3">
+                <div class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-4 mb-2 px-3">Today</div>
+                <div id="history-list" class="space-y-1"></div>
+            </div>
+
+            <!-- User Profile -->
+            <div class="p-3 border-t border-black/10 dark:border-white/10">
+                <div class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2A2B32] cursor-pointer">
+                    <div class="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs font-bold">U</div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-black dark:text-white">User</p>
                     </div>
                 </div>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 flex flex-col relative w-full h-full bg-white dark:bg-dark-bg">
+        <main class="flex-1 flex flex-col relative w-full h-full bg-gpt-bg dark:bg-[#343541]">
             
-            <!-- Header -->
-            <header class="absolute top-0 left-0 right-0 h-16 z-50 glass flex items-center justify-between px-4 shadow-sm">
-                <div class="flex items-center gap-3">
-                    <button onclick="toggleSidebar()" class="md:hidden p-2 -ml-2 text-slate-500 hover:text-slate-900 dark:hover:text-white active:scale-95 transition-transform">
+            <!-- Top Logo Area (GPT Style) -->
+            <div class="absolute top-0 left-0 right-0 p-4 z-10 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleSidebar()" class="md:hidden p-1 text-gray-500 dark:text-gray-400">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 bg-slate-900 dark:bg-white rounded-lg flex items-center justify-center shadow-md">
-                            <svg class="w-5 h-5 text-white dark:text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                        </div>
-                        <span class="font-semibold tracking-tight text-lg">StudyAI</span>
-                    </div>
+                    <h1 class="font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                        StudyAI <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">GPT-4</span>
+                    </h1>
                 </div>
-                <button onclick="document.documentElement.classList.toggle('dark')" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-90">
-                    <svg class="w-5 h-5 hidden dark:block text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                    <svg class="w-5 h-5 block dark:hidden text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                <button onclick="document.documentElement.classList.toggle('dark')" class="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors">
+                    <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    <svg class="w-5 h-5 hidden dark:block text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                 </button>
-            </header>
+            </div>
             
             <!-- Chat Container -->
-            <!-- FIX: Changed pt-28 pb-64 (padding) to mt-16 mb-28 (margins) + pt-4 pb-4 (aesthetic padding). 
-                 This pushes the scroll container down/up so it physically stops at the header/box boundaries. -->
-            <div id="messages" class="flex-1 h-full overflow-y-auto p-4 md:p-8 mt-16 mb-28 scroll-smooth">
-                <div id="welcome-state" class="flex flex-col items-center justify-center min-h-[60vh] opacity-60 select-none">
-                    <div class="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center justify-center mb-6 shadow-xl animate-float">
-                        <svg class="w-10 h-10 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+            <div id="messages" class="flex-1 h-full overflow-y-auto pt-20 pb-32 scroll-smooth">
+                <div id="welcome-state" class="flex flex-col items-center justify-center h-[80vh] text-center px-4">
+                    <div class="bg-white dark:bg-transparent p-4 rounded-full mb-6 shadow-sm">
+                        <svg class="w-10 h-10 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
                     </div>
-                    <h2 class="text-2xl font-bold mb-2 text-slate-800 dark:text-white">Welcome to StudyAI</h2>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 max-w-xs text-center">I'm <span class="font-semibold text-brand-500">Aiserie</span>. How can I help you study today?</p>
+                    <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-8">How can I help you today?</h2>
                 </div>
             </div>
 
-            <!-- Input Area -->
-            <div class="absolute bottom-0 left-0 right-0 p-4 md:p-8 max-w-4xl mx-auto w-full z-40 bg-gradient-to-t from-white via-white to-transparent dark:from-dark-bg dark:via-dark-bg pb-safe">
-                <div class="relative bg-white dark:bg-slate-900 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_40px_rgb(0,0,0,0.6)] border border-slate-200 dark:border-slate-700 focus-within:ring-2 focus-within:ring-brand-500/50 focus-within:shadow-brand-500/20 transition-all duration-300 group">
-                    <textarea id="user-input" rows="1" placeholder="Ask Aiserie..." 
-                        class="w-full bg-transparent px-6 py-4 outline-none resize-none max-h-48 text-slate-800 dark:text-slate-100 placeholder-slate-400 scrollbar-hide text-[16px]"
-                        oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
-                    
-                    <div class="flex items-center justify-between px-2 pb-2 pt-1">
-                        <button class="p-2.5 text-slate-400 hover:text-brand-500 dark:hover:text-brand-400 transition-colors rounded-full hover:bg-slate-50 dark:hover:bg-slate-800">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
-                        </button>
-                        <button id="send-btn" onclick="handleSend()" class="p-3 bg-brand-600 hover:bg-brand-500 text-white rounded-2xl shadow-lg shadow-brand-500/30 transition-all duration-300 transform active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none">
-                            <svg class="w-5 h-5 translate-x-[-1px] translate-y-[1px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        </button>
+            <!-- Input Area (Floating Bar) -->
+            <div class="absolute bottom-0 left-0 right-0 p-4 pb-8 bg-gradient-to-t from-gpt-bg via-gpt-bg to-transparent dark:from-[#343541] dark:via-[#343541]">
+                <div class="max-w-3xl mx-auto w-full relative group">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                    <div class="relative bg-white dark:bg-[#40414f] rounded-xl shadow-gpt dark:shadow-gpt-dark border border-black/10 dark:border-white/10 overflow-hidden">
+                        <!-- File Input (Hidden) -->
+                        <input type="file" id="file-input" class="hidden">
+                        
+                        <textarea id="user-input" rows="1" placeholder="Message Aiserie..." 
+                            class="w-full bg-transparent px-12 py-3 outline-none resize-none max-h-48 text-gray-900 dark:text-white placeholder-gray-500 scrollbar-hide text-base"
+                            oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+                        
+                        <div class="flex items-center justify-between px-2 pb-2">
+                            <!-- Left Icons -->
+                            <div class="flex items-center pl-1">
+                                <button onclick="document.getElementById('file-input').click()" class="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                                </button>
+                                <!-- File Name Badge -->
+                                <div id="file-name" class="hidden text-xs text-brand-600 font-medium px-2 truncate max-w-[100px]">
+                                    file.txt
+                                </div>
+                            </div>
+
+                            <!-- Send Button -->
+                            <button id="send-btn" onclick="handleSend()" class="p-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="text-center mt-3 pb-2">
-                    <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">StudyAI powered by Aiserie Engine</p>
+                    <div class="text-center mt-2">
+                        <p class="text-[10px] text-gray-400">StudyAI can make mistakes. Consider checking important information.</p>
+                    </div>
                 </div>
             </div>
         </main>
@@ -220,6 +170,7 @@
     <script>
         let conversationHistory = [];
         let currentChatId = Date.now().toString();
+        let attachedFile = null;
         const chats = JSON.parse(localStorage.getItem('studyai_chats')) || {};
 
         if (Object.keys(chats).length > 0) {
@@ -228,6 +179,21 @@
         } else {
             renderHistoryList();
         }
+
+        // --- FILE HANDLING ---
+        const fileInput = document.getElementById('file-input');
+        const fileNameDisplay = document.getElementById('file-name');
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                attachedFile = e.target.files[0];
+                fileNameDisplay.textContent = attachedFile.name;
+                fileNameDisplay.classList.remove('hidden');
+            } else {
+                attachedFile = null;
+                fileNameDisplay.classList.add('hidden');
+            }
+        });
 
         function saveCurrentChat() {
             if (conversationHistory.length === 0) return;
@@ -247,30 +213,31 @@
             const sortedChats = Object.values(chats).sort((a, b) => b.timestamp - a.timestamp);
 
             sortedChats.forEach(chat => {
-                const itemContainer = document.createElement('div');
-                itemContainer.className = "group flex items-center justify-between gap-1";
-                
                 const btn = document.createElement('button');
                 const isActive = chat.id === currentChatId;
-                btn.className = `flex-1 text-left px-4 py-3 rounded-xl text-sm transition-all duration-200 truncate border ${
+                btn.className = `flex-1 text-left px-3 py-2 rounded-lg text-sm transition-colors truncate flex items-center justify-between group ${
                     isActive 
-                    ? 'bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300 border-brand-100 dark:border-brand-800/50 font-semibold shadow-sm' 
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 border-transparent hover:border-slate-100 dark:hover:border-slate-700'
+                    ? 'bg-gray-200 dark:bg-[#2A2B32] text-gray-900 dark:text-white' 
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#2A2B32]'
                 }`;
-                btn.textContent = chat.title;
-                btn.onclick = () => loadChat(chat.id);
+                
+                const textSpan = document.createElement('span');
+                textSpan.className = "truncate";
+                textSpan.textContent = chat.title;
+                btn.appendChild(textSpan);
 
-                const delBtn = document.createElement('button');
-                delBtn.className = `p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100`;
-                delBtn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>`;
-                delBtn.onclick = (e) => {
+                // Delete Button
+                const delIcon = document.createElement('span');
+                delIcon.innerHTML = '&times;';
+                delIcon.className = "text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 px-2 text-lg font-light";
+                delIcon.onclick = (e) => {
                     e.stopPropagation();
                     deleteChat(chat.id);
                 };
+                btn.appendChild(delIcon);
 
-                itemContainer.appendChild(btn);
-                itemContainer.appendChild(delBtn);
-                list.appendChild(itemContainer);
+                btn.onclick = () => loadChat(chat.id);
+                list.appendChild(btn);
             });
         }
 
@@ -330,12 +297,11 @@
             conversationHistory = [];
             const chatContainer = document.getElementById('messages');
             chatContainer.innerHTML = `
-                <div id="welcome-state" class="flex flex-col items-center justify-center min-h-[60vh] opacity-60 select-none">
-                    <div class="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center justify-center mb-6 shadow-xl animate-float">
-                        <svg class="w-10 h-10 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                <div id="welcome-state" class="flex flex-col items-center justify-center h-[80vh] text-center px-4">
+                    <div class="bg-white dark:bg-transparent p-4 rounded-full mb-6 shadow-sm">
+                        <svg class="w-10 h-10 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
                     </div>
-                    <h2 class="text-2xl font-bold mb-2 text-slate-800 dark:text-white">Welcome to StudyAI</h2>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 max-w-xs text-center">I'm <span class="font-semibold text-brand-500">Aiserie</span>. How can I help you study today?</p>
+                    <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-8">How can I help you today?</h2>
                 </div>`;
             renderHistoryList();
             if (window.innerWidth < 768) toggleSidebar(false);
@@ -366,34 +332,42 @@
             if(welcome) welcome.style.display = 'none';
 
             const wrapper = document.createElement('div');
-            const animClass = role === 'user' ? 'animate-slide-in-right' : 'animate-slide-in-left';
-            wrapper.className = `flex gap-4 ${animClass} ${role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-start`;
+            wrapper.className = `w-full text-gray-800 dark:text-gray-100 border-b border-black/5 dark:border-white/5 py-6 ${role === 'user' ? 'bg-white dark:bg-[#444654]' : ''}`;
             
+            // Inner container for centering max-width
+            const inner = document.createElement('div');
+            inner.className = `flex gap-4 md:gap-6 max-w-3xl mx-auto px-4 ${role === 'user' ? 'flex-row-reverse' : 'flex-row'}`;
+            
+            // Avatar (Circular)
             const avatar = document.createElement('div');
-            avatar.className = `w-9 h-9 rounded-xl flex-shrink-0 flex items-center justify-center text-white shadow-md ${
-                role === 'user' ? 'bg-slate-800 dark:bg-slate-600' : 'bg-gradient-to-br from-brand-500 to-purple-600 shadow-brand-500/30'
+            avatar.className = `w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center ${
+                role === 'user' 
+                ? 'bg-brand-600 text-white mt-1' 
+                : 'bg-emerald-600 text-white'
             }`;
             avatar.innerHTML = role === 'user' 
-                ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>'
-                : '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>';
+                ? 'U'
+                : 'AI';
 
             const bubble = document.createElement('div');
-            bubble.className = `prose-content max-w-[85%] leading-relaxed text-[15px] px-5 py-3.5 rounded-3xl shadow-sm break-words ${
-                role === 'user' 
-                ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-tr-md' 
-                : 'text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-tl-md ' + (isStreaming ? 'cursor-blink' : '')
-            }`;
+            bubble.className = `prose-content leading-7 text-[15px] w-full overflow-hidden ${isStreaming ? 'cursor-blink' : ''}`;
             
+            // Cursor blinking style
+            if(isStreaming) {
+                bubble.style.setProperty('--cursor-color', 'currentColor');
+            }
+
             if (!isStreaming) {
                 bubble.innerHTML = DOMPurify.sanitize(marked.parse(text));
             }
 
-            wrapper.appendChild(avatar);
-            wrapper.appendChild(bubble);
+            inner.appendChild(avatar);
+            inner.appendChild(bubble);
+            wrapper.appendChild(inner);
             chat.appendChild(wrapper);
             
             requestAnimationFrame(() => {
-                chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+                chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
             });
             
             return { wrapper, bubble };
@@ -402,8 +376,23 @@
         async function handleSend() {
             const input = document.getElementById('user-input');
             const btn = document.getElementById('send-btn');
-            const text = input.value.trim();
-            if (!text) return;
+            let text = input.value.trim();
+            
+            if (!text && !attachedFile) return;
+
+            // Handle File Reading
+            if (attachedFile) {
+                try {
+                    const content = await readFileAsText(attachedFile);
+                    text = `[Attached File: ${attachedFile.name}]\n\n${content}\n\n${text}`;
+                } catch (err) {
+                    console.error("Error reading file:", err);
+                    text = `[Attached File: ${attachedFile.name} (Could not read content)]\n\n${text}`;
+                }
+                attachedFile = null;
+                fileInput.value = '';
+                fileNameDisplay.classList.add('hidden');
+            }
 
             if (!chats[currentChatId]) {
                 chats[currentChatId] = { id: currentChatId, title: text.substring(0, 30) + "...", history: [], timestamp: Date.now() };
@@ -451,7 +440,6 @@
                                 if (data.content) {
                                     aiResponseText += data.content;
                                     bubble.textContent = aiResponseText;
-                                    
                                     chat.scrollTop = chat.scrollHeight;
                                 }
                             } catch (e) { /* ignore */ }
@@ -464,7 +452,7 @@
                 saveCurrentChat();
 
                 bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText));
-                chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+                chat.scrollTop = chat.scrollHeight;
 
                 if (conversationHistory.length === 2 && chats[currentChatId].title.includes("...")) {
                     generateTitle(text);
@@ -479,6 +467,15 @@
                 btn.disabled = false;
                 input.focus();
             }
+        }
+
+        function readFileAsText(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = (e) => reject(e);
+                reader.readAsText(file);
+            });
         }
 
         document.getElementById('user-input').addEventListener('keydown', (e) => {
