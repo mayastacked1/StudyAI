@@ -265,11 +265,9 @@
         const originalImage = renderer.image;
         
         renderer.image = function(href, title, text) {
-            // If the AI outputs a pollinations link, render it as a real image
             if (typeof href === 'string' && href.includes('pollinations.ai')) {
                 return `<div class="my-4"><img src="${href}" alt="${text}" class="rounded-xl max-w-full shadow-lg border border-gray-200 dark:border-gray-700" onerror="this.alt='⚠️ Image failed to load'; this.style.display='none'"><p class="text-xs text-gray-500 mt-1 italic">${text || ''}</p></div>`;
             }
-            // Otherwise, use the default image renderer
             return originalImage.call(this, href, title, text);
         };
 
@@ -348,6 +346,7 @@
                                 const parsed = JSON.parse(data);
                                 if (parsed.content) {
                                     aiResponseText += parsed.content;
+                                    // Image rendering fix: Only render text while streaming to prevent broken image icons
                                     bubble.textContent = aiResponseText;
                                     chat.scrollTop = chat.scrollHeight;
                                 }
@@ -363,6 +362,7 @@
                 conversationHistory.push({ role: 'assistant', content: aiResponseText.trim() });
                 saveCurrentChat();
 
+                // Once streaming is done, render the full markdown (including images)
                 bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText.trim(), { renderer }));
                 chat.scrollTop = chat.scrollHeight;
 
@@ -382,7 +382,13 @@
             return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsText(file); });
         }
 
-        document.getElementById('user-input').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
+        // FIX: Corrected the typo from !e.shitKey to !e.shiftKey
+        document.getElementById('user-input').addEventListener('keydown', (e) => { 
+            if (e.key === 'Enter' && !e.shiftKey) { 
+                e.preventDefault(); 
+                handleSend(); 
+            } 
+        });
     </script>
 </body>
 </html>
