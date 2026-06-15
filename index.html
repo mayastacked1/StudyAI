@@ -316,7 +316,8 @@
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: text, history: conversationHistory.slice(0, -1) })
+                    // FIX: Only send the last 4 messages of history to prevent 429 Token Limits!
+                    body: JSON.stringify({ prompt: text, history: conversationHistory.slice(-5, -1) })
                 });
 
                 if (!response.ok) throw new Error("Network response was not ok");
