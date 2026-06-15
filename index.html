@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>StudyAI by Vision</title>
+    <title>StudyAI by Vision | Study Smarter with AI</title>
     
     <!-- THIS is the magic line that adds your logo to the browser tab! -->
     <link rel="icon" type="image/png" href="logo.png">
@@ -62,24 +62,12 @@
         .thinking-dots span:nth-child(3) { animation-delay: 0s; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-        /* Image Generation Loading Animation */
-        .image-generating-dots span {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #3b82f6; 
-            margin: 0 3px;
-            animation: imagePulse 1.4s infinite ease-in-out both;
-        }
+        .image-generating-dots span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: #3b82f6; margin: 0 3px; animation: imagePulse 1.4s infinite ease-in-out both; }
         .dark .image-generating-dots span { background-color: #60a5fa; }
         .image-generating-dots span:nth-child(1) { animation-delay: -0.32s; }
         .image-generating-dots span:nth-child(2) { animation-delay: -0.16s; }
         .image-generating-dots span:nth-child(3) { animation-delay: 0s; }
-        @keyframes imagePulse {
-            0%, 80%, 100% { transform: scale(0.5); opacity: 0.4; }
-            40% { transform: scale(1.2); opacity: 1; }
-        }
+        @keyframes imagePulse { 0%, 80%, 100% { transform: scale(0.5); opacity: 0.4; } 40% { transform: scale(1.2); opacity: 1; } }
 
         .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
         .dark .glass { background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid rgba(255,255,255,0.05); }
@@ -106,64 +94,19 @@
         .history-item:hover { border-left-color: #3b82f6; padding-left: 12px; }
         .input-ring:focus-within { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); }
 
-        /* Custom Logo Hover Animation */
-        .logo-hover {
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 0 0px rgba(59, 130, 246, 0);
-        }
-        .logo-hover:hover {
-            transform: rotate(-10deg) scale(1.1);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
-        }
+        .logo-hover { transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 0 0px rgba(59, 130, 246, 0); }
+        .logo-hover:hover { transform: rotate(-10deg) scale(1.1); box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
 
         /* --- INITIAL LOADING SCREEN --- */
-        #loading-screen {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background-color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
-        }
-        .dark #loading-screen {
-            background-color: #343541;
-        }
-        #loading-screen.hidden-loader {
-            opacity: 0;
-            visibility: hidden;
-        }
-        .loader-logo {
-            animation: loaderPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        @keyframes loaderPulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.7; }
-        }
-        .loader-bar-container {
-            width: 120px;
-            height: 4px;
-            background-color: #e5e7eb;
-            border-radius: 9999px;
-            overflow: hidden;
-            margin-top: 24px;
-        }
-        .dark .loader-bar-container {
-            background-color: #40414f;
-        }
-        .loader-bar {
-            height: 100%;
-            width: 40%;
-            background-color: #3b82f6;
-            border-radius: 9999px;
-            animation: loaderSlide 1.5s ease-in-out infinite;
-        }
-        @keyframes loaderSlide {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(350%); }
-        }
+        #loading-screen { position: fixed; inset: 0; z-index: 9999; background-color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-out, visibility 0.5s ease-out; }
+        .dark #loading-screen { background-color: #343541; }
+        #loading-screen.hidden-loader { opacity: 0; visibility: hidden; }
+        .loader-logo { animation: loaderPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes loaderPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } }
+        .loader-bar-container { width: 120px; height: 4px; background-color: #e5e7eb; border-radius: 9999px; overflow: hidden; margin-top: 24px; }
+        .dark .loader-bar-container { background-color: #40414f; }
+        .loader-bar { height: 100%; width: 40%; background-color: #3b82f6; border-radius: 9999px; animation: loaderSlide 1.5s ease-in-out infinite; }
+        @keyframes loaderSlide { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
     </style>
 </head>
 
@@ -172,9 +115,7 @@
     <!-- LOADING SCREEN -->
     <div id="loading-screen">
         <img src="logo.png" alt="StudyAI Logo" class="w-16 h-16 rounded-2xl object-cover loader-logo shadow-lg">
-        <div class="loader-bar-container">
-            <div class="loader-bar"></div>
-        </div>
+        <div class="loader-bar-container"><div class="loader-bar"></div></div>
     </div>
 
     <div class="flex h-full w-full relative">
@@ -204,10 +145,7 @@
                     <button onclick="toggleSidebar()" class="md:hidden p-1 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
-                    
-                    <!-- Custom Logo Image -->
                     <img src="logo.png" alt="StudyAI Logo" class="w-8 h-8 rounded-lg object-cover logo-hover">
-                    
                     <h1 class="font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
                         StudyAI <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">Cerebras</span>
                     </h1>
@@ -219,13 +157,74 @@
             </div>
             
             <div id="messages" class="flex-1 h-full overflow-y-auto pt-20 pb-32 scroll-smooth no-scrollbar">
-                <div id="welcome-state" class="flex flex-col items-center justify-center h-[80vh] text-center px-4">
+                
+                <!-- LANDING PAGE / WELCOME STATE -->
+                <div id="welcome-state" class="flex flex-col items-center justify-center min-h-full py-12 text-center px-4">
                     
-                    <!-- Custom Logo Image (Center Welcome) -->
-                    <div class="bg-white dark:bg-transparent p-4 rounded-full mb-6 shadow-sm animate-float">
-                        <img src="logo.png" alt="StudyAI Logo" class="w-10 h-10 object-contain">
+                    <!-- Top Free Badges -->
+                    <div class="flex flex-wrap justify-center gap-2 mb-6">
+                        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">100% Free</span>
+                        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">No Sign-up Required</span>
+                        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">Unlimited Study Help</span>
                     </div>
-                    <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-8">How can I help you today?</h2>
+
+                    <!-- Headline -->
+                    <h2 class="text-3xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white tracking-tight">Study smarter with AI</h2>
+                    <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-xl mb-8">Upload notes, ask questions, get explanations, summaries, and quizzes—instantly and for free.</p>
+
+                    <!-- Feature Cards -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-3xl w-full mb-10">
+                        <div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="text-2xl mb-2">📄</div>
+                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">Upload Notes</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">TXT files processed instantly</p>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-[#A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="text-2xl mb-2">📝</div>
+                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">Summarize Lessons</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Get the key points fast</p>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="text-2xl mb-2">🧠</div>
+                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">Generate Quizzes</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Test your knowledge</p>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="text-2xl mb-2">✏️</div>
+                            <h3 class="font-semibold text-sm text-gray-900 dark:text-white">Explain Simply</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Complex concepts made easy</p>
+                        </div>
+                    </div>
+
+                    <!-- Example Prompts -->
+                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">Try asking...</h3>
+                    <div class="flex flex-col md:flex-row flex-wrap justify-center gap-2 max-w-2xl mb-10">
+                        <button onclick="setPrompt('Explain photosynthesis like I\\'m 15.')" class="text-left px-4 py-2.5 bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">
+                            "Explain photosynthesis like I'm 15."
+                        </button>
+                        <button onclick="setPrompt('Create a 10-question quiz about World War II.')" class="text-left px-4 py-2.5 bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">
+                            "Create a 10-question quiz about WWII."
+                        </button>
+                        <button onclick="setPrompt('Summarize these lecture notes.')" class="text-left px-4 py-2.5 bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">
+                            "Summarize these lecture notes."
+                        </button>
+                        <button onclick="setPrompt('Help me solve this algebra problem step by step:')" class="text-left px-4 py-2.5 bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">
+                            "Solve this algebra step by step:"
+                        </button>
+                    </div>
+
+                    <!-- Privacy & File Info -->
+                    <div class="max-w-xl w-full text-center mb-4">
+                        <div class="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                            <span>Conversations are stored locally in your browser. Uploaded files are not saved permanently.</span>
+                        </div>
+                        <div class="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            <span>Supports TXT file uploads. Files processed only to answer your questions.</span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -233,11 +232,11 @@
                 <div class="max-w-3xl mx-auto w-full relative group">
                     <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
                     <div class="input-ring relative bg-white dark:bg-[#40414f] rounded-xl shadow-lg dark:shadow-[0_0_15px_rgba(0,0,0,0.3)] border border-black/10 dark:border-white/10 overflow-hidden transition-all duration-300">
-                        <input type="file" id="file-input" class="hidden">
+                        <input type="file" id="file-input" accept=".txt" class="hidden">
                         <textarea id="user-input" rows="1" placeholder="Message StudyAI..." class="w-full bg-transparent px-12 py-3 outline-none resize-none max-h-48 text-gray-900 dark:text-white placeholder-gray-500 scrollbar-hide text-base" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
                         <div class="flex items-center justify-between px-2 pb-2">
                             <div class="flex items-center pl-1">
-                                <button onclick="document.getElementById('file-input').click()" class="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md transition-colors active:scale-90">
+                                <button onclick="document.getElementById('file-input').click()" class="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md transition-colors active:scale-90" title="Upload TXT file">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
                                 </button>
                                 <div id="file-name" class="hidden text-xs text-brand-600 font-medium px-2 truncate max-w-[100px]">file.txt</div>
@@ -251,7 +250,7 @@
                     <!-- Footer Info Area -->
                     <div class="flex items-center justify-between mt-2 px-1">
                         <p class="text-[10px] text-gray-400">StudyAI can make mistakes. Consider checking important information.</p>
-                        <a href="#" class="text-[10px] text-gray-400 hover:text-brand-500 dark:hover:text-brand-400 transition-colors font-medium tracking-wide">Created by Ancel Claudio</a>
+                        <a href="https://studyai.vision" class="text-[10px] text-gray-400 hover:text-brand-500 dark:hover:text-brand-400 transition-colors font-medium tracking-wide">studyai.vision</a>
                     </div>
 
                 </div>
@@ -264,14 +263,14 @@
         let currentChatId = Date.now().toString();
         let attachedFile = null;
         
-        // --- BULLETPROOF STORAGE INITIALIZATION ---
+        // BULLETPROOF STORAGE
         let chats = {};
         try {
             const storedChats = localStorage.getItem('studyai_chats');
             if (storedChats) chats = JSON.parse(storedChats) || {};
         } catch (e) {
             console.error("Failed to load chat history. Resetting data.", e);
-            localStorage.removeItem('studyai_chats'); // Clear corrupted data
+            localStorage.removeItem('studyai_chats');
             chats = {};
         }
 
@@ -287,13 +286,22 @@
             createNewChat();
         }
 
-        // --- REMOVE LOADING SCREEN ---
+        // REMOVE LOADING SCREEN
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const loader = document.getElementById('loading-screen');
                 if (loader) loader.classList.add('hidden-loader');
-            }, 800); // 0.8s delay so the animation feels smooth
+            }, 800);
         });
+
+        // FILL PROMPT FROM EXAMPLE BUTTONS
+        function setPrompt(text) {
+            const input = document.getElementById('user-input');
+            input.value = text;
+            input.focus();
+            input.style.height = 'auto';
+            input.style.height = input.scrollHeight + 'px';
+        }
 
         function getShortTitle(text) {
             if (!text) return "New Chat";
@@ -312,11 +320,7 @@
         function saveCurrentChat() {
             if (conversationHistory.length === 0) return;
             chats[currentChatId] = { id: currentChatId, title: chats[currentChatId]?.title || "New Chat", history: conversationHistory, timestamp: Date.now() };
-            try {
-                localStorage.setItem('studyai_chats', JSON.stringify(chats));
-            } catch (e) {
-                console.error("Could not save to localStorage. Storage might be full.", e);
-            }
+            try { localStorage.setItem('studyai_chats', JSON.stringify(chats)); } catch (e) { console.error("Could not save.", e); }
             renderHistoryList();
         }
 
@@ -345,10 +349,7 @@
 
         function loadChat(id) {
             try {
-                if (!chats[id] || !chats[id].history) {
-                    createNewChat(); // Fallback if data is missing
-                    return;
-                }
+                if (!chats[id] || !chats[id].history) { createNewChat(); return; }
                 currentChatId = id; 
                 conversationHistory = chats[id].history || [];
                 const chatContainer = document.getElementById('messages'); 
@@ -359,16 +360,13 @@
                 renderHistoryList(); 
                 requestAnimationFrame(() => { setTimeout(() => { chatContainer.scrollTop = chatContainer.scrollHeight; }, 50); }); 
                 if (window.innerWidth < 768) toggleSidebar(false);
-            } catch (e) {
-                console.error("Error rendering history, starting fresh.", e);
-                createNewChat();
-            }
+            } catch (e) { console.error("Error rendering history, starting fresh.", e); createNewChat(); }
         }
 
         function createNewChat() { 
             currentChatId = Date.now().toString(); conversationHistory = [];
             const chatContainer = document.getElementById('messages');
-            chatContainer.innerHTML = `<div id="welcome-state" class="flex flex-col items-center justify-center h-[80vh] text-center px-4"><div class="bg-white dark:bg-transparent p-4 rounded-full mb-6 shadow-sm animate-float"><img src="logo.png" alt="StudyAI Logo" class="w-10 h-10 object-contain"></div><h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-8">How can I help you today?</h2></div>`;
+            chatContainer.innerHTML = `<div id="welcome-state" class="flex flex-col items-center justify-center min-h-full py-12 text-center px-4"><div class="flex flex-wrap justify-center gap-2 mb-6"><span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">100% Free</span><span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">No Sign-up Required</span><span class="px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">Unlimited Study Help</span></div><h2 class="text-3xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white tracking-tight">Study smarter with AI</h2><p class="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-xl mb-8">Upload notes, ask questions, get explanations, summaries, and quizzes—instantly and for free.</p><div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-3xl w-full mb-10"><div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow"><div class="text-2xl mb-2">📄</div><h3 class="font-semibold text-sm text-gray-900 dark:text-white">Upload Notes</h3><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">TXT files processed instantly</p></div><div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow"><div class="text-2xl mb-2">📝</div><h3 class="font-semibold text-sm text-gray-900 dark:text-white">Summarize Lessons</h3><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Get the key points fast</p></div><div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow"><div class="text-2xl mb-2">🧠</div><h3 class="font-semibold text-sm text-gray-900 dark:text-white">Generate Quizzes</h3><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Test your knowledge</p></div><div class="p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow"><div class="text-2xl mb-2">✏️</div><h3 class="font-semibold text-sm text-gray-900 dark:text-white">Explain Simply</h3><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Complex concepts made easy</p></div></div><h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">Try asking...</h3><div class="flex flex-col md:flex-row flex-wrap justify-center gap-2 max-w-2xl mb-10"><button onclick="setPrompt('Explain photosynthesis like I\\\\'m 15.')" class="text-left px-4 py-2.5 bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">"Explain photosynthesis like I'm 15."</button><button onclick="setPrompt('Create a 10-question quiz about World War II.')" class="text-left px-4 py-2.5 bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">"Create a 10-question quiz about WWII."</button><button onclick="setPrompt('Summarize these lecture notes.')" class="text-left px-4 py-2.5 bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">"Summarize these lecture notes."</button><button onclick="setPrompt('Help me solve this algebra problem step by step:')" class="text-left px-4 py-2.5 bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors">"Solve this algebra step by step:"</button></div><div class="max-w-xl w-full text-center mb-4"><div class="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg><span>Conversations are stored locally in your browser. Uploaded files are not saved permanently.</span></div><div class="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg><span>Supports TXT file uploads. Files processed only to answer your questions.</span></div></div></div>`;
             renderHistoryList(); if (window.innerWidth < 768) toggleSidebar(false);
         }
 
@@ -379,23 +377,14 @@
             else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('opacity-0'); setTimeout(() => overlay.classList.add('hidden'), 300); document.body.style.overflow = ''; }
         }
 
-        // --- CUSTOM MARKDOWN RENDERER FOR AI IMAGES ---
+        // CUSTOM MARKDOWN RENDERER
         const renderer = new marked.Renderer();
         const originalImage = renderer.image;
-        
         renderer.image = function(href, title, text) {
-            if (typeof href === 'string' && href.includes('pollinations.ai')) {
-                return `<div class="my-4"><img src="${href}" alt="${text}" class="rounded-xl max-w-full shadow-lg border border-gray-200 dark:border-gray-700" onerror="this.alt='⚠️ Image failed to load'; this.style.display='none'"><p class="text-xs text-gray-500 mt-1 italic">${text || ''}</p></div>`;
-            }
+            if (typeof href === 'string' && href.includes('pollinations.ai')) { return `<div class="my-4"><img src="${href}" alt="${text}" class="rounded-xl max-w-full shadow-lg border border-gray-200 dark:border-gray-700" onerror="this.alt='⚠️ Image failed to load'; this.style.display='none'"><p class="text-xs text-gray-500 mt-1 italic">${text || ''}</p></div>`; }
             return originalImage.call(this, href, title, text);
         };
-
-        // Override DOMPurify to allow images from pollinations
-        DOMPurify.addHook('uponSanitizeAttribute', function(node, data) {
-            if (data.attrName === 'src' && data.attrValue && data.attrValue.includes('pollinations.ai')) {
-                data.forceKeepAttr = true;
-            }
-        });
+        DOMPurify.addHook('uponSanitizeAttribute', function(node, data) { if (data.attrName === 'src' && data.attrValue && data.attrValue.includes('pollinations.ai')) { data.forceKeepAttr = true; } });
 
         function createMessageElement(role, text = '', isStreaming = false) {
             const chat = document.getElementById('messages'); const welcome = document.getElementById('welcome-state'); if(welcome) welcome.style.display = 'none';
@@ -413,112 +402,33 @@
         async function handleSend() {
             const input = document.getElementById('user-input'); const btn = document.getElementById('send-btn');
             let text = input.value.trim(); if (!text && !attachedFile) return;
-
-            if (attachedFile) {
-                const fileText = await readFileAsText(attachedFile); text += `\n\n[File Attached: ${attachedFile.name}]\n${fileText}`;
-                attachedFile = null; fileInput.value = ''; fileNameDisplay.classList.add('hidden');
-            }
-
+            if (attachedFile) { const fileText = await readFileAsText(attachedFile); text += `\n\n[File Attached: ${attachedFile.name}]\n${fileText}`; attachedFile = null; fileInput.value = ''; fileNameDisplay.classList.add('hidden'); }
             if (!chats[currentChatId]) { chats[currentChatId] = { id: currentChatId, title: getShortTitle(text), history: [], timestamp: Date.now() }; renderHistoryList(); }
-
             createMessageElement('user', text); conversationHistory.push({ role: 'user', content: text }); saveCurrentChat();
             input.value = ''; input.style.height = 'auto'; btn.disabled = true;
-
             const { bubble } = createMessageElement('assistant', '', false);
-            bubble.classList.add('thinking-dots');
-            bubble.innerHTML = '<span></span><span></span><span></span>';
-
-            let aiResponseText = '';
-            const chat = document.getElementById('messages');
-            let isGeneratingImage = false;
-
+            bubble.classList.add('thinking-dots'); bubble.innerHTML = '<span></span><span></span><span></span>';
+            let aiResponseText = ''; const chat = document.getElementById('messages'); let isGeneratingImage = false;
             try {                
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: text, history: conversationHistory.slice(-5, -1) })
-                });
-
+                const response = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: text, history: conversationHistory.slice(-5, -1) }) });
                 if (!response.ok) throw new Error("Network response was not ok");
-
-                bubble.classList.remove('thinking-dots');
-                bubble.classList.add('cursor-blink');
-                bubble.innerHTML = '';
-
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-                let buffer = '';
-
+                bubble.classList.remove('thinking-dots'); bubble.classList.add('cursor-blink'); bubble.innerHTML = '';
+                const reader = response.body.getReader(); const decoder = new TextDecoder(); let buffer = '';
                 while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-
-                    buffer += decoder.decode(value, { stream: true });
-                    const lines = buffer.split('\n');
-                    buffer = lines.pop(); 
-
+                    const { done, value } = await reader.read(); if (done) break;
+                    buffer += decoder.decode(value, { stream: true }); const lines = buffer.split('\n'); buffer = lines.pop(); 
                     for (const line of lines) {
-                        if (line.startsWith('data: ')) {
-                            const data = line.slice(6).trim();
-                            if (data === '[DONE]') continue;
-                            
-                            try {
-                                const parsed = JSON.parse(data);
-                                if (parsed.content) {
-                                    aiResponseText += parsed.content;
-                                    
-                                    // Detect if AI is generating an image link
-                                    if (aiResponseText.includes('pollinations.ai')) {
-                                        if (!isGeneratingImage) {
-                                            isGeneratingImage = true;
-                                            bubble.classList.remove('cursor-blink'); // Remove text cursor
-                                        }
-                                        // Show loading animation instead of ugly raw markdown link
-                                        bubble.innerHTML = `<span class="text-brand-600 dark:text-brand-400 font-medium">Generating image for you please wait</span> <span class="image-generating-dots"><span></span><span></span><span></span></span>`;
-                                    } else {
-                                        // Normal text streaming
-                                        bubble.textContent = aiResponseText;
-                                    }
-                                    chat.scrollTop = chat.scrollHeight;
-                                }
-                                if (parsed.error) throw new Error(parsed.error);
-                            } catch (e) {
-                                console.error("Stream Parse Error:", e);
-                            }
-                        }
+                        if (line.startsWith('data: ')) { const data = line.slice(6).trim(); if (data === '[DONE]') continue; try { const parsed = JSON.parse(data); if (parsed.content) { aiResponseText += parsed.content; if (aiResponseText.includes('pollinations.ai')) { if (!isGeneratingImage) { isGeneratingImage = true; bubble.classList.remove('cursor-blink'); } bubble.innerHTML = `<span class="text-brand-600 dark:text-brand-400 font-medium">Generating image for you please wait</span> <span class="image-generating-dots"><span></span><span></span><span></span></span>`; } else { bubble.textContent = aiResponseText; } chat.scrollTop = chat.scrollHeight; } if (parsed.error) throw new Error(parsed.error); } catch (e) { console.error("Stream Parse Error:", e); } }
                     }
                 }
-
-                bubble.classList.remove('cursor-blink');
-                conversationHistory.push({ role: 'assistant', content: aiResponseText.trim() });
-                saveCurrentChat();
-
-                // Once streaming is done, render the full markdown (replacing the loading animation with the actual image)
-                bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText.trim(), { renderer }));
-                chat.scrollTop = chat.scrollHeight;
-
+                bubble.classList.remove('cursor-blink'); conversationHistory.push({ role: 'assistant', content: aiResponseText.trim() }); saveCurrentChat();
+                bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText.trim(), { renderer })); chat.scrollTop = chat.scrollHeight;
                 if (conversationHistory.length === 2 && chats[currentChatId].title.includes("...")) { generateTitle(text); }
-
-            } catch (error) {
-                bubble.textContent = "Connection error: " + error.message;
-                bubble.classList.add('text-red-500');
-                bubble.classList.remove('cursor-blink', 'thinking-dots');
-                console.error(error);
-            } finally {
-                btn.disabled = false; input.focus();
-            }
+            } catch (error) { bubble.textContent = "Connection error: " + error.message; bubble.classList.add('text-red-500'); bubble.classList.remove('cursor-blink', 'thinking-dots'); console.error(error); } finally { btn.disabled = false; input.focus(); }
         }
 
-        function readFileAsText(file) {
-            return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsText(file); });
-        }
-
-        document.getElementById('user-input').addEventListener('keydown', (e) => { 
-            if (e.key === 'Enter' && !e.shiftKey) { 
-                e.preventDefault(); 
-                handleSend(); 
-            } 
-        });
+        function readFileAsText(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsText(file); }); }
+        document.getElementById('user-input').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
     </script>
 </body>
 </html>
