@@ -40,13 +40,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; }
         html { scroll-behavior: smooth; }
-        
-        /* Smooth Dark/Light Mode Transition */
-        body, aside, main, header, .glass, button, textarea, .prose-content, .chat-bubble {
-            transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        /* Custom Scrollbar */
+        body, aside, main, header, .glass, button, textarea, .prose-content, .chat-bubble { transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -54,53 +48,19 @@
         ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
         .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
 
-        /* Streaming Cursor */
-        .cursor-blink::after {
-            content: '▋';
-            display: inline-block;
-            vertical-align: middle;
-            margin-left: 2px;
-            animation: blink 1s step-start infinite;
-            color: currentColor;
-        }
+        .cursor-blink::after { content: '▋'; display: inline-block; vertical-align: middle; margin-left: 2px; animation: blink 1s step-start infinite; color: currentColor; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* Thinking Dots Animation */
-        .thinking-dots span {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #94a3b8; 
-            margin: 0 3px;
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
+        .thinking-dots span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: #94a3b8; margin: 0 3px; animation: bounce 1.4s infinite ease-in-out both; }
         .dark .thinking-dots span { background-color: #64748b; }
         .thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
         .thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
         .thinking-dots span:nth-child(3) { animation-delay: 0s; }
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-        /* Glassmorphism */
-        .glass {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-        .dark .glass {
-            background: rgba(15, 23, 42, 0.95);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .dark .glass { background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        @supports (padding-bottom: env(safe-area-inset-bottom)) {
-            .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
-        }
-
-        /* --- MARKDOWN STYLING --- */
         .prose-content p { margin-bottom: 0.75rem; line-height: 1.6; }
         .prose-content p:last-child { margin-bottom: 0; }
         .prose-content strong { font-weight: 600; color: inherit; }
@@ -114,86 +74,47 @@
         .prose-content blockquote { border-left: 4px solid #cbd5e1; padding-left: 1rem; color: #64748b; font-style: italic; }
         .dark .prose-content blockquote { border-left-color: #475569; color: #94a3b8; }
 
-        /* --- HOVER ANIMATIONS --- */
-        .btn-glow {
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .btn-glow:hover:not(:disabled) {
-            box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
-            transform: translateY(-1px);
-        }
-        .btn-glow:active:not(:disabled) {
-            transform: translateY(0px) scale(0.95);
-            box-shadow: 0 0 10px rgba(37, 99, 235, 0.2);
-        }
-
-        .mode-toggle svg {
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .mode-toggle:hover svg {
-            transform: rotate(30deg);
-        }
-
-        .history-item {
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-        .history-item:hover {
-            border-left-color: #3b82f6;
-            padding-left: 12px; /* Slight indent effect */
-        }
-
-        .input-ring:focus-within {
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-        }
+        .btn-glow { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .btn-glow:hover:not(:disabled) { box-shadow: 0 0 20px rgba(37, 99, 235, 0.4); transform: translateY(-1px); }
+        .btn-glow:active:not(:disabled) { transform: translateY(0px) scale(0.95); box-shadow: 0 0 10px rgba(37, 99, 235, 0.2); }
+        .mode-toggle svg { transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .mode-toggle:hover svg { transform: rotate(30deg); }
+        .history-item { transition: all 0.2s ease; border-left: 3px solid transparent; }
+        .history-item:hover { border-left-color: #3b82f6; padding-left: 12px; }
+        .input-ring:focus-within { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); }
     </style>
 </head>
 
 <body class="h-full bg-gpt-bg dark:bg-[#343541] text-gpt-textMain dark:text-gpt-textDark overflow-hidden">
     <div class="flex h-full w-full relative">
-        
-        <!-- Mobile Overlay -->
         <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/20 dark:bg-black/50 backdrop-blur-sm z-20 hidden md:hidden transition-opacity opacity-0"></div>
-
-        <!-- Sidebar -->
         <aside id="sidebar" class="absolute md:relative z-30 h-full w-[260px] bg-white dark:bg-[#202123] border-r border-black/10 dark:border-white/10 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out flex flex-col">
-            
-            <!-- New Chat Button -->
             <div class="p-3">
                 <button onclick="createNewChat()" class="btn-glow w-full flex items-center gap-2 px-3 py-3 border border-black/10 dark:border-white/10 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2A2B32] text-sm text-left">
                     <svg class="w-4 h-4 text-black dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     <span class="font-medium text-black dark:text-white">New chat</span>
                 </button>
             </div>
-
-            <!-- History -->
             <div class="flex-1 overflow-y-auto overflow-x-hidden px-3 no-scrollbar">
                 <div class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-4 mb-2 px-3">Today</div>
                 <div id="history-list" class="space-y-1 pb-4"></div>
             </div>
-            
-            <!-- User Profile Area -->
             <div class="p-3 border-t border-black/10 dark:border-white/10">
                 <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2A2B32] transition-colors cursor-pointer">
                     <div class="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs font-bold">U</div>
-                    <div class="flex-1">
-                        <p class="text-sm font-medium text-black dark:text-white">User</p>
-                    </div>
+                    <div class="flex-1"><p class="text-sm font-medium text-black dark:text-white">User</p></div>
                 </div>
             </div>
         </aside>
 
-        <!-- Main Content -->
         <main class="flex-1 flex flex-col relative w-full h-full bg-gpt-bg dark:bg-[#343541]">
-            
-            <!-- Header -->
             <div class="absolute top-0 left-0 right-0 p-4 z-10 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <button onclick="toggleSidebar()" class="md:hidden p-1 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
                     <h1 class="font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
-                        StudyAI <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">GPT-4</span>
+                        StudyAI <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">Cerebras</span>
                     </h1>
                 </div>
                 <button onclick="document.documentElement.classList.toggle('dark')" class="mode-toggle p-2 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors">
@@ -202,7 +123,6 @@
                 </button>
             </div>
             
-            <!-- Chat Container -->
             <div id="messages" class="flex-1 h-full overflow-y-auto pt-20 pb-32 scroll-smooth no-scrollbar">
                 <div id="welcome-state" class="flex flex-col items-center justify-center h-[80vh] text-center px-4">
                     <div class="bg-white dark:bg-transparent p-4 rounded-full mb-6 shadow-sm animate-float">
@@ -212,18 +132,12 @@
                 </div>
             </div>
 
-            <!-- Input Area -->
             <div class="absolute bottom-0 left-0 right-0 p-4 pb-8 bg-gradient-to-t from-gpt-bg via-gpt-bg to-transparent dark:from-[#343541] dark:via-[#343541]">
                 <div class="max-w-3xl mx-auto w-full relative group">
-                    <!-- Animated Glow Border -->
                     <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-                    
                     <div class="input-ring relative bg-white dark:bg-[#40414f] rounded-xl shadow-lg dark:shadow-[0_0_15px_rgba(0,0,0,0.3)] border border-black/10 dark:border-white/10 overflow-hidden transition-all duration-300">
                         <input type="file" id="file-input" class="hidden">
-                        <textarea id="user-input" rows="1" placeholder="Message StudyAI..." 
-                            class="w-full bg-transparent px-12 py-3 outline-none resize-none max-h-48 text-gray-900 dark:text-white placeholder-gray-500 scrollbar-hide text-base"
-                            oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
-
+                        <textarea id="user-input" rows="1" placeholder="Message StudyAI..." class="w-full bg-transparent px-12 py-3 outline-none resize-none max-h-48 text-gray-900 dark:text-white placeholder-gray-500 scrollbar-hide text-base" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
                         <div class="flex items-center justify-between px-2 pb-2">
                             <div class="flex items-center pl-1">
                                 <button onclick="document.getElementById('file-input').click()" class="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md transition-colors active:scale-90">
@@ -231,15 +145,12 @@
                                 </button>
                                 <div id="file-name" class="hidden text-xs text-brand-600 font-medium px-2 truncate max-w-[100px]">file.txt</div>
                             </div>
-
                             <button id="send-btn" onclick="handleSend()" class="btn-glow p-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </button>
                         </div>
                     </div>
-                    <div class="text-center mt-2">
-                        <p class="text-[10px] text-gray-400">StudyAI can make mistakes. Consider checking important information.</p>
-                    </div>
+                    <div class="text-center mt-2"><p class="text-[10px] text-gray-400">StudyAI can make mistakes. Consider checking important information.</p></div>
                 </div>
             </div>
         </main>
@@ -251,7 +162,6 @@
         let attachedFile = null;
         const chats = JSON.parse(localStorage.getItem('studyai_chats')) || {};
 
-        // Initialize
         if (Object.keys(chats).length > 0) {
             const lastId = Object.keys(chats)[Object.keys(chats).length - 1];
             loadChat(lastId);
@@ -268,24 +178,14 @@
 
         const fileInput = document.getElementById('file-input');
         const fileNameDisplay = document.getElementById('file-name');
-
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
-            if (file) {
-                attachedFile = file;
-                fileNameDisplay.textContent = file.name;
-                fileNameDisplay.classList.remove('hidden');
-            }
+            if (file) { attachedFile = file; fileNameDisplay.textContent = file.name; fileNameDisplay.classList.remove('hidden'); }
         });
 
         function saveCurrentChat() {
             if (conversationHistory.length === 0) return;
-            chats[currentChatId] = {
-                id: currentChatId,
-                title: chats[currentChatId]?.title || "New Chat",
-                history: conversationHistory,
-                timestamp: Date.now()
-            };
+            chats[currentChatId] = { id: currentChatId, title: chats[currentChatId]?.title || "New Chat", history: conversationHistory, timestamp: Date.now() };
             localStorage.setItem('studyai_chats', JSON.stringify(chats));
             renderHistoryList();
         }
@@ -294,185 +194,75 @@
             const list = document.getElementById('history-list');
             list.innerHTML = '';
             const sortedChats = Object.values(chats).sort((a, b) => b.timestamp - a.timestamp);
-
             sortedChats.forEach(chat => {
                 const btn = document.createElement('button');
                 const isActive = chat.id === currentChatId;
-                
-                btn.className = `history-item flex-1 text-left px-3 py-2 rounded-lg text-sm transition-colors truncate flex items-center justify-between group ${
-                    isActive 
-                    ? 'bg-gray-200 dark:bg-[#2A2B32] text-gray-900 dark:text-white' 
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#2A2B32]'
-                }`;
-                
-                const textSpan = document.createElement('span');
-                textSpan.className = "truncate";
-                textSpan.textContent = chat.title;
-
-                const delIcon = document.createElement('span');
-                delIcon.innerHTML = '&times;';
-                delIcon.className = "text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 px-2 text-lg font-light transition-all";
-                delIcon.onclick = (e) => {
-                    e.stopPropagation();
-                    deleteChat(chat.id);
-                };
-
-                btn.appendChild(textSpan);
-                btn.appendChild(delIcon);
-                btn.onclick = () => loadChat(chat.id);
-                list.appendChild(btn);
+                btn.className = `history-item flex-1 text-left px-3 py-2 rounded-lg text-sm transition-colors truncate flex items-center justify-between group ${isActive ? 'bg-gray-200 dark:bg-[#2A2B32] text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#2A2B32]'}`;
+                const textSpan = document.createElement('span'); textSpan.className = "truncate"; textSpan.textContent = chat.title;
+                const delIcon = document.createElement('span'); delIcon.innerHTML = '&times;'; delIcon.className = "text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 px-2 text-lg font-light transition-all";
+                delIcon.onclick = (e) => { e.stopPropagation(); deleteChat(chat.id); };
+                btn.appendChild(textSpan); btn.appendChild(delIcon); btn.onclick = () => loadChat(chat.id); list.appendChild(btn);
             });
         }
 
         function deleteChat(id) {
-            if(confirm('Delete this conversation?')) {
-                delete chats[id];
-                localStorage.setItem('studyai_chats', JSON.stringify(chats));
-                if (id === currentChatId) createNewChat();
-                else renderHistoryList();
-            }
+            if(confirm('Delete this conversation?')) { delete chats[id]; localStorage.setItem('studyai_chats', JSON.stringify(chats)); if (id === currentChatId) createNewChat(); else renderHistoryList(); }
         }
 
         async function generateTitle(firstPrompt) {
-            setTimeout(() => {
-                if(chats[currentChatId]) {
-                    chats[currentChatId].title = getShortTitle(firstPrompt);
-                    localStorage.setItem('studyai_chats', JSON.stringify(chats));
-                    renderHistoryList();
-                }
-            }, 500);
+            setTimeout(() => { if(chats[currentChatId]) { chats[currentChatId].title = getShortTitle(firstPrompt); localStorage.setItem('studyai_chats', JSON.stringify(chats)); renderHistoryList(); } }, 500);
         }
 
         function loadChat(id) {
-            currentChatId = id;
-            conversationHistory = chats[id].history || [];
-            const chatContainer = document.getElementById('messages');
-            const welcome = document.getElementById('welcome-state');
-            if(welcome) welcome.style.display = 'none';
-            
-            chatContainer.innerHTML = ''; 
-            
-            conversationHistory.forEach(msg => {
-                createMessageElement(msg.role, msg.content, false);
-            });
-            
-            renderHistoryList();
-            requestAnimationFrame(() => {
-                 setTimeout(() => { chatContainer.scrollTop = chatContainer.scrollHeight; }, 50);
-            });
-            if (window.innerWidth < 768) toggleSidebar(false);
+            currentChatId = id; conversationHistory = chats[id].history || [];
+            const chatContainer = document.getElementById('messages'); const welcome = document.getElementById('welcome-state'); if(welcome) welcome.style.display = 'none';
+            chatContainer.innerHTML = ''; conversationHistory.forEach(msg => { createMessageElement(msg.role, msg.content, false); });
+            renderHistoryList(); requestAnimationFrame(() => { setTimeout(() => { chatContainer.scrollTop = chatContainer.scrollHeight; }, 50); }); if (window.innerWidth < 768) toggleSidebar(false);
         }
 
         function createNewChat() { 
-            currentChatId = Date.now().toString();
-            conversationHistory = [];
+            currentChatId = Date.now().toString(); conversationHistory = [];
             const chatContainer = document.getElementById('messages');
-            chatContainer.innerHTML = `
-                <div id="welcome-state" class="flex flex-col items-center justify-center h-[80vh] text-center px-4">
-                    <div class="bg-white dark:bg-transparent p-4 rounded-full mb-6 shadow-sm animate-float">
-                        <svg class="w-10 h-10 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                    </div>
-                    <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-8">How can I help you today?</h2>
-                </div>`;
-            renderHistoryList();
-            if (window.innerWidth < 768) toggleSidebar(false);
+            chatContainer.innerHTML = `<div id="welcome-state" class="flex flex-col items-center justify-center h-[80vh] text-center px-4"><div class="bg-white dark:bg-transparent p-4 rounded-full mb-6 shadow-sm animate-float"><svg class="w-10 h-10 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg></div><h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-8">How can I help you today?</h2></div>`;
+            renderHistoryList(); if (window.innerWidth < 768) toggleSidebar(false);
         }
 
         function toggleSidebar(forceState) {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            const isHidden = sidebar.classList.contains('-translate-x-full');
-            const shouldShow = forceState !== undefined ? forceState : isHidden;
-
-            if (shouldShow) {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
-                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
-                document.body.style.overflow = 'hidden';
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('opacity-0');
-                setTimeout(() => overlay.classList.add('hidden'), 300);
-                document.body.style.overflow = '';
-            }
+            const sidebar = document.getElementById('sidebar'); const overlay = document.getElementById('sidebar-overlay');
+            const isHidden = sidebar.classList.contains('-translate-x-full'); const shouldShow = forceState !== undefined ? forceState : isHidden;
+            if (shouldShow) { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); setTimeout(() => overlay.classList.remove('opacity-0'), 10); document.body.style.overflow = 'hidden'; }
+            else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('opacity-0'); setTimeout(() => overlay.classList.add('hidden'), 300); document.body.style.overflow = ''; }
         }
 
         function createMessageElement(role, text = '', isStreaming = false) {
-            const chat = document.getElementById('messages');
-            const welcome = document.getElementById('welcome-state');
-            if(welcome) welcome.style.display = 'none';
-
-            const wrapper = document.createElement('div');
-            wrapper.className = `w-full text-gray-800 dark:text-gray-100 border-b border-black/5 dark:border-white/5 py-6 ${
-                role === 'user' ? 'bg-white dark:bg-[#444654]' : ''
-            } ${role === 'user' ? 'animate-slide-in-right' : 'animate-slide-in-left'}`;
-
-            const inner = document.createElement('div');
-            inner.className = `flex gap-4 md:gap-6 max-w-3xl mx-auto px-4 ${role === 'user' ? 'flex-row-reverse' : 'flex-row'}`;
-            
-            const avatar = document.createElement('div');
-            avatar.className = `w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center ${
-                role === 'user' 
-                ? 'bg-brand-600 text-white mt-1' 
-                : 'bg-emerald-600 text-white'
-           }`;
+            const chat = document.getElementById('messages'); const welcome = document.getElementById('welcome-state'); if(welcome) welcome.style.display = 'none';
+            const wrapper = document.createElement('div'); wrapper.className = `w-full text-gray-800 dark:text-gray-100 border-b border-black/5 dark:border-white/5 py-6 ${role === 'user' ? 'bg-white dark:bg-[#444654]' : ''} ${role === 'user' ? 'animate-slide-in-right' : 'animate-slide-in-left'}`;
+            const inner = document.createElement('div'); inner.className = `flex gap-4 md:gap-6 max-w-3xl mx-auto px-4 ${role === 'user' ? 'flex-row-reverse' : 'flex-row'}`;
+            const avatar = document.createElement('div'); avatar.className = `w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center ${role === 'user' ? 'bg-brand-600 text-white mt-1' : 'bg-emerald-600 text-white'}`;
             avatar.innerHTML = role === 'user' ? 'U' : 'AI';
-
-            const bubble = document.createElement('div');
-            bubble.className = `prose-content leading-7 text-[15px] w-full overflow-hidden ${isStreaming ? 'cursor-blink' : ''}`;
-
-            if (!isStreaming && text) {
-                bubble.innerHTML = DOMPurify.sanitize(marked.parse(text));
-            }
-
-            inner.appendChild(avatar);
-            inner.appendChild(bubble);
-            wrapper.appendChild(inner);
-            chat.appendChild(wrapper);
-
-            requestAnimationFrame(() => {
-                chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
-            });
-            
+            const bubble = document.createElement('div'); bubble.className = `prose-content leading-7 text-[15px] w-full overflow-hidden ${isStreaming ? 'cursor-blink' : ''}`;
+            if (!isStreaming && text) bubble.innerHTML = DOMPurify.sanitize(marked.parse(text));
+            inner.appendChild(avatar); inner.appendChild(bubble); wrapper.appendChild(inner); chat.appendChild(wrapper);
+            requestAnimationFrame(() => { chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' }); });
             return { wrapper, bubble };
         }
 
         async function handleSend() {
-            const input = document.getElementById('user-input');
-            const btn = document.getElementById('send-btn');
-            let text = input.value.trim();
-
-            if (!text && !attachedFile) return;
+            const input = document.getElementById('user-input'); const btn = document.getElementById('send-btn');
+            let text = input.value.trim(); if (!text && !attachedFile) return;
 
             if (attachedFile) {
-                const fileText = await readFileAsText(attachedFile);
-                text += `\n\n[File Attached: ${attachedFile.name}]\n${fileText}`;
-                attachedFile = null;
-                fileInput.value = '';
-                fileNameDisplay.classList.add('hidden');
+                const fileText = await readFileAsText(attachedFile); text += `\n\n[File Attached: ${attachedFile.name}]\n${fileText}`;
+                attachedFile = null; fileInput.value = ''; fileNameDisplay.classList.add('hidden');
             }
 
-            if (!chats[currentChatId]) {
-                chats[currentChatId] = { 
-                    id: currentChatId, 
-                    title: getShortTitle(text), 
-                    history: [], 
-                    timestamp: Date.now() 
-                };
-                renderHistoryList();
-            }
+            if (!chats[currentChatId]) { chats[currentChatId] = { id: currentChatId, title: getShortTitle(text), history: [], timestamp: Date.now() }; renderHistoryList(); }
 
-            createMessageElement('user', text);
-            conversationHistory.push({ role: 'user', content: text });
-            saveCurrentChat();
+            createMessageElement('user', text); conversationHistory.push({ role: 'user', content: text }); saveCurrentChat();
+            input.value = ''; input.style.height = 'auto'; btn.disabled = true;
 
-            input.value = '';
-            input.style.height = 'auto';
-            btn.disabled = true;
-
-            // Create Bot Message with Thinking Dots
+            // 1. Show Thinking Dots
             const { bubble } = createMessageElement('assistant', '', false);
-            bubble.classList.remove('cursor-blink'); // Remove blink initially
             bubble.classList.add('thinking-dots');
             bubble.innerHTML = '<span></span><span></span><span></span>';
 
@@ -480,25 +270,54 @@
             const chat = document.getElementById('messages');
 
             try {                
-                // Simulate "Thinking" Delay (1.5 seconds)
-                await new Promise(r => setTimeout(r, 1500));
-                
-                // Switch from thinking dots to streaming text
+                // 2. Fetch from your Cerebras Express Backend
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: text, history: conversationHistory.slice(0, -1) }) // Send history WITHOUT the current prompt (backend adds it)
+                });
+
+                if (!response.ok) throw new Error("Network response was not ok");
+
+                // 3. Remove dots, add blinking cursor
                 bubble.classList.remove('thinking-dots');
                 bubble.classList.add('cursor-blink');
                 bubble.innerHTML = '';
 
-                // Mock API Response Streaming
-                let mockResponse = "I am a frontend demo. In a real application, I would process your request: \"" + getShortTitle(text) + "\" via an API backend.";
-                
-                const chunks = mockResponse.split(' ');
-                for (let word of chunks) {
-                    await new Promise(r => setTimeout(r, 50)); // Typing speed
-                    aiResponseText += word + " ";
-                    bubble.textContent = aiResponseText;
-                    chat.scrollTop = chat.scrollHeight;
+                // 4. Parse the Server-Sent Events (SSE) Stream
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop(); // Keep incomplete chunks in buffer
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const data = line.slice(6).trim();
+                            if (data === '[DONE]') continue;
+                            
+                            try {
+                                const parsed = JSON.parse(data);
+                                if (parsed.content) {
+                                    aiResponseText += parsed.content;
+                                    bubble.textContent = aiResponseText;
+                                    chat.scrollTop = chat.scrollHeight;
+                                }
+                                if (parsed.error) throw new Error(parsed.error);
+                            } catch (e) {
+                                console.error("Stream Parse Error:", e);
+                            }
+                        }
+                    }
                 }
 
+                // 5. Finalize Formatting
                 bubble.classList.remove('cursor-blink');
                 conversationHistory.push({ role: 'assistant', content: aiResponseText.trim() });
                 saveCurrentChat();
@@ -506,36 +325,23 @@
                 bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText.trim()));
                 chat.scrollTop = chat.scrollHeight;
 
-                if (conversationHistory.length === 2 && chats[currentChatId].title.includes("...")) {
-                    generateTitle(text);
-                }
+                if (conversationHistory.length === 2 && chats[currentChatId].title.includes("...")) { generateTitle(text); }
 
             } catch (error) {
-                bubble.textContent = "Connection lost.";
+                bubble.textContent = "Connection error: " + error.message;
                 bubble.classList.add('text-red-500');
                 bubble.classList.remove('cursor-blink', 'thinking-dots');
                 console.error(error);
             } finally {
-                btn.disabled = false;
-                input.focus();
+                btn.disabled = false; input.focus();
             }
         }
 
         function readFileAsText(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsText(file);
-            });
+            return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsText(file); });
         }
 
-        document.getElementById('user-input').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSend();
-            }
-        });
+        document.getElementById('user-input').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
     </script>
 </body>
 </html>
