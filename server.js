@@ -58,10 +58,19 @@ app.post('/api/chat', async (req, res) => {
 
   } catch (error) {
     console.error("API Error:", error.message);
+    
+    // If it's a rate limit error, send a friendly message instead of crashing
+    const errorMessage = (error.status === 429) 
+      ? "I'm experiencing high traffic right now. Please wait a moment and try again." 
+      : error.message;
+
     if (!res.headersSent) {
-      res.status(500).json({ error: error.message });
+      // If the stream hasn't started yet, send it as a standard error JSON
+      res.status(error.status || 500).json({ error: errorMessage });
     } else {
-      res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
+      // If the stream already started, send the error as a streamed message so the UI shows it nicely
+      res.write(`data: ${JSON.stringify({ content: errorMessage })}\n\n`);
+      res.write('data: [DONE]\n\n');
       res.end();
     }
   }
