@@ -178,7 +178,6 @@
                             <button onclick="document.getElementById('user-input').focus()" class="btn-glow px-8 py-3.5 bg-brand-600 text-white font-semibold rounded-xl shadow-md hover:bg-brand-500 transition-colors text-sm">
                                 Start Studying Now
                             </button>
-                            <!-- CHANGED TO ONCLICK INSTEAD OF HREF -->
                             <button onclick="scrollToFeatures()" class="px-8 py-3.5 bg-white dark:bg-[#2A2B32] text-gray-700 dark:text-gray-300 font-semibold rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors text-sm">
                                 See Features
                             </button>
@@ -368,12 +367,14 @@
 
         function setPrompt(text) { const input = document.getElementById('user-input'); input.value = text; input.focus(); input.style.height = 'auto'; input.style.height = input.scrollHeight + 'px'; }
 
-        // ADDED: Custom scroll function for inside the chat container
+        // ULTRA-RELIABLE SCROLL FUNCTION
         function scrollToFeatures() {
-            const features = document.getElementById('features');
-            if (features) {
-                features.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+            setTimeout(() => {
+                const features = document.getElementById('features');
+                if (features) {
+                    features.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 10); // 10ms delay forces the browser to recalculate layout first
         }
 
         function getShortTitle(text) { if (!text) return "New Chat"; const words = text.replace(/[\n\r]/g, ' ').trim().split(/\s+/); const shortText = words.slice(0, 3).join(' '); return words.length > 3 ? shortText + '...' : shortText; }
