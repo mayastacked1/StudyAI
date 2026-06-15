@@ -19,11 +19,13 @@
                     },
                     animation: {
                         'fade-in': 'fadeIn 0.3s ease-out forwards',
-                        'slide-up': 'slideUp 0.4s ease-out forwards',
+                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards', // Professional spring physics
+                        'pop-in': 'popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards', // For sending animation
                     },
                     keyframes: {
                         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-                        slideUp: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        popIn: { '0%': { opacity: '0', transform: 'scale(0.9) translateY(10px)' }, '100%': { opacity: '1', transform: 'scale(1) translateY(0)' } }
                     }
                 }
             }
@@ -39,7 +41,7 @@
         ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
         .dark ::-webkit-scrollbar-thumb { background-color: #3f3f46; }
         
-        /* Cursor blinking animation for streaming text */
+        /* Cursor blinking animation */
         .cursor-blink::after {
             content: '▋';
             display: inline-block;
@@ -48,6 +50,11 @@
             color: #3b82f6;
         }
         @keyframes blink { 50% { opacity: 0; } }
+
+        /* Ensure header doesn't hide content */
+        .chat-container {
+            scroll-margin-top: 5rem; 
+        }
     </style>
 </head>
 <body class="h-full bg-zinc-50 dark:bg-dark-bg text-zinc-900 dark:text-zinc-100 transition-colors duration-300 selection:bg-primary-500 selection:text-white">
@@ -61,7 +68,9 @@
                 </button>
             </div>
             <div class="px-4 py-2 text-xs font-semibold text-zinc-400 uppercase tracking-wider">History</div>
-            <div id="history-list" class="flex-1 overflow-y-auto px-3 space-y-1 py-2"></div>
+            <div id="history-list" class="flex-1 overflow-y-auto px-3 space-y-1 py-2">
+                <!-- History items injected here -->
+            </div>
             
             <div class="p-4 border-t border-zinc-200 dark:border-dark-border">
                 <button onclick="toggleSettings()" class="flex items-center gap-3 w-full px-4 py-3 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all text-sm font-medium text-zinc-600 dark:text-zinc-300">
@@ -91,9 +100,10 @@
                 </button>
             </header>
             
-            <div id="messages" class="flex-1 overflow-y-auto p-4 md:p-8 pt-24 pb-4 space-y-8 max-w-4xl mx-auto w-full scroll-smooth">
+            <!-- Chat Container: Added pb-32 for spacing above input -->
+            <div id="messages" class="flex-1 overflow-y-auto p-4 md:p-8 pt-28 pb-32 space-y-6 max-w-4xl mx-auto w-full scroll-smooth chat-container">
                 <!-- Welcome State -->
-                <div class="flex flex-col items-center justify-center mt-10 opacity-50 select-none pointer-events-none">
+                <div id="welcome-state" class="flex flex-col items-center justify-center mt-10 opacity-60 select-none">
                     <div class="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-4">
                         <svg class="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
                     </div>
@@ -101,7 +111,7 @@
                 </div>
             </div>
 
-            <!-- Input Area -->
+            <!-- Input Area: Fixed at bottom relative to main -->
             <div class="p-4 md:p-8 max-w-4xl mx-auto w-full z-10">
                 <div class="relative bg-white dark:bg-zinc-900 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-zinc-200 dark:border-zinc-700 focus-within:ring-2 ring-primary-500/50 transition-all duration-300 group">
                     <textarea id="user-input" rows="1" placeholder="Ask anything about your studies..." 
@@ -122,8 +132,88 @@
     </div>
 
     <script>
-        // State Management
+        // --- STATE MANAGEMENT ---
         let conversationHistory = [];
+        let currentChatId = Date.now().toString(); // Unique ID for current session
+        const chats = JSON.parse(localStorage.getItem('studyai_chats')) || {};
+
+        // Load the last active chat if exists
+        if (Object.keys(chats).length > 0) {
+            const lastId = Object.keys(chats)[Object.keys(chats).length - 1];
+            loadChat(lastId);
+        }
+
+        function saveCurrentChat() {
+            if (conversationHistory.length === 0) return;
+            chats[currentChatId] = {
+                id: currentChatId,
+                title: conversationHistory[0]?.content.substring(0, 30) + "..." || "New Chat",
+                history: conversationHistory,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('studyai_chats', JSON.stringify(chats));
+            renderHistoryList();
+        }
+
+        function renderHistoryList() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = '';
+            
+            // Sort by timestamp descending
+            const sortedChats = Object.values(chats).sort((a, b) => b.timestamp - a.timestamp);
+
+            sortedChats.forEach(chat => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left px-4 py-3 rounded-lg text-sm transition-colors truncate border ${
+                    chat.id === currentChatId 
+                    ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-white border-zinc-300 dark:border-zinc-700 font-medium' 
+                    : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 border-transparent'
+                }`;
+                btn.textContent = chat.title;
+                btn.onclick = () => loadChat(chat.id);
+                list.appendChild(btn);
+            });
+        }
+
+        function loadChat(id) {
+            currentChatId = id;
+            conversationHistory = chats[id].history || [];
+            
+            // Re-render messages
+            const chatContainer = document.getElementById('messages');
+            const welcome = document.getElementById('welcome-state');
+            if(welcome) welcome.style.display = 'none';
+            
+            // Clear current view (keep welcome hidden or remove it)
+            chatContainer.innerHTML = ''; 
+            
+            conversationHistory.forEach(msg => {
+                createMessageElement(msg.role, msg.content, false);
+            });
+            
+            renderHistoryList();
+            
+            if (window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.add('-translate-x-full');
+            }
+        }
+
+        function createNewChat() { 
+            currentChatId = Date.now().toString();
+            conversationHistory = [];
+            const chatContainer = document.getElementById('messages');
+            chatContainer.innerHTML = `
+                <div id="welcome-state" class="flex flex-col items-center justify-center mt-10 opacity-60 select-none">
+                    <div class="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                    </div>
+                    <p class="text-sm font-medium text-zinc-400">Start a new conversation</p>
+                </div>`;
+            
+            // Update Sidebar active state
+            renderHistoryList();
+            if (window.innerWidth < 768) toggleSidebar();
+        }
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -132,29 +222,18 @@
             else sidebar.classList.add('-translate-x-full');
         }
 
-        function createNewChat() { 
-            const chat = document.getElementById('messages');
-            chat.innerHTML = `
-                <div class="flex flex-col items-center justify-center mt-10 opacity-50 select-none pointer-events-none">
-                    <div class="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-4">
-                        <svg class="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-                    </div>
-                    <p class="text-sm font-medium text-zinc-400">Start a new conversation</p>
-                </div>`;
-            conversationHistory = []; // Clear history
-            if (window.innerWidth < 768) toggleSidebar();
-        }
-
-        // --- CHAT LOGIC WITH STREAMING ---
+        // --- CHAT LOGIC ---
         
-        // Helper to create a message bubble. If isStreaming is true, adds a blinking cursor.
         function createMessageElement(role, text = '', isStreaming = false) {
             const chat = document.getElementById('messages');
-            const welcomeMsg = chat.querySelector('.select-none');
-            if(welcomeMsg) welcomeMsg.remove();
+            const welcome = document.getElementById('welcome-state');
+            if(welcome) welcome.style.display = 'none';
 
             const wrapper = document.createElement('div');
-            wrapper.className = `flex gap-4 animate-slide-up ${role === 'user' ? 'flex-row-reverse' : 'flex-row'}`;
+            // Fix 3: Use 'pop-in' animation for user messages, 'slide-up' for AI
+            const animClass = role === 'user' ? 'animate-pop-in' : 'animate-slide-up';
+            
+            wrapper.className = `flex gap-4 ${animClass} ${role === 'user' ? 'flex-row-reverse' : 'flex-row'}`;
             
             const avatar = document.createElement('div');
             avatar.className = `w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center text-white shadow-sm ${role === 'user' ? 'bg-black dark:bg-zinc-700' : 'bg-primary-600'}`;
@@ -169,13 +248,16 @@
                 : 'text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-700/50 rounded-tl-sm ' + (isStreaming ? 'cursor-blink' : '')
             }`;
             
-            // For safety, we use textContent for static text, but for streaming we append carefully
             if (!isStreaming) bubble.textContent = text;
 
             wrapper.appendChild(avatar);
             wrapper.appendChild(bubble);
             chat.appendChild(wrapper);
-            chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' }); // Auto scroll
+            
+            // Fix 2: Smooth scroll with delay to allow animation to start
+            setTimeout(() => {
+                chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+            }, 50);
             
             return { wrapper, bubble };
         }
@@ -189,8 +271,9 @@
             // 1. Add User Message to UI
             createMessageElement('user', text);
             
-            // 2. Add User Message to History
+            // 2. Update State
             conversationHistory.push({ role: 'user', content: text });
+            saveCurrentChat(); // Save immediately
 
             input.value = '';
             input.style.height = 'auto';
@@ -198,6 +281,7 @@
 
             // 3. Create Placeholder for AI Message
             const { bubble } = createMessageElement('assistant', '', true);
+            let aiResponseText = '';
 
             try {
                 const response = await fetch('/api/chat', {
@@ -211,7 +295,6 @@
                 // 4. Read Stream
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
-                let aiResponseText = '';
 
                 while (true) {
                     const { done, value } = await reader.read();
@@ -231,20 +314,18 @@
                                     aiResponseText += data.content;
                                     bubble.textContent = aiResponseText;
                                     
-                                    // Auto scroll only if near bottom
                                     const chat = document.getElementById('messages');
                                     chat.scrollTop = chat.scrollHeight;
                                 }
-                            } catch (e) {
-                                console.error('Error parsing stream data', e);
-                            }
+                            } catch (e) { /* ignore parse errors on chunks */ }
                         }
                     }
                 }
 
                 // 5. Finalize
-                bubble.classList.remove('cursor-blink'); // Stop blinking
+                bubble.classList.remove('cursor-blink');
                 conversationHistory.push({ role: 'assistant', content: aiResponseText });
+                saveCurrentChat(); // Save final response
 
             } catch (error) {
                 bubble.textContent = "Error: Could not connect to server.";
