@@ -59,15 +59,15 @@
         }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* Glassmorphism - Increased opacity to hide text behind it */
+        /* Glassmorphism */
         .glass {
-            background: rgba(255, 255, 255, 0.90); /* Was 0.7 */
+            background: rgba(255, 255, 255, 0.95); /* Increased opacity to 95% for solid feel */
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
         .dark .glass {
-            background: rgba(15, 23, 42, 0.90); /* Was 0.7 */
+            background: rgba(15, 23, 42, 0.95);
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
@@ -162,7 +162,7 @@
         <!-- Main Content -->
         <main class="flex-1 flex flex-col relative w-full h-full bg-white dark:bg-dark-bg">
             
-            <!-- Header (Higher Z-Index, Darker Background) -->
+            <!-- Header -->
             <header class="absolute top-0 left-0 right-0 h-16 z-50 glass flex items-center justify-between px-4 shadow-sm">
                 <div class="flex items-center gap-3">
                     <button onclick="toggleSidebar()" class="md:hidden p-2 -ml-2 text-slate-500 hover:text-slate-900 dark:hover:text-white active:scale-95 transition-transform">
@@ -182,8 +182,9 @@
             </header>
             
             <!-- Chat Container -->
-            <!-- FIX: Increased pt-24 to pt-28 and pb-48 to pb-56. Added scroll-padding styles. -->
-            <div id="messages" class="flex-1 h-full overflow-y-auto p-4 md:p-8 pt-28 pb-56 scroll-pt-28 scroll-pb-56 space-y-6 max-w-4xl mx-auto w-full scroll-smooth">
+            <!-- FIX: Changed pt-28 pb-64 (padding) to mt-16 mb-28 (margins) + pt-4 pb-4 (aesthetic padding). 
+                 This pushes the scroll container down/up so it physically stops at the header/box boundaries. -->
+            <div id="messages" class="flex-1 h-full overflow-y-auto p-4 md:p-8 mt-16 mb-28 scroll-smooth">
                 <div id="welcome-state" class="flex flex-col items-center justify-center min-h-[60vh] opacity-60 select-none">
                     <div class="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center justify-center mb-6 shadow-xl animate-float">
                         <svg class="w-10 h-10 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
@@ -318,7 +319,6 @@
             });
             
             renderHistoryList();
-            // Scroll to bottom with delay to ensure render
             requestAnimationFrame(() => {
                  setTimeout(() => { chatContainer.scrollTop = chatContainer.scrollHeight; }, 50);
             });
@@ -420,6 +420,7 @@
 
             const { bubble } = createMessageElement('assistant', '', true);
             let aiResponseText = '';
+            const chat = document.getElementById('messages');
 
             try {
                 const response = await fetch('/api/chat', {
@@ -450,7 +451,7 @@
                                 if (data.content) {
                                     aiResponseText += data.content;
                                     bubble.textContent = aiResponseText;
-                                    const chat = document.getElementById('messages');
+                                    
                                     chat.scrollTop = chat.scrollHeight;
                                 }
                             } catch (e) { /* ignore */ }
@@ -463,6 +464,7 @@
                 saveCurrentChat();
 
                 bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText));
+                chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
 
                 if (conversationHistory.length === 2 && chats[currentChatId].title.includes("...")) {
                     generateTitle(text);
