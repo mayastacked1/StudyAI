@@ -63,6 +63,17 @@
         }
         .prose-content pre code { background: transparent; color: inherit; padding: 0; }
         .prose-content h1, .prose-content h2, .prose-content h3 { font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        
+        /* Cursor blink for streaming */
+        .cursor-blink::after {
+            content: '▋';
+            display: inline-block;
+            vertical-align: middle;
+            animation: blink 1s step-start infinite;
+            color: currentColor;
+            margin-left: 2px;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
     </style>
 </head>
 <body class="h-full bg-gpt-bg dark:bg-[#343541] text-gpt-textMain dark:text-gpt-textDark transition-colors duration-200 overflow-hidden">
@@ -72,8 +83,7 @@
         <!-- Mobile Overlay -->
         <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden transition-opacity opacity-0 backdrop-blur-sm"></div>
 
-        <!-- Sidebar (Dark by default for GPT vibe in light mode too, or adaptive) -->
-        <!-- We will make it adaptive: Light mode = Light Gray, Dark mode = Dark Gray -->
+        <!-- Sidebar -->
         <aside id="sidebar" class="absolute md:relative z-30 h-full w-[260px] bg-white dark:bg-[#202123] border-r border-black/10 dark:border-white/10 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out flex flex-col">
             <!-- New Chat Button -->
             <div class="p-3">
@@ -103,7 +113,7 @@
         <!-- Main Content -->
         <main class="flex-1 flex flex-col relative w-full h-full bg-gpt-bg dark:bg-[#343541]">
             
-            <!-- Top Logo Area (GPT Style) -->
+            <!-- Top Logo Area -->
             <div class="absolute top-0 left-0 right-0 p-4 z-10 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <button onclick="toggleSidebar()" class="md:hidden p-1 text-gray-500 dark:text-gray-400">
@@ -129,31 +139,27 @@
                 </div>
             </div>
 
-            <!-- Input Area (Floating Bar) -->
+            <!-- Input Area -->
             <div class="absolute bottom-0 left-0 right-0 p-4 pb-8 bg-gradient-to-t from-gpt-bg via-gpt-bg to-transparent dark:from-[#343541] dark:via-[#343541]">
                 <div class="max-w-3xl mx-auto w-full relative group">
                     <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
                     <div class="relative bg-white dark:bg-[#40414f] rounded-xl shadow-gpt dark:shadow-gpt-dark border border-black/10 dark:border-white/10 overflow-hidden">
-                        <!-- File Input (Hidden) -->
                         <input type="file" id="file-input" class="hidden">
                         
-                        <textarea id="user-input" rows="1" placeholder="Message Aiserie..." 
+                        <textarea id="user-input" rows="1" placeholder="Message StudyAI..." 
                             class="w-full bg-transparent px-12 py-3 outline-none resize-none max-h-48 text-gray-900 dark:text-white placeholder-gray-500 scrollbar-hide text-base"
                             oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
                         
                         <div class="flex items-center justify-between px-2 pb-2">
-                            <!-- Left Icons -->
                             <div class="flex items-center pl-1">
                                 <button onclick="document.getElementById('file-input').click()" class="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md transition-colors">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
                                 </button>
-                                <!-- File Name Badge -->
                                 <div id="file-name" class="hidden text-xs text-brand-600 font-medium px-2 truncate max-w-[100px]">
                                     file.txt
                                 </div>
                             </div>
 
-                            <!-- Send Button -->
                             <button id="send-btn" onclick="handleSend()" class="p-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </button>
@@ -173,11 +179,23 @@
         let attachedFile = null;
         const chats = JSON.parse(localStorage.getItem('studyai_chats')) || {};
 
+        // Initialize
         if (Object.keys(chats).length > 0) {
             const lastId = Object.keys(chats)[Object.keys(chats).length - 1];
             loadChat(lastId);
         } else {
             renderHistoryList();
+        }
+
+        // --- HELPER: Short Title Generator ---
+        function getShortTitle(text) {
+            if (!text) return "New Chat";
+            // Replace newlines with spaces, trim, split by spaces
+            const words = text.replace(/[\n\r]/g, ' ').trim().split(/\s+/);
+            // Take first 3 words
+            const shortText = words.slice(0, 3).join(' ');
+            // Add ellipsis if there were more words
+            return words.length > 3 ? shortText + '...' : shortText;
         }
 
         // --- FILE HANDLING ---
@@ -251,25 +269,19 @@
         }
 
         async function generateTitle(firstPrompt) {
-            try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        prompt: `Generate a very short, 3-5 word title for this user request: "${firstPrompt}". Do not include quotes. Just the title.`,
-                        history: [] 
-                    })
-                });
-                const data = await response.json();
-                if (data.reply) {
-                    const cleanTitle = data.reply.replace(/['"]/g, '').trim();
-                    if(chats[currentChatId]) {
-                        chats[currentChatId].title = cleanTitle;
-                        localStorage.setItem('studyai_chats', JSON.stringify(chats));
-                        renderHistoryList();
-                    }
+            // In a real app, this calls an API. Here we simulate a smarter short title
+            // or just force the short title logic immediately for better UX in this demo.
+            
+            // Simulating a tiny delay for "AI thinking"
+            setTimeout(() => {
+                if(chats[currentChatId]) {
+                    // If you had a real API, you would use that response here.
+                    // For now, we ensure the title is short using our helper.
+                    chats[currentChatId].title = getShortTitle(firstPrompt);
+                    localStorage.setItem('studyai_chats', JSON.stringify(chats));
+                    renderHistoryList();
                 }
-            } catch (e) { console.log("Could not generate title", e); }
+            }, 500);
         }
 
         function loadChat(id) {
@@ -334,28 +346,19 @@
             const wrapper = document.createElement('div');
             wrapper.className = `w-full text-gray-800 dark:text-gray-100 border-b border-black/5 dark:border-white/5 py-6 ${role === 'user' ? 'bg-white dark:bg-[#444654]' : ''}`;
             
-            // Inner container for centering max-width
             const inner = document.createElement('div');
             inner.className = `flex gap-4 md:gap-6 max-w-3xl mx-auto px-4 ${role === 'user' ? 'flex-row-reverse' : 'flex-row'}`;
             
-            // Avatar (Circular)
             const avatar = document.createElement('div');
             avatar.className = `w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center ${
                 role === 'user' 
                 ? 'bg-brand-600 text-white mt-1' 
                 : 'bg-emerald-600 text-white'
             }`;
-            avatar.innerHTML = role === 'user' 
-                ? 'U'
-                : 'AI';
+            avatar.innerHTML = role === 'user' ? 'U' : 'AI';
 
             const bubble = document.createElement('div');
             bubble.className = `prose-content leading-7 text-[15px] w-full overflow-hidden ${isStreaming ? 'cursor-blink' : ''}`;
-            
-            // Cursor blinking style
-            if(isStreaming) {
-                bubble.style.setProperty('--cursor-color', 'currentColor');
-            }
 
             if (!isStreaming) {
                 bubble.innerHTML = DOMPurify.sanitize(marked.parse(text));
@@ -394,8 +397,15 @@
                 fileNameDisplay.classList.add('hidden');
             }
 
+            // --- REVISED: Create Chat with SHORT title immediately ---
             if (!chats[currentChatId]) {
-                chats[currentChatId] = { id: currentChatId, title: text.substring(0, 30) + "...", history: [], timestamp: Date.now() };
+                chats[currentChatId] = { 
+                    id: currentChatId, 
+                    // Use the new short title helper here
+                    title: getShortTitle(text), 
+                    history: [], 
+                    timestamp: Date.now() 
+                };
                 renderHistoryList();
             }
 
@@ -412,49 +422,33 @@
             const chat = document.getElementById('messages');
 
             try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: text, history: conversationHistory })
-                });
-
-                if (!response.ok) throw new Error("Server error");
-
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-
-                    const chunk = decoder.decode(value);
-                    const lines = chunk.split('\n');
-
-                    for (const line of lines) {
-                        if (line.startsWith('data: ')) {
-                            const dataStr = line.slice(6);
-                            if (dataStr === '[DONE]') break;
-                            
-                            try {
-                                const data = JSON.parse(dataStr);
-                                if (data.content) {
-                                    aiResponseText += data.content;
-                                    bubble.textContent = aiResponseText;
-                                    chat.scrollTop = chat.scrollHeight;
-                                }
-                            } catch (e) { /* ignore */ }
-                        }
-                    }
+                // SIMULATING API RESPONSE (Since this is a static file)
+                // In a real app, this would be: fetch('/api/chat', ...)
+                
+                // Simulating network delay
+                await new Promise(r => setTimeout(r, 600));
+                
+                // Simulated response based on input (Mock AI)
+                let mockResponse = "I am a frontend demo. In a real application, I would process your request: \"" + getShortTitle(text) + "\" via an API backend.";
+                
+                // Mock streaming effect
+                const chunks = mockResponse.split(' ');
+                for (let word of chunks) {
+                    await new Promise(r => setTimeout(r, 50)); // Typing speed
+                    aiResponseText += word + " ";
+                    bubble.textContent = aiResponseText;
+                    chat.scrollTop = chat.scrollHeight;
                 }
 
                 bubble.classList.remove('cursor-blink');
-                conversationHistory.push({ role: 'assistant', content: aiResponseText });
+                conversationHistory.push({ role: 'assistant', content: aiResponseText.trim() });
                 saveCurrentChat();
 
-                bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText));
+                bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText.trim()));
                 chat.scrollTop = chat.scrollHeight;
 
-                if (conversationHistory.length === 2 && chats[currentChatId].title.includes("...")) {
+                // Only generate title if it's the very first interaction and we used a placeholder
+                if (conversationHistory.length === 2) {
                     generateTitle(text);
                 }
 
