@@ -3,86 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyAI | Pro Dashboard</title>
+    <title>StudyAI | Pro Interface</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { darkMode: 'class' };</script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' },
+                        dark: { bg: '#09090b', surface: '#18181b', border: '#27272a' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out forwards',
+                        'slide-up': 'slideUp 0.4s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        .transition-all { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom Scrollbar for sleek look */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        .dark ::-webkit-scrollbar-thumb { background-color: #3f3f46; }
+        
+        /* Markdown-like styling for AI text */
+        .prose p { margin-bottom: 0.75rem; }
+        .prose p:last-child { margin-bottom: 0; }
+        .prose code { background: rgba(0,0,0,0.1); padding: 2px 4px; border-radius: 4px; font-size: 0.9em; }
+        .dark .prose code { background: rgba(255,255,255,0.1); }
     </style>
 </head>
-<body class="h-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-all">
+<body class="h-full bg-zinc-50 dark:bg-dark-bg text-zinc-900 dark:text-zinc-100 transition-colors duration-300 selection:bg-primary-500 selection:text-white">
 
     <div class="flex h-full overflow-hidden">
-        <aside id="sidebar" class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col p-4 z-30 absolute md:relative h-full hidden md:flex">
-            <button onclick="createNewChat()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl shadow-lg shadow-indigo-500/20 mb-6 transition-all">
-                + New Chat
-            </button>
-            <div id="history-list" class="flex-1 space-y-2 overflow-y-auto"></div>
-            <button onclick="toggleSettings()" class="flex items-center gap-2 p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all text-sm">
-                ⚙️ Settings
-            </button>
+        
+        <!-- Sidebar: Glassmorphism & Cleaner Borders -->
+        <aside id="sidebar" class="w-72 bg-white/80 dark:bg-dark-surface/80 backdrop-blur-md border-r border-zinc-200 dark:border-dark-border flex flex-col z-30 absolute md:relative h-full transition-transform duration-300 -translate-x-full md:translate-x-0">
+            <div class="p-6 pb-2">
+                <button onclick="createNewChat()" class="group w-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-medium py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2">
+                    <span class="text-xl group-hover:rotate-90 transition-transform duration-300">+</span> New Chat
+                </button>
+            </div>
+
+            <div class="px-4 py-2 text-xs font-semibold text-zinc-400 uppercase tracking-wider">History</div>
+            <div id="history-list" class="flex-1 overflow-y-auto px-3 space-y-1 py-2">
+                <!-- Mock History Item -->
+                <button class="w-full text-left px-4 py-3 rounded-lg text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors truncate border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700">
+                    Quantum Physics Basics
+                </button>
+                <button class="w-full text-left px-4 py-3 rounded-lg text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors truncate border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700">
+                    Romeo & Juliet Analysis
+                </button>
+            </div>
+
+            <div class="p-4 border-t border-zinc-200 dark:border-dark-border">
+                <button onclick="toggleSettings()" class="flex items-center gap-3 w-full px-4 py-3 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all text-sm font-medium text-zinc-600 dark:text-zinc-300">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary-500 to-purple-500 flex items-center justify-center text-white text-xs">JS</div>
+                    <span>John Student</span>
+                    <svg class="w-4 h-4 ml-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </button>
+            </div>
         </aside>
 
-        <main class="flex-1 flex flex-col relative w-full">
-            <header class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
-                <button onclick="document.getElementById('sidebar').classList.toggle('hidden')" class="md:hidden p-2">☰</button>
-                <h1 class="font-semibold text-lg">StudyAI</h1>
-                <div class="w-10"></div>
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col relative w-full bg-white dark:bg-dark-bg">
+            
+            <!-- Header: Floating Blur -->
+            <header class="absolute top-0 left-0 right-0 p-4 z-20 bg-white/70 dark:bg-dark-bg/70 backdrop-blur-sm border-b border-zinc-200/50 dark:border-dark-border/50 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="md:hidden p-2 -ml-2 text-zinc-500 hover:text-zinc-800 dark:hover:text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white dark:text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <h1 class="font-semibold tracking-tight text-lg">StudyAI <span class="text-primary-600 dark:text-primary-500">Pro</span></h1>
+                    </div>
+                </div>
+                <button onclick="document.documentElement.classList.toggle('dark')" class="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                    <!-- Sun Icon -->
+                    <svg class="w-5 h-5 hidden dark:block text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    <!-- Moon Icon -->
+                    <svg class="w-5 h-5 block dark:hidden text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                </button>
             </header>
             
-            <div id="messages" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 max-w-3xl mx-auto w-full"></div>
+            <!-- Chat Area -->
+            <div id="messages" class="flex-1 overflow-y-auto p-4 md:p-8 pt-24 pb-4 space-y-8 max-w-4xl mx-auto w-full scroll-smooth">
+                
+                <!-- Welcome Message -->
+                <div class="flex flex-col items-center justify-center mt-10 opacity-50 select-none pointer-events-none">
+                    <div class="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                    </div>
+                    <p class="text-sm font-medium text-zinc-400">Start a new conversation</p>
+                </div>
 
-            <div class="p-4 md:p-8 max-w-3xl mx-auto w-full">
-                <div class="relative bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 focus-within:ring-2 ring-indigo-500 flex items-center pr-3">
-                    <input id="user-input" type="text" placeholder="Type your study question..." 
-                        class="w-full bg-transparent px-6 py-4 outline-none">
-                    <button id="send-btn" onclick="handleSend()" class="p-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </button>
+            </div>
+
+            <!-- Input Area: Floating Card -->
+            <div class="p-4 md:p-8 max-w-4xl mx-auto w-full z-10">
+                <div class="relative bg-white dark:bg-zinc-900 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-zinc-200 dark:border-zinc-700 focus-within:ring-2 ring-primary-500/50 transition-all duration-300 group">
+                    <textarea id="user-input" rows="1" placeholder="Ask anything about your studies..." 
+                        class="w-full bg-transparent px-5 py-4 outline-none resize-none max-h-48 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 scrollbar-hide"
+                        oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+                    
+                    <div class="flex items-center justify-between px-3 pb-3 pt-1">
+                        <button class="p-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                        </button>
+                        <button id="send-btn" onclick="handleSend()" class="p-2.5 bg-black dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <p class="text-[10px] text-zinc-400 font-medium uppercase tracking-wide">StudyAI can make mistakes. Consider checking important information.</p>
                 </div>
             </div>
         </main>
     </div>
 
-    <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl w-full max-w-sm shadow-2xl">
-            <h2 class="text-xl font-bold mb-6">Preferences</h2>
-            <div class="flex justify-between items-center mb-6">
-                <span>Dark Mode</span>
-                <button onclick="document.documentElement.classList.toggle('dark')" class="w-12 h-6 bg-slate-200 dark:bg-indigo-500 rounded-full transition-all"></button>
+    <!-- Settings Modal (Sleeker version) -->
+    <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="if(event.target === this) toggleSettings()">
+        <div class="bg-white dark:bg-zinc-900 p-8 rounded-3xl w-full max-w-sm shadow-2xl transform scale-95 transition-transform duration-300 border border-zinc-100 dark:border-zinc-800">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-xl font-bold tracking-tight">Preferences</h2>
+                <button onclick="toggleSettings()" class="text-zinc-400 hover:text-zinc-600">✕</button>
             </div>
-            <button onclick="toggleSettings()" class="w-full py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-medium">Done</button>
+            
+            <div class="space-y-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="font-medium">Dark Mode</div>
+                        <div class="text-xs text-zinc-500">Easier on the eyes</div>
+                    </div>
+                    <button onclick="document.documentElement.classList.toggle('dark')" class="w-12 h-7 bg-zinc-200 dark:bg-primary-600 rounded-full relative transition-colors duration-300">
+                        <div class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-300 dark:translate-x-5"></div>
+                    </button>
+                </div>
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="font-medium">Stream Responses</div>
+                        <div class="text-xs text-zinc-500">Show text as it generates</div>
+                    </div>
+                    <button class="w-12 h-7 bg-primary-600 rounded-full relative transition-colors duration-300">
+                        <div class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-300 translate-x-5"></div>
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="toggleSettings()" class="mt-8 w-full py-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-xl font-medium hover:opacity-90 transition-opacity">Done</button>
         </div>
     </div>
 
     <script>
-        function toggleSettings() { document.getElementById('settings-modal').classList.toggle('hidden'); }
+        // --- Sidebar Logic ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const isHidden = sidebar.classList.contains('-translate-x-full');
+            if (isHidden) {
+                sidebar.classList.remove('-translate-x-full');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+            }
+        }
+
         function createNewChat() { 
-            document.getElementById('messages').innerHTML = ''; 
-            if (window.innerWidth < 768) document.getElementById('sidebar').classList.add('hidden');
+            const chat = document.getElementById('messages');
+            chat.innerHTML = `
+                <div class="flex flex-col items-center justify-center mt-10 opacity-50 select-none pointer-events-none">
+                    <div class="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                    </div>
+                    <p class="text-sm font-medium text-zinc-400">Start a new conversation</p>
+                </div>`; 
+            if (window.innerWidth < 768) toggleSidebar();
+        }
+
+        // --- Chat Logic (Secure & Animated) ---
+        function addMessage(role, text) {
+            const chat = document.getElementById('messages');
+            const welcomeMsg = chat.querySelector('.select-none'); // Remove welcome msg if exists
+            if(welcomeMsg) welcomeMsg.remove();
+
+            const wrapper = document.createElement('div');
+            wrapper.className = `flex gap-4 animate-slide-up ${role === 'user' ? 'flex-row-reverse' : 'flex-row'}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = `w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center text-white shadow-sm ${role === 'user' ? 'bg-black dark:bg-zinc-700' : 'bg-primary-600'}`;
+            avatar.innerHTML = role === 'user' 
+                ? '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>'
+                : '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>';
+
+            const bubble = document.createElement('div');
+            // Use prose classes for AI text styling
+            bubble.className = `max-w-[80%] leading-relaxed text-[15px] px-5 py-3 rounded-2xl shadow-sm ${
+                role === 'user' 
+                ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-tr-sm' 
+                : 'text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-700/50 rounded-tl-sm'
+            }`;
+            
+            // Secure text insertion
+            bubble.textContent = text;
+
+            wrapper.appendChild(avatar);
+            wrapper.appendChild(bubble);
+            chat.appendChild(wrapper);
+            
+            // Scroll to bottom
+            chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
         }
 
         async function handleSend() {
             const input = document.getElementById('user-input');
             const btn = document.getElementById('send-btn');
-            const prompt = input.value.trim();
-            if (!prompt) return;
+            const text = input.value.trim();
+            if (!text) return;
 
-            const chat = document.getElementById('messages');
-            chat.innerHTML += `<div class="flex justify-end"><div class="bg-indigo-600 text-white px-5 py-3 rounded-2xl shadow-md">${prompt}</div></div>`;
+            addMessage('user', text);
             input.value = '';
+            input.style.height = 'auto'; // Reset height
             btn.disabled = true;
-            
-            const res = await fetch('/api/chat', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ prompt })});
-            const data = await res.json();
-            
-            chat.innerHTML += `<div class="flex justify-start"><div class="bg-slate-100 dark:bg-slate-700 px-5 py-3 rounded-2xl">${data.reply}</div></div>`;
+
+            // Fake loading bubble
+            const chat = document.getElementById('messages');
+            const loadingId = 'loading-' + Date.now();
+            const loadingWrapper = document.createElement('div');
+            loadingWrapper.id = loadingId;
+            loadingWrapper.className = 'flex gap-4 animate-fade-in';
+            loadingWrapper.innerHTML = `
+                <div class="w-8 h-8 rounded-lg bg-primary-600 flex-shrink-0 flex items-center justify-center text-white">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <div class="bg-white dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-700/50 rounded-2xl rounded-tl-sm px-5 py-3 shadow-sm flex gap-1 items-center h-11">
+                    <span class="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce"></span>
+                    <span class="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+                    <span class="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                </div>
+            `;
+            chat.appendChild(loadingWrapper);
             chat.scrollTop = chat.scrollHeight;
-            btn.disabled = false;
-            input.focus();
+
+            try {
+                // Replace this URL with your actual API
+                const res = await fetch('/api/chat', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ prompt: text })});
+                
+                // MOCK RESPONSE FOR DEMO PURPOSES (Remove this block in production)
+                if (!res.ok) throw new Error("API Not Found (Mock Mode)");
+                // const data = await res.json(); 
+                // addMessage('ai', data.reply);
+                
+                // MOCKING A RESPONSE SO YOU CAN SEE IT WORK:
+                await new Promise(r => setTimeout(r, 1500)); 
+                document.getElementById(loadingId).remove();
+                addMessage('ai', "This is a professional response. Since this is a static demo, I'm simulating the AI backend. The UI is now ready to connect to your real API endpoint.");
+
+            } catch (error) {
+                document.getElementById(loadingId).remove();
+                addMessage('system', 'Connection failed. Please check your console.');
+                console.error(error);
+            } finally {
+                btn.disabled = false;
+                input.focus();
+            }
         }
 
-        document.getElementById('user-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
+        // Handle Shift+Enter for new line, Enter for send
+        document.getElementById('user-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+
+        // Modal Animation
+        function toggleSettings() {
+            const modal = document.getElementById('settings-modal');
+            const content = modal.firstElementChild;
+            
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                // Small delay to allow display:block to apply before opacity transition
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    content.classList.remove('scale-95');
+                    content.classList.add('scale-100');
+                }, 10);
+            } else {
+                modal.classList.add('opacity-0');
+                content.classList.remove('scale-100');
+                content.classList.add('scale-95');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+        }
     </script>
 </body>
 </html>
