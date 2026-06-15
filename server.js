@@ -6,7 +6,9 @@ const Cerebras = require('@cerebras/cerebras_cloud_sdk');
 app.use(express.json());
 app.use(express.static(__dirname));
 
-const client = new Cerebras({ apiKey: 'csk-rwm3c49pr8krmdf2td5we6dj6kkvp3kn6dh53kk36mjk4tjm' });
+// FIX 1: Use Environment Variables for your API key!
+// Never put your actual key string here. Set this in your hosting provider's dashboard.
+const client = new Cerebras({ apiKey: process.env.CEREBRAS_API_KEY });
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
@@ -30,6 +32,11 @@ app.post('/api/chat', async (req, res) => {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
 
+    // FIX 2: Heartbeat to prevent hosting providers (like Render/Heroku) from timing out the connection
+    const heartbeat = setInterval(() => {
+      res.write(': heartbeat\n\n'); // SSE comment format, ignored by frontend
+    }, 15000);
+
     const stream = await client.chat.completions.create({
       messages,
       model: 'gpt-oss-120b',
@@ -44,14 +51,18 @@ app.post('/api/chat', async (req, res) => {
     }
     
     res.write('data: [DONE]\n\n');
+    
+    // Clear heartbeat and end response
+    clearInterval(heartbeat);
     res.end();
 
   } catch (error) {
     console.error("API Error:", error.message);
-    if (!res.headersSent) res.status(500).json({ error: error.message });
-    else {
-        res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
-        res.end();
+    if (!res.headersSent) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
+      res.end();
     }
   }
 });
