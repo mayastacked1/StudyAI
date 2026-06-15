@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>StudyAI | Pro Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Add Marked (Markdown Parser) and DOMPurify (Security) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -70,6 +74,50 @@
         @supports (padding-bottom: env(safe-area-inset-bottom)) {
             .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
         }
+
+        /* --- MARKDOWN STYLING (Prose-like) --- */
+        .prose-content p { margin-bottom: 0.75rem; line-height: 1.6; }
+        .prose-content p:last-child { margin-bottom: 0; }
+        .prose-content strong { font-weight: 600; color: inherit; }
+        .prose-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 0.75rem; }
+        .prose-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 0.75rem; }
+        .prose-content li { margin-bottom: 0.25rem; }
+        .prose-content code { 
+            background: rgba(0,0,0,0.06); 
+            color: #eb5757; 
+            padding: 0.2em 0.4em; 
+            border-radius: 4px; 
+            font-size: 0.9em; 
+            font-family: 'Menlo', monospace;
+        }
+        .dark .prose-content code { 
+            background: rgba(255,255,255,0.15); 
+            color: #ff6b6b; 
+        }
+        .prose-content pre { 
+            background: #1e1e1e; 
+            color: #d4d4d4; 
+            padding: 1rem; 
+            border-radius: 0.5rem; 
+            overflow-x: auto; 
+            margin-bottom: 0.75rem;
+        }
+        .prose-content pre code { 
+            background: transparent; 
+            color: inherit; 
+            padding: 0; 
+            font-size: 0.9em;
+        }
+        .prose-content blockquote {
+            border-left: 4px solid #cbd5e1;
+            padding-left: 1rem;
+            color: #64748b;
+            font-style: italic;
+        }
+        .dark .prose-content blockquote {
+            border-left-color: #475569;
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body class="h-full bg-slate-50 dark:bg-dark-bg text-slate-900 dark:text-slate-100 transition-colors duration-500 selection:bg-brand-500 selection:text-white overflow-hidden">
@@ -96,7 +144,6 @@
 
             <div class="px-4 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">History</div>
             
-            <!-- History List Container (Fixed scrolling) -->
             <div id="history-list" class="flex-1 overflow-y-auto px-3 space-y-1 pb-4">
                 <!-- History items injected here -->
             </div>
@@ -170,7 +217,6 @@
     </div>
 
     <script>
-        // --- STATE MANAGEMENT ---
         let conversationHistory = [];
         let currentChatId = Date.now().toString();
         const chats = JSON.parse(localStorage.getItem('studyai_chats')) || {};
@@ -186,7 +232,7 @@
             if (conversationHistory.length === 0) return;
             chats[currentChatId] = {
                 id: currentChatId,
-                title: chats[currentChatId]?.title || "New Chat", // Preserve title if exists
+                title: chats[currentChatId]?.title || "New Chat",
                 history: conversationHistory,
                 timestamp: Date.now()
             };
@@ -203,7 +249,6 @@
                 const itemContainer = document.createElement('div');
                 itemContainer.className = "group flex items-center justify-between gap-1";
                 
-                // The Clickable Chat Title
                 const btn = document.createElement('button');
                 const isActive = chat.id === currentChatId;
                 btn.className = `flex-1 text-left px-4 py-3 rounded-xl text-sm transition-all duration-200 truncate border ${
@@ -214,12 +259,11 @@
                 btn.textContent = chat.title;
                 btn.onclick = () => loadChat(chat.id);
 
-                // The Delete Button
                 const delBtn = document.createElement('button');
                 delBtn.className = `p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100`;
                 delBtn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>`;
                 delBtn.onclick = (e) => {
-                    e.stopPropagation(); // Prevent loading the chat when deleting
+                    e.stopPropagation();
                     deleteChat(chat.id);
                 };
 
@@ -233,13 +277,8 @@
             if(confirm('Delete this conversation?')) {
                 delete chats[id];
                 localStorage.setItem('studyai_chats', JSON.stringify(chats));
-                
-                // If we deleted the current chat, start a new one
-                if (id === currentChatId) {
-                    createNewChat();
-                } else {
-                    renderHistoryList();
-                }
+                if (id === currentChatId) createNewChat();
+                else renderHistoryList();
             }
         }
 
@@ -262,11 +301,10 @@
                         renderHistoryList();
                     }
                 }
-            } catch (e) {
-                console.log("Could not generate title", e);
-            }
+            } catch (e) { console.log("Could not generate title", e); }
         }
 
+        // --- UPDATED: PARSE MARKDOWN ON LOAD ---
         function loadChat(id) {
             currentChatId = id;
             conversationHistory = chats[id].history || [];
@@ -281,12 +319,7 @@
             });
             
             renderHistoryList();
-            
-            // SCROLL FIX: Ensure we scroll to bottom after loading
-            requestAnimationFrame(() => {
-                 chatContainer.scrollTop = chatContainer.scrollHeight;
-            });
-
+            requestAnimationFrame(() => { chatContainer.scrollTop = chatContainer.scrollHeight; });
             if (window.innerWidth < 768) toggleSidebar(false);
         }
 
@@ -325,6 +358,7 @@
             }
         }
 
+        // --- UPDATED: MARKDOWN PARSING ---
         function createMessageElement(role, text = '', isStreaming = false) {
             const chat = document.getElementById('messages');
             const welcome = document.getElementById('welcome-state');
@@ -332,27 +366,28 @@
 
             const wrapper = document.createElement('div');
             const animClass = role === 'user' ? 'animate-slide-in-right' : 'animate-slide-in-left';
-            
             wrapper.className = `flex gap-4 ${animClass} ${role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-start`;
             
             const avatar = document.createElement('div');
             avatar.className = `w-9 h-9 rounded-xl flex-shrink-0 flex items-center justify-center text-white shadow-md ${
-                role === 'user' 
-                ? 'bg-slate-800 dark:bg-slate-600' 
-                : 'bg-gradient-to-br from-brand-500 to-purple-600 shadow-brand-500/30'
+                role === 'user' ? 'bg-slate-800 dark:bg-slate-600' : 'bg-gradient-to-br from-brand-500 to-purple-600 shadow-brand-500/30'
             }`;
             avatar.innerHTML = role === 'user' 
                 ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>'
                 : '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>';
 
             const bubble = document.createElement('div');
-            bubble.className = `max-w-[85%] leading-relaxed text-[15px] px-5 py-3.5 rounded-3xl shadow-sm break-words overflow-hidden ${
+            // Added prose-content class for markdown styling
+            bubble.className = `prose-content max-w-[85%] leading-relaxed text-[15px] px-5 py-3.5 rounded-3xl shadow-sm break-words overflow-hidden ${
                 role === 'user' 
                 ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-tr-md' 
                 : 'text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-tl-md ' + (isStreaming ? 'cursor-blink' : '')
             }`;
             
-            if (!isStreaming) bubble.textContent = text;
+            if (!isStreaming) {
+                // Parse Markdown for static messages (loading history)
+                bubble.innerHTML = DOMPurify.sanitize(marked.parse(text));
+            }
 
             wrapper.appendChild(avatar);
             wrapper.appendChild(bubble);
@@ -371,7 +406,6 @@
             const text = input.value.trim();
             if (!text) return;
 
-            // Initialize chat entry if new
             if (!chats[currentChatId]) {
                 chats[currentChatId] = { id: currentChatId, title: text.substring(0, 30) + "...", history: [], timestamp: Date.now() };
                 renderHistoryList();
@@ -416,6 +450,7 @@
                                 const data = JSON.parse(dataStr);
                                 if (data.content) {
                                     aiResponseText += data.content;
+                                    // Use textContent during stream for performance & visual stability
                                     bubble.textContent = aiResponseText;
                                     const chat = document.getElementById('messages');
                                     chat.scrollTop = chat.scrollHeight;
@@ -429,7 +464,9 @@
                 conversationHistory.push({ role: 'assistant', content: aiResponseText });
                 saveCurrentChat();
 
-                // Generate Title if it's the first message (and currently has a truncated title)
+                // --- CRITICAL FIX: Parse Markdown after streaming finishes ---
+                bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText));
+
                 if (conversationHistory.length === 2 && chats[currentChatId].title.includes("...")) {
                     generateTitle(text);
                 }
