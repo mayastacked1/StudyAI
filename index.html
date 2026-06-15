@@ -22,7 +22,6 @@
                         'pulse-glow': 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'slide-in-right': 'slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                         'slide-in-left': 'slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'bounce-slow': 'bounce 3s infinite',
                     },
                     keyframes: {
                         float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
@@ -96,6 +95,8 @@
             </div>
 
             <div class="px-4 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">History</div>
+            
+            <!-- History List Container (Fixed scrolling) -->
             <div id="history-list" class="flex-1 overflow-y-auto px-3 space-y-1 pb-4">
                 <!-- History items injected here -->
             </div>
@@ -135,7 +136,6 @@
             
             <!-- Chat Container -->
             <div id="messages" class="flex-1 overflow-y-auto p-4 md:p-8 pt-24 pb-32 space-y-6 max-w-4xl mx-auto w-full scroll-smooth">
-                
                 <!-- Welcome State -->
                 <div id="welcome-state" class="flex flex-col items-center justify-center h-[60vh] opacity-60 select-none">
                     <div class="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-3xl flex items-center justify-center mb-6 shadow-xl animate-float">
@@ -144,7 +144,6 @@
                     <h2 class="text-2xl font-bold mb-2 text-slate-800 dark:text-white">Welcome to StudyAI</h2>
                     <p class="text-sm text-slate-500 dark:text-slate-400 max-w-xs text-center">I'm <span class="font-semibold text-brand-500">Aiserie</span>. How can I help you study today?</p>
                 </div>
-
             </div>
 
             <!-- Input Area -->
@@ -187,7 +186,7 @@
             if (conversationHistory.length === 0) return;
             chats[currentChatId] = {
                 id: currentChatId,
-                title: conversationHistory[0]?.content.substring(0, 30) + "..." || "New Chat",
+                title: chats[currentChatId]?.title || "New Chat", // Preserve title if exists
                 history: conversationHistory,
                 timestamp: Date.now()
             };
@@ -201,17 +200,71 @@
             const sortedChats = Object.values(chats).sort((a, b) => b.timestamp - a.timestamp);
 
             sortedChats.forEach(chat => {
+                const itemContainer = document.createElement('div');
+                itemContainer.className = "group flex items-center justify-between gap-1";
+                
+                // The Clickable Chat Title
                 const btn = document.createElement('button');
                 const isActive = chat.id === currentChatId;
-                btn.className = `w-full text-left px-4 py-3 rounded-xl text-sm transition-all duration-200 truncate border ${
+                btn.className = `flex-1 text-left px-4 py-3 rounded-xl text-sm transition-all duration-200 truncate border ${
                     isActive 
                     ? 'bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300 border-brand-100 dark:border-brand-800/50 font-semibold shadow-sm' 
                     : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 border-transparent hover:border-slate-100 dark:hover:border-slate-700'
                 }`;
                 btn.textContent = chat.title;
                 btn.onclick = () => loadChat(chat.id);
-                list.appendChild(btn);
+
+                // The Delete Button
+                const delBtn = document.createElement('button');
+                delBtn.className = `p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100`;
+                delBtn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>`;
+                delBtn.onclick = (e) => {
+                    e.stopPropagation(); // Prevent loading the chat when deleting
+                    deleteChat(chat.id);
+                };
+
+                itemContainer.appendChild(btn);
+                itemContainer.appendChild(delBtn);
+                list.appendChild(itemContainer);
             });
+        }
+
+        function deleteChat(id) {
+            if(confirm('Delete this conversation?')) {
+                delete chats[id];
+                localStorage.setItem('studyai_chats', JSON.stringify(chats));
+                
+                // If we deleted the current chat, start a new one
+                if (id === currentChatId) {
+                    createNewChat();
+                } else {
+                    renderHistoryList();
+                }
+            }
+        }
+
+        async function generateTitle(firstPrompt) {
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        prompt: `Generate a very short, 3-5 word title for this user request: "${firstPrompt}". Do not include quotes. Just the title.`,
+                        history: [] 
+                    })
+                });
+                const data = await response.json();
+                if (data.reply) {
+                    const cleanTitle = data.reply.replace(/['"]/g, '').trim();
+                    if(chats[currentChatId]) {
+                        chats[currentChatId].title = cleanTitle;
+                        localStorage.setItem('studyai_chats', JSON.stringify(chats));
+                        renderHistoryList();
+                    }
+                }
+            } catch (e) {
+                console.log("Could not generate title", e);
+            }
         }
 
         function loadChat(id) {
@@ -228,6 +281,12 @@
             });
             
             renderHistoryList();
+            
+            // SCROLL FIX: Ensure we scroll to bottom after loading
+            requestAnimationFrame(() => {
+                 chatContainer.scrollTop = chatContainer.scrollHeight;
+            });
+
             if (window.innerWidth < 768) toggleSidebar(false);
         }
 
@@ -266,8 +325,6 @@
             }
         }
 
-        // --- ANIMATED CHAT LOGIC ---
-        
         function createMessageElement(role, text = '', isStreaming = false) {
             const chat = document.getElementById('messages');
             const welcome = document.getElementById('welcome-state');
@@ -302,9 +359,7 @@
             chat.appendChild(wrapper);
             
             requestAnimationFrame(() => {
-                setTimeout(() => {
-                    chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
-                }, 100);
+                chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
             });
             
             return { wrapper, bubble };
@@ -315,6 +370,12 @@
             const btn = document.getElementById('send-btn');
             const text = input.value.trim();
             if (!text) return;
+
+            // Initialize chat entry if new
+            if (!chats[currentChatId]) {
+                chats[currentChatId] = { id: currentChatId, title: text.substring(0, 30) + "...", history: [], timestamp: Date.now() };
+                renderHistoryList();
+            }
 
             createMessageElement('user', text);
             conversationHistory.push({ role: 'user', content: text });
@@ -367,6 +428,11 @@
                 bubble.classList.remove('cursor-blink');
                 conversationHistory.push({ role: 'assistant', content: aiResponseText });
                 saveCurrentChat();
+
+                // Generate Title if it's the first message (and currently has a truncated title)
+                if (conversationHistory.length === 2 && chats[currentChatId].title.includes("...")) {
+                    generateTitle(text);
+                }
 
             } catch (error) {
                 bubble.textContent = "Connection lost.";
