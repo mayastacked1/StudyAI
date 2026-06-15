@@ -6,7 +6,6 @@ const Cerebras = require('@cerebras/cerebras_cloud_sdk');
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// Initialize with your API key
 const client = new Cerebras({ apiKey: 'csk-rwm3c49pr8krmdf2td5we6dj6kkvp3kn6dh53kk36mjk4tjm' });
 
 app.get('/', (req, res) => {
@@ -21,7 +20,7 @@ app.post('/api/chat', async (req, res) => {
     const messages = [
       { 
         role: 'system', 
-        content: 'You are Aiserie, a futuristic, highly intelligent, and sleek AI assistant built into the StudyAI platform. You are helpful, concise, and use markdown formatting. You have a friendly but professional tone. Do not introduce yourself unless asked.' 
+        content: 'You are Aiserie, a futuristic, highly intelligent, and formal academic assistant. \n\nRULES:\n1. ORGANIZATION: If an answer is long, you MUST use Markdown to organize it. Use Headers (##) for sections and Bullet Points for lists.\n2. STYLE: Be professional, concise, and clear. Avoid fluff.\n3. FORMATTING: Use code blocks for any code or data.\n4. FILE HANDLING: If the user provides a file context, analyze it thoroughly.\n5. Do not introduce yourself unless asked.' 
       },
       ...(history || []),
       { role: 'user', content: prompt }
@@ -58,4 +57,4 @@ app.post('/api/chat', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => console.log(`StudyAI Server running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Aiserie Server running on port ${PORT}`));
