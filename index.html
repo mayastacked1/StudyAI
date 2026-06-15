@@ -16,25 +16,16 @@
                     colors: {
                         brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' },
                         dark: { bg: '#0f172a', surface: '#1e293b', border: '#334155' },
-                        gpt: {
-                            bg: '#ffffff',
-                            surface: '#f7f7f8',
-                            border: '#e5e5e5',
-                            borderDark: '#565869'
-                        }
+                        gpt: { bg: '#ffffff', surface: '#f7f7f8', border: '#e5e5e5', borderDark: '#565869' }
                     },
-                    fontFamily: {
-                        sans: ['Inter', 'Söhne', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Inter', 'Söhne', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
-                        'pulse-glow': 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'slide-in-right': 'slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                         'slide-in-left': 'slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                     },
                     keyframes: {
                         float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
-                        pulseGlow: { '0%, 100%': { opacity: 1, boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)' }, '50%': { opacity: .5, boxShadow: '0 0 10px rgba(59, 130, 246, 0.2)' } },
                         slideInRight: { '0%': { opacity: 0, transform: 'translateX(20px) scale(0.95)' }, '100%': { opacity: 1, transform: 'translateX(0) scale(1)' } },
                         slideInLeft: { '0%': { opacity: 0, transform: 'translateX(-20px)' }, '100%': { opacity: 1, transform: 'translateX(0)' } },
                     }
@@ -50,6 +41,11 @@
         body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; }
         html { scroll-behavior: smooth; }
         
+        /* Smooth Dark/Light Mode Transition */
+        body, aside, main, header, .glass, button, textarea, .prose-content, .chat-bubble {
+            transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
         /* Custom Scrollbar */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -68,6 +64,25 @@
             color: currentColor;
         }
         @keyframes blink { 50% { opacity: 0; } }
+
+        /* Thinking Dots Animation */
+        .thinking-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #94a3b8; 
+            margin: 0 3px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .dark .thinking-dots span { background-color: #64748b; }
+        .thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
+        .thinking-dots span:nth-child(3) { animation-delay: 0s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
 
         /* Glassmorphism */
         .glass {
@@ -92,50 +107,49 @@
         .prose-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 0.75rem; }
         .prose-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 0.75rem; }
         .prose-content li { margin-bottom: 0.25rem; }
-        .prose-content code { 
-            background: rgba(0,0,0,0.06); 
-            color: #eb5757; 
-            padding: 0.2em 0.4em; 
-            border-radius: 4px; 
-            font-size: 0.9em; 
-            font-family: 'Menlo', monospace;
-            word-break: break-all; 
+        .prose-content code { background: rgba(0,0,0,0.06); color: #eb5757; padding: 0.2em 0.4em; border-radius: 4px; font-size: 0.9em; font-family: 'Menlo', monospace; word-break: break-all; }
+        .dark .prose-content code { background: rgba(255,255,255,0.15); color: #ff6b6b; }
+        .prose-content pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 0.75rem; }
+        .prose-content pre code { background: transparent; color: inherit; padding: 0; font-size: 0.9em; word-break: normal; white-space: pre; }
+        .prose-content blockquote { border-left: 4px solid #cbd5e1; padding-left: 1rem; color: #64748b; font-style: italic; }
+        .dark .prose-content blockquote { border-left-color: #475569; color: #94a3b8; }
+
+        /* --- HOVER ANIMATIONS --- */
+        .btn-glow {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .dark .prose-content code { 
-            background: rgba(255,255,255,0.15); 
-            color: #ff6b6b; 
+        .btn-glow:hover:not(:disabled) {
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+            transform: translateY(-1px);
         }
-        .prose-content pre { 
-            background: #1e1e1e; 
-            color: #d4d4d4; 
-            padding: 1rem; 
-            border-radius: 0.5rem; 
-            overflow-x: auto; 
-            margin-bottom: 0.75rem;
+        .btn-glow:active:not(:disabled) {
+            transform: translateY(0px) scale(0.95);
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.2);
         }
-        .prose-content pre code { 
-            background: transparent; 
-            color: inherit; 
-            padding: 0; 
-            font-size: 0.9em;
-            word-break: normal; 
-            white-space: pre; 
+
+        .mode-toggle svg {
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .prose-content blockquote {
-            border-left: 4px solid #cbd5e1;
-            padding-left: 1rem;
-            color: #64748b;
-            font-style: italic;
+        .mode-toggle:hover svg {
+            transform: rotate(30deg);
         }
-        .dark .prose-content blockquote {
-            border-left-color: #475569;
-            color: #94a3b8;
+
+        .history-item {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
         }
-        .prose-content h1, .prose-content h2, .prose-content h3 { font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        .history-item:hover {
+            border-left-color: #3b82f6;
+            padding-left: 12px; /* Slight indent effect */
+        }
+
+        .input-ring:focus-within {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
     </style>
 </head>
 
-<body class="h-full bg-gpt-bg dark:bg-[#343541] text-gpt-textMain dark:text-gpt-textDark transition-colors duration-200 overflow-hidden">
+<body class="h-full bg-gpt-bg dark:bg-[#343541] text-gpt-textMain dark:text-gpt-textDark overflow-hidden">
     <div class="flex h-full w-full relative">
         
         <!-- Mobile Overlay -->
@@ -146,14 +160,14 @@
             
             <!-- New Chat Button -->
             <div class="p-3">
-                <button onclick="createNewChat()" class="w-full flex items-center gap-2 px-3 py-3 border border-black/10 dark:border-white/10 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2A2B32] transition-colors text-sm text-left">
+                <button onclick="createNewChat()" class="btn-glow w-full flex items-center gap-2 px-3 py-3 border border-black/10 dark:border-white/10 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2A2B32] text-sm text-left">
                     <svg class="w-4 h-4 text-black dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     <span class="font-medium text-black dark:text-white">New chat</span>
                 </button>
             </div>
 
             <!-- History -->
-            <div class="flex-1 overflow-y-auto overflow-x-hidden px-3">
+            <div class="flex-1 overflow-y-auto overflow-x-hidden px-3 no-scrollbar">
                 <div class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-4 mb-2 px-3">Today</div>
                 <div id="history-list" class="space-y-1 pb-4"></div>
             </div>
@@ -175,14 +189,14 @@
             <!-- Header -->
             <div class="absolute top-0 left-0 right-0 p-4 z-10 flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <button onclick="toggleSidebar()" class="md:hidden p-1 text-gray-500 dark:text-gray-400">
+                    <button onclick="toggleSidebar()" class="md:hidden p-1 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
                     <h1 class="font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
                         StudyAI <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">GPT-4</span>
                     </h1>
                 </div>
-                <button onclick="document.documentElement.classList.toggle('dark')" class="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors">
+                <button onclick="document.documentElement.classList.toggle('dark')" class="mode-toggle p-2 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors">
                     <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                     <svg class="w-5 h-5 hidden dark:block text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                 </button>
@@ -191,38 +205,34 @@
             <!-- Chat Container -->
             <div id="messages" class="flex-1 h-full overflow-y-auto pt-20 pb-32 scroll-smooth no-scrollbar">
                 <div id="welcome-state" class="flex flex-col items-center justify-center h-[80vh] text-center px-4">
-                    <div class="bg-white dark:bg-transparent p-4 rounded-full mb-6 shadow-sm">
+                    <div class="bg-white dark:bg-transparent p-4 rounded-full mb-6 shadow-sm animate-float">
                         <svg class="w-10 h-10 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
                     </div>
                     <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-8">How can I help you today?</h2>
                 </div>
             </div>
 
-            <!-- Input Area (Floating Bar) -->
+            <!-- Input Area -->
             <div class="absolute bottom-0 left-0 right-0 p-4 pb-8 bg-gradient-to-t from-gpt-bg via-gpt-bg to-transparent dark:from-[#343541] dark:via-[#343541]">
                 <div class="max-w-3xl mx-auto w-full relative group">
+                    <!-- Animated Glow Border -->
                     <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-                    <div class="relative bg-white dark:bg-[#40414f] rounded-xl shadow-lg dark:shadow-[0_0_15px_rgba(0,0,0,0.3)] border border-black/10 dark:border-white/10 overflow-hidden">
-                        
-                        <!-- File Input (Hidden) -->
+                    
+                    <div class="input-ring relative bg-white dark:bg-[#40414f] rounded-xl shadow-lg dark:shadow-[0_0_15px_rgba(0,0,0,0.3)] border border-black/10 dark:border-white/10 overflow-hidden transition-all duration-300">
                         <input type="file" id="file-input" class="hidden">
-
                         <textarea id="user-input" rows="1" placeholder="Message StudyAI..." 
                             class="w-full bg-transparent px-12 py-3 outline-none resize-none max-h-48 text-gray-900 dark:text-white placeholder-gray-500 scrollbar-hide text-base"
                             oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
 
                         <div class="flex items-center justify-between px-2 pb-2">
-                            <!-- Left Icons -->
                             <div class="flex items-center pl-1">
-                                <button onclick="document.getElementById('file-input').click()" class="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md transition-colors">
+                                <button onclick="document.getElementById('file-input').click()" class="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md transition-colors active:scale-90">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
                                 </button>
-                                <!-- File Name Badge -->
                                 <div id="file-name" class="hidden text-xs text-brand-600 font-medium px-2 truncate max-w-[100px]">file.txt</div>
                             </div>
 
-                            <!-- Send Button -->
-                            <button id="send-btn" onclick="handleSend()" class="p-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                            <button id="send-btn" onclick="handleSend()" class="btn-glow p-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </button>
                         </div>
@@ -249,7 +259,6 @@
             renderHistoryList();
         }
 
-        // --- HELPER: Short Title Generator ---
         function getShortTitle(text) {
             if (!text) return "New Chat";
             const words = text.replace(/[\n\r]/g, ' ').trim().split(/\s+/);
@@ -257,7 +266,6 @@
             return words.length > 3 ? shortText + '...' : shortText;
         }
 
-        // --- FILE HANDLING ---
         const fileInput = document.getElementById('file-input');
         const fileNameDisplay = document.getElementById('file-name');
 
@@ -291,7 +299,7 @@
                 const btn = document.createElement('button');
                 const isActive = chat.id === currentChatId;
                 
-                btn.className = `flex-1 text-left px-3 py-2 rounded-lg text-sm transition-colors truncate flex items-center justify-between group ${
+                btn.className = `history-item flex-1 text-left px-3 py-2 rounded-lg text-sm transition-colors truncate flex items-center justify-between group ${
                     isActive 
                     ? 'bg-gray-200 dark:bg-[#2A2B32] text-gray-900 dark:text-white' 
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#2A2B32]'
@@ -303,7 +311,7 @@
 
                 const delIcon = document.createElement('span');
                 delIcon.innerHTML = '&times;';
-                delIcon.className = "text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 px-2 text-lg font-light";
+                delIcon.className = "text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 px-2 text-lg font-light transition-all";
                 delIcon.onclick = (e) => {
                     e.stopPropagation();
                     deleteChat(chat.id);
@@ -361,7 +369,7 @@
             const chatContainer = document.getElementById('messages');
             chatContainer.innerHTML = `
                 <div id="welcome-state" class="flex flex-col items-center justify-center h-[80vh] text-center px-4">
-                    <div class="bg-white dark:bg-transparent p-4 rounded-full mb-6 shadow-sm">
+                    <div class="bg-white dark:bg-transparent p-4 rounded-full mb-6 shadow-sm animate-float">
                         <svg class="w-10 h-10 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
                     </div>
                     <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-8">How can I help you today?</h2>
@@ -395,7 +403,9 @@
             if(welcome) welcome.style.display = 'none';
 
             const wrapper = document.createElement('div');
-            wrapper.className = `w-full text-gray-800 dark:text-gray-100 border-b border-black/5 dark:border-white/5 py-6 ${role === 'user' ? 'bg-white dark:bg-[#444654]' : ''}`;
+            wrapper.className = `w-full text-gray-800 dark:text-gray-100 border-b border-black/5 dark:border-white/5 py-6 ${
+                role === 'user' ? 'bg-white dark:bg-[#444654]' : ''
+            } ${role === 'user' ? 'animate-slide-in-right' : 'animate-slide-in-left'}`;
 
             const inner = document.createElement('div');
             inner.className = `flex gap-4 md:gap-6 max-w-3xl mx-auto px-4 ${role === 'user' ? 'flex-row-reverse' : 'flex-row'}`;
@@ -411,7 +421,7 @@
             const bubble = document.createElement('div');
             bubble.className = `prose-content leading-7 text-[15px] w-full overflow-hidden ${isStreaming ? 'cursor-blink' : ''}`;
 
-            if (!isStreaming) {
+            if (!isStreaming && text) {
                 bubble.innerHTML = DOMPurify.sanitize(marked.parse(text));
             }
 
@@ -434,7 +444,6 @@
 
             if (!text && !attachedFile) return;
 
-            // Handle File Text injection (Mock)
             if (attachedFile) {
                 const fileText = await readFileAsText(attachedFile);
                 text += `\n\n[File Attached: ${attachedFile.name}]\n${fileText}`;
@@ -461,13 +470,25 @@
             input.style.height = 'auto';
             btn.disabled = true;
 
-            const { bubble } = createMessageElement('assistant', '', true);
+            // Create Bot Message with Thinking Dots
+            const { bubble } = createMessageElement('assistant', '', false);
+            bubble.classList.remove('cursor-blink'); // Remove blink initially
+            bubble.classList.add('thinking-dots');
+            bubble.innerHTML = '<span></span><span></span><span></span>';
+
             let aiResponseText = '';
             const chat = document.getElementById('messages');
 
             try {                
-                // Mock API Response & Streaming
-                await new Promise(r => setTimeout(r, 600));
+                // Simulate "Thinking" Delay (1.5 seconds)
+                await new Promise(r => setTimeout(r, 1500));
+                
+                // Switch from thinking dots to streaming text
+                bubble.classList.remove('thinking-dots');
+                bubble.classList.add('cursor-blink');
+                bubble.innerHTML = '';
+
+                // Mock API Response Streaming
                 let mockResponse = "I am a frontend demo. In a real application, I would process your request: \"" + getShortTitle(text) + "\" via an API backend.";
                 
                 const chunks = mockResponse.split(' ');
@@ -492,7 +513,7 @@
             } catch (error) {
                 bubble.textContent = "Connection lost.";
                 bubble.classList.add('text-red-500');
-                bubble.classList.remove('cursor-blink');
+                bubble.classList.remove('cursor-blink', 'thinking-dots');
                 console.error(error);
             } finally {
                 btn.disabled = false;
