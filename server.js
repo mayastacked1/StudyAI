@@ -1,90 +1,121 @@
-const express = require('express');
-const path = require('path');
-const app = express();
-const Cerebras = require('@cerebras/cerebras_cloud_sdk');
-
-// Middleware
-app.use(express.json({ limit: '10mb' })); // Increased limit for file attachments
-app.use(express.static(__dirname));
-
-// Cerebras Client
-const client = new Cerebras({ apiKey: process.env.CEREBRAS_API_KEY });
-
-// Serve Frontend
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// Chat API Endpoint
-app.post('/api/chat', async (req, res) => {
-  try {
-    const { prompt, history } = req.body;
-    if (!prompt) return res.status(400).json({ error: "Prompt is required" });
-
-    const messages = [
-      { 
-        role: 'system', 
-        content: 'You are StudyAI, a friendly, highly intelligent, and encouraging academic assistant built by Vision. \n\nRULES:\n1. ORGANIZATION: If an answer is long, you MUST use Markdown to organize it. Use Headers (##) for sections and Bullet Points for lists.\n2. STYLE: Be professional, concise, and clear. Avoid fluff. Be encouraging to students.\n3. FORMATTING: Use code blocks for any code or data. Use LaTeX formatting for math where appropriate.\n4. FILE HANDLING: If the user provides a file context, analyze it thoroughly and base your answers on it.\n5. Do not introduce yourself unless asked.\n6. IMAGE GENERATION: If the user explicitly asks you to generate, draw, or create an image/picture, you MUST output a markdown image using this exact format: ![Image Description](https://image.pollinations.ai/prompt/A%20description%20of%20the%20image). \n\nIMPORTANT IMAGE RULES:\n- Replace the description part with a URL-encoded string of the requested image.\n- You can generate any style of image (art, sketch, diagram, realistic, cartoon, etc.) based on what the user asks for.\n- Do not output images unless specifically asked.' 
-      },
-      ...(history || []),
-      { role: 'user', content: prompt }
-    ];
-
-    // Set SSE Headers
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.setHeader('X-Accel-Buffering', 'no'); // Prevents nginx buffering
-
-    // Heartbeat to keep connection alive during long generation times
-    const heartbeat = setInterval(() => {
-      res.write(': heartbeat\n\n');
-    }, 12000);
-
-    const stream = await client.chat.completions.create({
-      messages,
-      model: 'gpt-oss-120b', // <--- FIXED: Changed back to your original model
-      stream: true,
-      temperature: 0.7,
-      max_tokens: 4096,
-    });
-
-    for await (const chunk of stream) {
-      const content = chunk.choices?.[0]?.delta?.content || "";
-      if (content) {
-        res.write(`data: ${JSON.stringify({ content })}\n\n`);
-      }
-    }
+async function handleSend() {
+    const input = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const text = input.value.trim();
     
-    res.write('data: [DONE]\n\n');
-    
-    clearInterval(heartbeat);
-    res.end();
+    // Don't send if input is empty and no file is attached
+    if (!text && !attachedFile) return;
 
-  } catch (error) {
-    console.error("Cerebras API Error:", error);
+    sendBtn.disabled = true;
+    input.value = '';
+    input.style.height = 'auto';
+
+    let fullMessage = text;
     
-    // Handle Rate Limiting (SDK sometimes uses status, sometimes statusCode)
-    const status = error.status || error.statusCode || 500;
-    let errorMessage = error.message;
-    
-    if (status === 429) {
-      errorMessage = "I'm experiencing high traffic right now. Please wait a moment and try again.";
-    } else if (status === 401) {
-      errorMessage = "API key is invalid or missing. Please check your server configuration.";
+    // Handle file attachments
+    if (attachedFile) {
+        try {
+            const fileContent = await readFileAsText(attachedFile);
+            fullMessage += `\n\n--- Attached File: ${attachedFile.name} ---\n${fileContent}`;
+        } catch (e) {
+            console.error("Failed to read file", e);
+        }
+        attachedFile = null;
+        fileNameDisplay.classList.add('hidden');
+        fileInput.value = '';
     }
 
-    // If headers haven't been sent yet, send a standard JSON error
-    if (!res.headersSent) {
-      res.status(status).json({ error: errorMessage });
-    } else {
-      // If we are already streaming, send the error as a stream chunk so the UI shows it gracefully
-      res.write(`data: ${JSON.stringify({ content: `\n\n⚠️ **Error:** ${errorMessage}` })}\n\n`);
-      res.write('data: [DONE]\n\n');
-      res.end();
-    }
-  }
-});
+    // Add user message to UI and history
+    conversationHistory.push({ role: 'user', content: fullMessage });
+    createMessageElement('user', fullMessage, false);
+    generateTitle(fullMessage);
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => console.log(`StudyAI Server running on port ${PORT}`));
+    // Create AI message placeholder with streaming cursor
+    const { bubble } = createMessageElement('assistant', '', true);
+    let fullResponse = '';
+
+    try {
+        // Call your backend API
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                prompt: fullMessage,
+                history: conversationHistory // Send the history your backend expects
+            })
+        });
+
+        if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData.error || `Server Error: ${response.status}`);
+        }
+
+        // ====== THIS IS THE FIX: PROPER SSE PARSING ======
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            // Decode the chunk and add to buffer
+            buffer += decoder.decode(value, { stream: true });
+            
+            // Split by newlines to process each SSE line
+            const lines = buffer.split('\n');
+            
+            // Keep the last incomplete line in the buffer
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+                const trimmed = line.trim();
+                
+                // Skip empty lines and heartbeat comments from your server
+                if (!trimmed || trimmed.startsWith(':')) continue;
+                
+                // Check if it's an SSE data line
+                if (trimmed.startsWith('data: ')) {
+                    const dataStr = trimmed.slice(6); // Remove "data: " prefix
+                    
+                    // Check for stream end
+                    if (dataStr === '[DONE]') continue;
+                    
+                    try {
+                        const parsed = JSON.parse(dataStr);
+                        // Your backend sends { content: "..." }, so we extract it here
+                        const delta = parsed.content; 
+                        
+                        if (delta) {
+                            fullResponse += delta;
+                            // Render markdown safely
+                            bubble.innerHTML = DOMPurify.sanitize(
+                                marked.parse(fullResponse, { renderer })
+                            );
+                            // Auto-scroll to bottom
+                            const chat = document.getElementById('messages');
+                            chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
+                        }
+                    } catch (parseErr) {
+                        console.warn('Could not parse SSE chunk:', trimmed);
+                    }
+                }
+            }
+        }
+        // ====== END SSE FIX ======
+
+    } catch (error) {
+        console.error('Stream error:', error);
+        fullResponse = fullResponse || `⚠️ Error: ${error.message}`;
+        bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
+    }
+
+    // Remove cursor blink, do final render
+    bubble.classList.remove('cursor-blink');
+    bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
+
+    // Save to history
+    conversationHistory.push({ role: 'assistant', content: fullResponse });
+    saveCurrentChat();
+    sendBtn.disabled = false;
+}
