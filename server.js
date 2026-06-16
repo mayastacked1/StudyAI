@@ -43,7 +43,7 @@ app.post('/api/chat', async (req, res) => {
 
     const stream = await client.chat.completions.create({
       messages,
-      model: 'llama3.1-8b', // Updated to standard Cerebras model (change back to gpt-oss-120b if you have specific access)
+      model: 'gpt-oss-120b', // <--- FIXED: Changed back to your original model
       stream: true,
       temperature: 0.7,
       max_tokens: 4096,
