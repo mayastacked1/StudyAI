@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>StudyAI by Vision</title>
-
+    
     <link rel="icon" type="image/png" href="logo.png">
-
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
-
+    
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -26,109 +26,219 @@
                         'float': 'float 6s ease-in-out infinite',
                         'slide-in-right': 'slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                         'slide-in-left': 'slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'modal-in': 'modalIn 0.3s ease-out forwards',
                     },
                     keyframes: {
                         float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
                         slideInRight: { '0%': { opacity: 0, transform: 'translateX(20px) scale(0.95)' }, '100%': { opacity: 1, transform: 'translateX(0) scale(1)' } },
                         slideInLeft: { '0%': { opacity: 0, transform: 'translateX(-20px)' }, '100%': { opacity: 1, transform: 'translateX(0)' } },
-                        modalIn: { '0%': { opacity: 0, transform: 'scale(0.95) translateY(10px)' }, '100%': { opacity: 1, transform: 'scale(1) translateY(0)' } },
                     }
                 }
             }
-@@ -110,6 +112,11 @@
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; }
+        html { scroll-behavior: smooth; }
+        body, aside, main, header, .glass, button, textarea, .prose-content, .chat-bubble { transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
+
+        .cursor-blink::after { content: '▋'; display: inline-block; vertical-align: middle; margin-left: 2px; animation: blink 1s step-start infinite; color: currentColor; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .thinking-dots span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: #94a3b8; margin: 0 3px; animation: bounce 1.4s infinite ease-in-out both; }
+        .dark .thinking-dots span { background-color: #64748b; }
+        .thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
+        .thinking-dots span:nth-child(3) { animation-delay: 0s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+        .image-generating-dots span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: #3b82f6; margin: 0 3px; animation: imagePulse 1.4s infinite ease-in-out both; }
+        .dark .image-generating-dots span { background-color: #60a5fa; }
+        .image-generating-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .image-generating-dots span:nth-child(2) { animation-delay: -0.16s; }
+        .image-generating-dots span:nth-child(3) { animation-delay: 0s; }
+        @keyframes imagePulse { 0%, 80%, 100% { transform: scale(0.5); opacity: 0.4; } 40% { transform: scale(1.2); opacity: 1; } }
+
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .dark .glass { background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        .prose-content p { margin-bottom: 0.75rem; line-height: 1.6; }
+        .prose-content p:last-child { margin-bottom: 0; }
+        .prose-content strong { font-weight: 600; color: inherit; }
+        .prose-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 0.75rem; }
+        .prose-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 0.75rem; }
+        .prose-content li { margin-bottom: 0.25rem; }
+        .prose-content code { background: rgba(0,0,0,0.06); color: #eb5757; padding: 0.2em 0.4em; border-radius: 4px; font-size: 0.9em; font-family: 'Menlo', monospace; word-break: break-all; }
+        .dark .prose-content code { background: rgba(255,255,255,0.15); color: #ff6b6b; }
+        .prose-content pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 0.75rem; }
+        .prose-content pre code { background: transparent; color: inherit; padding: 0; font-size: 0.9em; word-break: normal; white-space: pre; }
+        .prose-content blockquote { border-left: 4px solid #cbd5e1; padding-left: 1rem; color: #64748b; font-style: italic; }
+        .dark .prose-content blockquote { border-left-color: #475569; color: #94a3b8; }
+
+        .btn-glow { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .btn-glow:hover:not(:disabled) { box-shadow: 0 0 20px rgba(37, 99, 235, 0.4); transform: translateY(-1px); }
+        .btn-glow:active:not(:disabled) { transform: translateY(0px) scale(0.95); box-shadow: 0 0 10px rgba(37, 99, 235, 0.2); }
+        .mode-toggle svg { transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .mode-toggle:hover svg { transform: rotate(30deg); }
+        .history-item { transition: all 0.2s ease; border-left: 3px solid transparent; }
+        .history-item:hover { border-left-color: #3b82f6; padding-left: 12px; }
+        .input-ring:focus-within { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); }
+
+        .logo-hover { transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 0 0px rgba(59, 130, 246, 0); }
+        .logo-hover:hover { transform: rotate(-10deg) scale(1.1); box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
+
+        #loading-screen { position: fixed; inset: 0; z-index: 9999; background-color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-out, visibility 0.5s ease-out; }
+        .dark #loading-screen { background-color: #343541; }
+        #loading-screen.hidden-loader { opacity: 0; visibility: hidden; }
+        .loader-logo { animation: loaderPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes loaderPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } }
+        .loader-bar-container { width: 120px; height: 4px; background-color: #e5e7eb; border-radius: 9999px; overflow: hidden; margin-top: 24px; }
+        .dark .loader-bar-container { background-color: #40414f; }
+        .loader-bar { height: 100%; width: 40%; background-color: #3b82f6; border-radius: 9999px; animation: loaderSlide 1.5s ease-in-out infinite; }
+        @keyframes loaderSlide { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
+
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out, padding 0.3s ease-out; }
         .faq-answer.open { max-height: 200px; }
         .faq-icon { transition: transform 0.3s ease; }
         .faq-icon.open { transform: rotate(45deg); }
-        
-        /* Modal Styles */
-        #faq-modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
-        #faq-modal.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        #faq-modal:not(.hidden) { opacity: 1; visibility: visible; pointer-events: auto; }
     </style>
 </head>
 
-@@ -120,6 +127,64 @@
+<body class="h-full bg-gpt-bg dark:bg-[#343541] text-gpt-textMain dark:text-gpt-textDark overflow-hidden">
+
+    <div id="loading-screen">
+        <img src="logo.png" alt="StudyAI Logo" class="w-16 h-16 rounded-2xl object-cover loader-logo shadow-lg">
         <div class="loader-bar-container"><div class="loader-bar"></div></div>
-    </div>
-
-    <!-- FAQ & Info Popup Modal -->
-    <div id="faq-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div onclick="toggleFaqModal()" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
-        <div class="animate-modal-in relative bg-white dark:bg-[#202123] rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto border border-gray-200 dark:border-gray-700 p-6">
-            <button onclick="toggleFaqModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
-            
-            <div class="flex items-center gap-3 mb-5">
-                <img src="logo.png" alt="StudyAI Logo" class="w-10 h-10 rounded-xl object-cover">
-                <div>
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">StudyAI Info & FAQ</h2>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">by Vision</p>
-                </div>
-            </div>
-
-            <div class="bg-brand-50 dark:bg-brand-900/20 border border-brand-100 dark:border-brand-800/40 p-4 rounded-xl mb-6">
-                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">StudyAI was built to make learning accessible for everyone. We believe students should be able to get instant study help without creating accounts, paying subscriptions, or dealing with unnecessary friction.</p>
-            </div>
-
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h3>
-            <div class="space-y-2">
-                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Is StudyAI completely free?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. StudyAI is completely free to use with no subscriptions or hidden fees.</div></div>
-                </div>
-                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Do I need to create an account?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No. You can start using StudyAI immediately without signing up or logging in.</div></div>
-                </div>
-                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>What can StudyAI help me with?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">StudyAI can help with homework, concept explanations, note summaries, quiz generation, research, and exam preparation.</div></div>
-                </div>
-                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Which subjects are supported?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">StudyAI supports a wide range of subjects including Math, Science, English, History, Computer Science, Business, and more.</div></div>
-                </div>
-                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Can StudyAI solve math problems?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. StudyAI can provide step-by-step explanations to help you understand how answers are reached.</div></div>
-                </div>
-                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Is my information stored?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No account is required, so you can use StudyAI without providing personal information. Conversations are saved locally in your browser.</div></div>
-                </div>
-                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Can I use StudyAI on mobile devices?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. StudyAI works on desktops, tablets, and smartphones.</div></div>
-                </div>
-                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Does StudyAI replace teachers?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No. StudyAI is designed to support and enhance learning, not replace teachers or textbooks.</div></div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="flex h-full w-full relative">
         <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/20 dark:bg-black/50 backdrop-blur-sm z-20 hidden md:hidden transition-opacity opacity-0"></div>
         <aside id="sidebar" class="absolute md:relative z-30 h-full w-[260px] bg-white dark:bg-[#202123] border-r border-black/10 dark:border-white/10 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out flex flex-col">
-@@ -133,10 +198,13 @@
+            <div class="p-3">
+                <button onclick="createNewChat()" class="btn-glow w-full flex items-center gap-2 px-3 py-3 border border-black/10 dark:border-white/10 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2A2B32] text-sm text-left">
+                    <svg class="w-4 h-4 text-black dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <span class="font-medium text-black dark:text-white">New chat</span>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto overflow-x-hidden px-3 no-scrollbar">
                 <div class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-4 mb-2 px-3">Today</div>
                 <div id="history-list" class="space-y-1 pb-4"></div>
             </div>
-            
-            <!-- Updated User Tab -->
             <div class="p-3 border-t border-black/10 dark:border-white/10">
                 <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2A2B32] transition-colors cursor-pointer">
-                <div onclick="toggleFaqModal()" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2A2B32] transition-colors cursor-pointer">
                     <div class="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs font-bold">U</div>
                     <div class="flex-1"><p class="text-sm font-medium text-black dark:text-white">User</p></div>
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
         </aside>
-@@ -242,51 +310,6 @@
+
+        <main class="flex-1 flex flex-col relative w-full h-full bg-gpt-bg dark:bg-[#343541]">
+            <div class="absolute top-0 left-0 right-0 p-4 z-10 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleSidebar()" class="md:hidden p-1 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    </button>
+                    <img src="logo.png" alt="StudyAI Logo" class="w-8 h-8 rounded-lg object-cover logo-hover">
+                    <h1 class="font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                        StudyAI 
+                        <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">Cerebras</span>
+                        <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400">by Vision</span>
+                    </h1>
+                </div>
+                <button onclick="document.documentElement.classList.toggle('dark')" class="mode-toggle p-2 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors">
+                    <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    <svg class="w-5 h-5 hidden dark:block text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                </button>
+            </div>
+            
+            <div id="messages" class="flex-1 h-full overflow-y-auto pt-20 pb-32 scroll-smooth no-scrollbar">
+                
+                <!-- LANDING PAGE -->
+                <div id="welcome-state" class="flex flex-col items-center min-h-full py-12 text-center px-4">
+                    
+                    <!-- Hero Section -->
+                    <div class="max-w-3xl mb-8">
+                        <h2 class="text-4xl md:text-6xl font-extrabold mb-5 text-gray-900 dark:text-white tracking-tight">Study Smarter with AI</h2>
+                        <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8">Get instant answers, explanations, summaries, quizzes, and homework help for any subject.</p>
+                        
+                        <div class="flex flex-wrap justify-center gap-3 mb-8">
+                            <span class="px-4 py-1.5 text-xs font-bold rounded-full bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 border border-green-200 dark:border-green-800/50">✅ 100% Free</span>
+                            <span class="px-4 py-1.5 text-xs font-bold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50">✅ No Signup Required</span>
+                            <span class="px-4 py-1.5 text-xs font-bold rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400 border border-purple-200 dark:border-purple-800/50">✅ 24/7 AI Study Assistant</span>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row justify-center gap-3">
+                            <button onclick="scrollToFeatures()" class="px-8 py-3.5 bg-white dark:bg-[#2A2B32] text-gray-700 dark:text-gray-300 font-semibold rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors text-sm">
+                                See Features
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- How It Works -->
+                    <div class="max-w-3xl w-full mb-16 mt-8">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-8">How StudyAI Works</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="flex flex-col items-center p-6 bg-white dark:bg-[#2A2B32] rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+                                <div class="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xl mb-4">1</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Ask a question</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Type any question, topic, or homework problem.</p>
+                            </div>
+                            <div class="flex flex-col items-center p-6 bg-white dark:bg-[#2A2B32] rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+                                <div class="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xl mb-4">2</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Get AI help instantly</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Receive explanations, summaries, examples, and solutions in seconds.</p>
+                            </div>
+                            <div class="flex flex-col items-center p-6 bg-white dark:bg-[#2A2B32] rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+                                <div class="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xl mb-4">3</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Learn and practice</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Use quizzes, study guides, and follow-up questions to master the topic.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feature Grid -->
+                    <div id="features" class="max-w-4xl w-full mb-16">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-8">Everything you need to study smarter</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow text-left">
+                                <div class="text-3xl mb-3">⚡</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Instant Explanations</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Get clear answers to any study question in seconds.</p>
+                            </div>
+                            <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow text-left">
+                                <div class="text-3xl mb-3">📝</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Homework Help</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Understand assignments step-by-step instead of just copying answers.</p>
+                            </div>
+                            <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow text-left">
+                                <div class="text-3xl mb-3">🧠</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Quiz Generator</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Create practice quizzes from any topic to test your knowledge.</p>
+                            </div>
+                            <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow text-left">
+                                <div class="text-3xl mb-3">📄</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Note Summaries</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Turn long notes into concise, easy-to-review summaries.</p>
+                            </div>
+                            <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow text-left">
+                                <div class="text-3xl mb-3">🎓</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Exam Prep</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Review key concepts and practice before tests and exams.</p>
+                            </div>
+                            <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow text-left">
+                                <div class="text-3xl mb-3">📱</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Works Anywhere</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Use StudyAI on your phone, tablet, or desktop anytime.</p>
+                            </div>
                         </div>
                     </div>
 
@@ -180,54 +290,203 @@
                     <!-- Footer -->
                     <footer class="max-w-4xl w-full border-t border-gray-200 dark:border-gray-700 pt-8 pb-4">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-@@ -315,7 +338,7 @@
+                            <div class="text-left">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <img src="logo.png" alt="StudyAI Logo" class="w-6 h-6 rounded-md object-cover">
+                                    <span class="font-bold text-gray-900 dark:text-white">StudyAI</span>
+                                </div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Free AI-powered study assistance for students everywhere.</p>
+                            </div>
+                            <div class="text-left">
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-3">Product</h4>
+                                <ul class="space-y-2 text-xs text-gray-500 dark:text-gray-400">
+                                    <li><a href="#" onclick="scrollToFeatures()" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Features</a></li>
+                                    <li><a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Pricing (It's Free!)</a></li>
+                                    <li><a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">API</a></li>
+                                </ul>
+                            </div>
+                            <div class="text-left">
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-3">Legal</h4>
+                                <ul class="space-y-2 text-xs text-gray-500 dark:text-gray-400">
+                                    <li><a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Privacy Policy</a></li>
+                                    <li><a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Terms of Service</a></li>
+                                    <li><a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Contact</a></li>
+                                </ul>
                             </div>
                         </div>
                         <div class="text-center text-xs text-gray-400 dark:text-gray-500">
-                            © 2024 StudyAI. All rights reserved. Created by Vision.
                             © 2026 StudyAI. All rights reserved. Created by Vision.
                         </div>
                     </footer>
 
-@@ -362,7 +385,17 @@
+                </div>
+            </div>
+
+            <div class="absolute bottom-0 left-0 right-0 p-4 pb-8 bg-gradient-to-t from-gpt-bg via-gpt-bg to-transparent dark:from-[#343541] dark:via-[#343541]">
+                <div class="max-w-3xl mx-auto w-full relative group">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                    <div class="input-ring relative bg-white dark:bg-[#40414f] rounded-xl shadow-lg dark:shadow-[0_0_15px_rgba(0,0,0,0.3)] border border-black/10 dark:border-white/10 overflow-hidden transition-all duration-300">
+                        <input type="file" id="file-input" accept=".txt" class="hidden">
+                        <textarea id="user-input" rows="1" placeholder="Ask anything..." class="w-full bg-transparent px-12 py-3 outline-none resize-none max-h-48 text-gray-900 dark:text-white placeholder-gray-500 scrollbar-hide text-base" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+                        <div class="flex items-center justify-between px-2 pb-2">
+                            <div class="flex items-center pl-1">
+                                <button onclick="document.getElementById('file-input').click()" class="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md transition-colors active:scale-90" title="Upload TXT file">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                                </button>
+                                <div id="file-name" class="hidden text-xs text-brand-600 font-medium px-2 truncate max-w-[100px]">file.txt</div>
+                            </div>
+                            <button id="send-btn" onclick="handleSend()" class="btn-glow p-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-center mt-2 px-1">
+                        <p class="text-[10px] text-gray-400">StudyAI can make mistakes. Consider checking important information.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let conversationHistory = [];
+        let currentChatId = Date.now().toString();
+        let attachedFile = null;
+        
+        let chats = {};
+        try { const storedChats = localStorage.getItem('studyai_chats'); if (storedChats) chats = JSON.parse(storedChats) || {}; } catch (e) { console.error("Failed to load chat history. Resetting data.", e); localStorage.removeItem('studyai_chats'); chats = {}; }
+
+        try {
+            if (Object.keys(chats).length > 0) { const lastId = Object.keys(chats)[Object.keys(chats).length - 1]; loadChat(lastId); } else { renderHistoryList(); }
+        } catch (e) { console.error("Failed to load last chat, starting fresh.", e); createNewChat(); }
 
         window.addEventListener('load', () => { setTimeout(() => { const loader = document.getElementById('loading-screen'); if (loader) loader.classList.add('hidden-loader'); }, 800); });
 
         function toggleFaq(button) { const answer = button.nextElementSibling; const icon = button.querySelector('.faq-icon'); answer.classList.toggle('open'); icon.classList.toggle('open'); }
-        function toggleFaq(button) { 
-            const answer = button.nextElementSibling; 
-            const icon = button.querySelector('.faq-icon'); 
-            answer.classList.toggle('open'); 
-            icon.classList.toggle('open'); 
-        }
-
-        function toggleFaqModal() {
-            const modal = document.getElementById('faq-modal');
-            modal.classList.toggle('hidden');
-        }
 
         function setPrompt(text) { const input = document.getElementById('user-input'); input.value = text; input.focus(); input.style.height = 'auto'; input.style.height = input.scrollHeight + 'px'; }
 
-@@ -444,6 +477,15 @@
+        function scrollToFeatures() {
+            setTimeout(() => {
+                const features = document.getElementById('features');
+                const chatContainer = document.getElementById('messages');
+                if (features && chatContainer) {
+                    const scrollPosition = features.offsetTop - chatContainer.offsetTop;
+                    chatContainer.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+                }
+            }, 10);
+        }
+
+        function getShortTitle(text) { if (!text) return "New Chat"; const words = text.replace(/[\n\r]/g, ' ').trim().split(/\s+/); const shortText = words.slice(0, 3).join(' '); return words.length > 3 ? shortText + '...' : shortText; }
+
+        const fileInput = document.getElementById('file-input');
+        const fileNameDisplay = document.getElementById('file-name');
+        fileInput.addEventListener('change', (e) => { const file = e.target.files[0]; if (file) { attachedFile = file; fileNameDisplay.textContent = file.name; fileNameDisplay.classList.remove('hidden'); } });
+
+        function saveCurrentChat() { if (conversationHistory.length === 0) return; chats[currentChatId] = { id: currentChatId, title: chats[currentChatId]?.title || "New Chat", history: conversationHistory, timestamp: Date.now() }; try { localStorage.setItem('studyai_chats', JSON.stringify(chats)); } catch (e) { console.error("Could not save.", e); } renderHistoryList(); }
+
+        function renderHistoryList() { const list = document.getElementById('history-list'); list.innerHTML = ''; const sortedChats = Object.values(chats).sort((a, b) => b.timestamp - a.timestamp); sortedChats.forEach(chat => { const btn = document.createElement('button'); const isActive = chat.id === currentChatId; btn.className = `history-item flex-1 text-left px-3 py-2 rounded-lg text-sm transition-colors truncate flex items-center justify-between group ${isActive ? 'bg-gray-200 dark:bg-[#2A2B32] text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#2A2B32]'}`; const textSpan = document.createElement('span'); textSpan.className = "truncate"; textSpan.textContent = chat.title; const delIcon = document.createElement('span'); delIcon.innerHTML = '&times;'; delIcon.className = "text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 px-2 text-lg font-light transition-all"; delIcon.onclick = (e) => { e.stopPropagation(); deleteChat(chat.id); }; btn.appendChild(textSpan); btn.appendChild(delIcon); btn.onclick = () => loadChat(chat.id); list.appendChild(btn); }); }
+
+        function deleteChat(id) { if(confirm('Delete this conversation?')) { delete chats[id]; localStorage.setItem('studyai_chats', JSON.stringify(chats)); if (id === currentChatId) createNewChat(); else renderHistoryList(); } }
+
+        async function generateTitle(firstPrompt) { setTimeout(() => { if(chats[currentChatId]) { chats[currentChatId].title = getShortTitle(firstPrompt); localStorage.setItem('studyai_chats', JSON.stringify(chats)); renderHistoryList(); } }, 500); }
+
+        function loadChat(id) { try { if (!chats[id] || !chats[id].history) { createNewChat(); return; } currentChatId = id; conversationHistory = chats[id].history || []; const chatContainer = document.getElementById('messages'); const welcome = document.getElementById('welcome-state'); if(welcome) welcome.style.display = 'none'; chatContainer.innerHTML = ''; conversationHistory.forEach(msg => { createMessageElement(msg.role, msg.content, false); }); renderHistoryList(); requestAnimationFrame(() => { setTimeout(() => { chatContainer.scrollTop = chatContainer.scrollHeight; }, 50); }); if (window.innerWidth < 768) toggleSidebar(false); } catch (e) { console.error("Error rendering history, starting fresh.", e); createNewChat(); } }
+
+        function createNewChat() { 
+            currentChatId = Date.now().toString(); 
+            conversationHistory = []; 
+            const chatContainer = document.getElementById('messages'); 
+            
+            chatContainer.innerHTML = `
+            <div id="welcome-state" class="flex flex-col items-center min-h-full py-12 text-center px-4">
+                <div class="max-w-3xl mb-8">
+                    <h2 class="text-4xl md:text-6xl font-extrabold mb-5 text-gray-900 dark:text-white tracking-tight">Study Smarter with AI</h2>
+                    <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8">Get instant answers, explanations, summaries, quizzes, and homework help for any subject.</p>
+                    <div class="flex flex-wrap justify-center gap-3 mb-8">
+                        <span class="px-4 py-1.5 text-xs font-bold rounded-full bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 border border-green-200 dark:border-green-800/50">✅ 100% Free</span>
+                        <span class="px-4 py-1.5 text-xs font-bold rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50">✅ No Signup Required</span>
+                        <span class="px-4 py-1.5 text-xs font-bold rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400 border border-purple-200 dark:border-purple-800/50">✅ 24/7 AI Study Assistant</span>
+                    </div>
+                    <div class="flex flex-col sm:flex-row justify-center gap-3">
+                        <button onclick="scrollToFeatures()" class="px-8 py-3.5 bg-white dark:bg-[#2A2B32] text-gray-700 dark:text-gray-300 font-semibold rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors text-sm">See Features</button>
+                    </div>
+                </div>
+                <div class="max-w-3xl w-full mb-16 mt-8">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-8">How StudyAI Works</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="flex flex-col items-center p-6 bg-white dark:bg-[#2A2B32] rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm"><div class="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xl mb-4">1</div><h4 class="font-semibold text-gray-900 dark:text-white mb-2">Ask a question</h4><p class="text-sm text-gray-500 dark:text-gray-400">Type any question, topic, or homework problem.</p></div>
+                        <div class="flex flex-col items-center p-6 bg-white dark:bg-[#2A2B32] rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm"><div class="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xl mb-4">2</div><h4 class="font-semibold text-gray-900 dark:text-white mb-2">Get AI help instantly</h4><p class="text-sm text-gray-500 dark:text-gray-400">Receive explanations, summaries, examples, and solutions in seconds.</p></div>
+                        <div class="flex flex-col items-center p-6 bg-white dark:bg-[#2A2B32] rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm"><div class="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xl mb-4">3</div><h4 class="font-semibold text-gray-900 dark:text-white mb-2">Learn and practice</h4><p class="text-sm text-gray-500 dark:text-gray-400">Use quizzes, study guides, and follow-up questions to master the topic.</p></div>
+                    </div>
+                </div>
+                <div id="features" class="max-w-4xl w-full mb-16">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-8">Everything you need to study smarter</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow text-left"><div class="text-3xl mb-3">⚡</div><h4 class="font-semibold text-gray-900 dark:text-white mb-1">Instant Explanations</h4><p class="text-xs text-gray-500 dark:text-gray-400">Get clear answers to any study question in seconds.</p></div>
+                        <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow text-left"><div class="text-3xl mb-3">📝</div><h4 class="font-semibold text-gray-900 dark:text-white mb-1">Homework Help</h4><p class="text-xs text-gray-500 dark:text-gray-400">Understand assignments step-by-step instead of just copying answers.</p></div>
+                        <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow text-left"><div class="text-3xl mb-3">🧠</div><h4 class="font-semibold text-gray-900 dark:text-white mb-1">Quiz Generator</h4><p class="text-xs text-gray-500 dark:text-gray-400">Create practice quizzes from any topic to test your knowledge.</p></div>
+                        <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow text-left"><div class="text-3xl mb-3">📄</div><h4 class="font-semibold text-gray-900 dark:text-white mb-1">Note Summaries</h4><p class="text-xs text-gray-500 dark:text-gray-400">Turn long notes into concise, easy-to-review summaries.</p></div>
+                        <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow text-left"><div class="text-3xl mb-3">🎓</div><h4 class="font-semibold text-gray-900 dark:text-white mb-1">Exam Prep</h4><p class="text-xs text-gray-500 dark:text-gray-400">Review key concepts and practice before tests and exams.</p></div>
+                        <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow text-left"><div class="text-3xl mb-3">📱</div><h4 class="font-semibold text-gray-900 dark:text-white mb-1">Works Anywhere</h4><p class="text-xs text-gray-500 dark:text-gray-400">Use StudyAI on your phone, tablet, or desktop anytime.</p></div>
+                    </div>
+                </div>
+            </div>`; 
+            
+            renderHistoryList(); 
+            if (window.innerWidth < 768) toggleSidebar(false); 
+        }
+
+        function toggleSidebar(forceState) { const sidebar = document.getElementById('sidebar'); const overlay = document.getElementById('sidebar-overlay'); const isHidden = sidebar.classList.contains('-translate-x-full'); const shouldShow = forceState !== undefined ? forceState : isHidden; if (shouldShow) { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); setTimeout(() => overlay.classList.remove('opacity-0'), 10); document.body.style.overflow = 'hidden'; } else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('opacity-0'); setTimeout(() => overlay.classList.add('hidden'), 300); document.body.style.overflow = ''; } }
+
+        const renderer = new marked.Renderer(); const originalImage = renderer.image; renderer.image = function(href, title, text) { if (typeof href === 'string' && href.includes('pollinations.ai')) { return `<div class="my-4"><img src="${href}" alt="${text}" class="rounded-xl max-w-full shadow-lg border border-gray-200 dark:border-gray-700" onerror="this.alt='⚠️ Image failed to load'; this.style.display='none'"><p class="text-xs text-gray-500 mt-1 italic">${text || ''}</p></div>`; } return originalImage.call(this, href, title, text); };
+        DOMPurify.addHook('uponSanitizeAttribute', function(node, data) { if (data.attrName === 'src' && data.attrValue && data.attrValue.includes('pollinations.ai')) { data.forceKeepAttr = true; } });
 
         function createMessageElement(role, text = '', isStreaming = false) { const chat = document.getElementById('messages'); const welcome = document.getElementById('welcome-state'); if(welcome) welcome.style.display = 'none'; const wrapper = document.createElement('div'); wrapper.className = `w-full text-gray-800 dark:text-gray-100 border-b border-black/5 dark:border-white/5 py-6 ${role === 'user' ? 'bg-white dark:bg-[#444654]' : ''} ${role === 'user' ? 'animate-slide-in-right' : 'animate-slide-in-left'}`; const inner = document.createElement('div'); inner.className = `flex gap-4 md:gap-6 max-w-3xl mx-auto px-4 ${role === 'user' ? 'flex-row-reverse' : 'flex-row'}`; const avatar = document.createElement('div'); avatar.className = `w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center ${role === 'user' ? 'bg-brand-600 text-white mt-1' : 'bg-emerald-600 text-white'}`; avatar.innerHTML = role === 'user' ? 'U' : 'AI'; const bubble = document.createElement('div'); bubble.className = `prose-content leading-7 text-[15px] w-full overflow-hidden ${isStreaming ? 'cursor-blink' : ''}`; if (!isStreaming && text) bubble.innerHTML = DOMPurify.sanitize(marked.parse(text, { renderer })); inner.appendChild(avatar); inner.appendChild(bubble); wrapper.appendChild(inner); chat.appendChild(wrapper); requestAnimationFrame(() => { chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' }); }); return { wrapper, bubble }; }
-
-        function readFileAsText(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsText(file);
-            });
-        }
 
         async function handleSend() { 
             const input = document.getElementById('user-input'); 
             const btn = document.getElementById('send-btn'); 
-@@ -487,57 +529,35 @@
+            let text = input.value.trim(); 
+            if (!text && !attachedFile) return; 
+            if (attachedFile) { 
+                const fileText = await readFileAsText(attachedFile); 
+                text += `\n\n[File Attached: ${attachedFile.name}]\n${fileText}`; 
+                attachedFile = null; 
+                fileInput.value = ''; 
+                fileNameDisplay.classList.add('hidden'); 
+            } 
+            if (!chats[currentChatId]) { 
+                chats[currentChatId] = { id: currentChatId, title: getShortTitle(text), history: [], timestamp: Date.now() }; 
+                renderHistoryList(); 
+            } 
+            createMessageElement('user', text); 
+            conversationHistory.push({ role: 'user', content: text }); 
+            saveCurrentChat(); 
+            input.value = ''; 
+            input.style.height = 'auto'; 
+            btn.disabled = true; 
+            
+            const { bubble } = createMessageElement('assistant', '', false); 
+            bubble.classList.add('thinking-dots'); 
+            bubble.innerHTML = '<span></span><span></span><span></span>'; 
+            
+            let aiResponseText = ''; 
+            const chat = document.getElementById('messages'); 
+
+            try { 
+                const response = await fetch('/api/chat', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ prompt: text, history: conversationHistory.slice(-5, -1) }) 
+                }); 
+                
+                if (!response.ok) throw new Error("Network response was not ok"); 
+                
+                bubble.classList.remove('thinking-dots'); 
                 bubble.classList.add('cursor-blink'); 
                 bubble.innerHTML = ''; 
-
+                
                 const reader = response.body.getReader(); 
                 const decoder = new TextDecoder(); 
                 let buffer = ''; 
@@ -238,18 +497,7 @@
                     buffer += decoder.decode(value, { stream: true }); 
                     const lines = buffer.split('\n'); 
                     buffer = lines.pop(); 
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) {
-                        break;
-                    }
-                    const chunk = decoder.decode(value, { stream: true });
-                    aiResponseText += chunk;
-                    bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText, { renderer }));
-
+                    
                     for (const line of lines) { 
                         if (line.startsWith('data: ')) { 
                             const data = line.slice(6).trim(); 
@@ -287,25 +535,9 @@
                 input.focus(); 
             } 
         }
-                    // Auto-scroll chat while streaming
-                    chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
-                }
 
         function readFileAsText(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsText(file); }); }
         document.getElementById('user-input').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
-                bubble.classList.remove('cursor-blink');
-                conversationHistory.push({ role: 'assistant', content: aiResponseText });
-                saveCurrentChat();
-                generateTitle(text);
-
-            } catch (error) {
-                console.error("Error fetching AI response:", error);
-                bubble.classList.remove('thinking-dots', 'cursor-blink');
-                bubble.innerHTML = `<span class="text-red-500">Failed to get response. Please try again.</span>`;
-            } finally {
-                btn.disabled = false;
-            }
-        }
     </script>
 </body>
 </html>
