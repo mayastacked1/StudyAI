@@ -149,7 +149,9 @@
                     </button>
                     <img src="logo.png" alt="StudyAI Logo" class="w-8 h-8 rounded-lg object-cover logo-hover">
                     <h1 class="font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
-                        StudyAI <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">Cerebras</span>
+                        StudyAI 
+                        <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">Cerebras</span>
+                        <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400">by Vision</span>
                     </h1>
                 </div>
                 <button onclick="document.documentElement.classList.toggle('dark')" class="mode-toggle p-2 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors">
@@ -364,7 +366,6 @@
 
         function setPrompt(text) { const input = document.getElementById('user-input'); input.value = text; input.focus(); input.style.height = 'auto'; input.style.height = input.scrollHeight + 'px'; }
 
-        // ULTRA-RELIABLE SCROLL FUNCTION
         function scrollToFeatures() {
             setTimeout(() => {
                 const features = document.getElementById('features');
@@ -505,7 +506,6 @@
                                 const parsed = JSON.parse(data); 
                                 if (parsed.content) { 
                                     aiResponseText += parsed.content; 
-                                    // Simply display the text as it streams in
                                     bubble.textContent = aiResponseText; 
                                     chat.scrollTop = chat.scrollHeight; 
                                 } 
@@ -522,7 +522,6 @@
                 bubble.classList.remove('cursor-blink', 'thinking-dots'); 
                 console.error(error); 
             } finally { 
-                // Once the stream completes, render the final markdown (which converts the image link into an actual image)
                 bubble.classList.remove('cursor-blink'); 
                 conversationHistory.push({ role: 'assistant', content: aiResponseText.trim() }); 
                 saveCurrentChat(); 
