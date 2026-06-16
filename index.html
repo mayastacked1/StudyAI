@@ -26,11 +26,13 @@
                         'float': 'float 6s ease-in-out infinite',
                         'slide-in-right': 'slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                         'slide-in-left': 'slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'modal-in': 'modalIn 0.3s ease-out forwards',
                     },
                     keyframes: {
                         float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
                         slideInRight: { '0%': { opacity: 0, transform: 'translateX(20px) scale(0.95)' }, '100%': { opacity: 1, transform: 'translateX(0) scale(1)' } },
                         slideInLeft: { '0%': { opacity: 0, transform: 'translateX(-20px)' }, '100%': { opacity: 1, transform: 'translateX(0)' } },
+                        modalIn: { '0%': { opacity: 0, transform: 'scale(0.95) translateY(10px)' }, '100%': { opacity: 1, transform: 'scale(1) translateY(0)' } },
                     }
                 }
             }
@@ -110,6 +112,11 @@
         .faq-answer.open { max-height: 200px; }
         .faq-icon { transition: transform 0.3s ease; }
         .faq-icon.open { transform: rotate(45deg); }
+        
+        /* Modal Styles */
+        #faq-modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
+        #faq-modal.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        #faq-modal:not(.hidden) { opacity: 1; visibility: visible; pointer-events: auto; }
     </style>
 </head>
 
@@ -118,6 +125,64 @@
     <div id="loading-screen">
         <img src="logo.png" alt="StudyAI Logo" class="w-16 h-16 rounded-2xl object-cover loader-logo shadow-lg">
         <div class="loader-bar-container"><div class="loader-bar"></div></div>
+    </div>
+
+    <!-- FAQ & Info Popup Modal -->
+    <div id="faq-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div onclick="toggleFaqModal()" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div class="animate-modal-in relative bg-white dark:bg-[#202123] rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto border border-gray-200 dark:border-gray-700 p-6">
+            <button onclick="toggleFaqModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            
+            <div class="flex items-center gap-3 mb-5">
+                <img src="logo.png" alt="StudyAI Logo" class="w-10 h-10 rounded-xl object-cover">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">StudyAI Info & FAQ</h2>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">by Vision</p>
+                </div>
+            </div>
+
+            <div class="bg-brand-50 dark:bg-brand-900/20 border border-brand-100 dark:border-brand-800/40 p-4 rounded-xl mb-6">
+                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">StudyAI was built to make learning accessible for everyone. We believe students should be able to get instant study help without creating accounts, paying subscriptions, or dealing with unnecessary friction.</p>
+            </div>
+
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h3>
+            <div class="space-y-2">
+                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Is StudyAI completely free?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. StudyAI is completely free to use with no subscriptions or hidden fees.</div></div>
+                </div>
+                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Do I need to create an account?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No. You can start using StudyAI immediately without signing up or logging in.</div></div>
+                </div>
+                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>What can StudyAI help me with?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">StudyAI can help with homework, concept explanations, note summaries, quiz generation, research, and exam preparation.</div></div>
+                </div>
+                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Which subjects are supported?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">StudyAI supports a wide range of subjects including Math, Science, English, History, Computer Science, Business, and more.</div></div>
+                </div>
+                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Can StudyAI solve math problems?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. StudyAI can provide step-by-step explanations to help you understand how answers are reached.</div></div>
+                </div>
+                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Is my information stored?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No account is required, so you can use StudyAI without providing personal information. Conversations are saved locally in your browser.</div></div>
+                </div>
+                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Can I use StudyAI on mobile devices?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. StudyAI works on desktops, tablets, and smartphones.</div></div>
+                </div>
+                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Does StudyAI replace teachers?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No. StudyAI is designed to support and enhance learning, not replace teachers or textbooks.</div></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="flex h-full w-full relative">
@@ -133,10 +198,13 @@
                 <div class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-4 mb-2 px-3">Today</div>
                 <div id="history-list" class="space-y-1 pb-4"></div>
             </div>
+            
+            <!-- Updated User Tab -->
             <div class="p-3 border-t border-black/10 dark:border-white/10">
-                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2A2B32] transition-colors cursor-pointer">
+                <div onclick="toggleFaqModal()" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2A2B32] transition-colors cursor-pointer">
                     <div class="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs font-bold">U</div>
                     <div class="flex-1"><p class="text-sm font-medium text-black dark:text-white">User</p></div>
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
         </aside>
@@ -242,51 +310,6 @@
                         </div>
                     </div>
 
-                    <!-- Trust / About Section -->
-                    <div class="max-w-2xl w-full mb-16 bg-brand-50 dark:bg-brand-900/20 border border-brand-100 dark:border-brand-800/40 p-8 rounded-2xl">
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">About StudyAI</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">StudyAI was built to make learning accessible for everyone. We believe students should be able to get instant study help without creating accounts, paying subscriptions, or dealing with unnecessary friction.</p>
-                    </div>
-
-                    <!-- FAQ Section -->
-                    <div class="max-w-2xl w-full mb-16 text-left">
-                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Frequently Asked Questions</h3>
-                        <div class="space-y-2">
-                            <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors"><span>Is StudyAI completely free?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                                <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. StudyAI is completely free to use with no subscriptions or hidden fees.</div></div>
-                            </div>
-                            <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors"><span>Do I need to create an account?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                                <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No. You can start using StudyAI immediately without signing up or logging in.</div></div>
-                            </div>
-                            <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors"><span>What can StudyAI help me with?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                                <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">StudyAI can help with homework, concept explanations, note summaries, quiz generation, research, and exam preparation.</div></div>
-                            </div>
-                            <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors"><span>Which subjects are supported?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                                <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">StudyAI supports a wide range of subjects including Math, Science, English, History, Computer Science, Business, and more.</div></div>
-                            </div>
-                            <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors"><span>Can StudyAI solve math problems?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                                <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. StudyAI can provide step-by-step explanations to help you understand how answers are reached.</div></div>
-                            </div>
-                            <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors"><span>Is my information stored?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                                <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No account is required, so you can use StudyAI without providing personal information. Conversations are saved locally in your browser.</div></div>
-                            </div>
-                            <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors"><span>Can I use StudyAI on mobile devices?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                                <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. StudyAI works on desktops, tablets, and smartphones.</div></div>
-                            </div>
-                            <div class="bg-white dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#343541] transition-colors"><span>Does StudyAI replace teachers?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                                <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No. StudyAI is designed to support and enhance learning, not replace teachers or textbooks.</div></div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Footer -->
                     <footer class="max-w-4xl w-full border-t border-gray-200 dark:border-gray-700 pt-8 pb-4">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
@@ -362,7 +385,17 @@
 
         window.addEventListener('load', () => { setTimeout(() => { const loader = document.getElementById('loading-screen'); if (loader) loader.classList.add('hidden-loader'); }, 800); });
 
-        function toggleFaq(button) { const answer = button.nextElementSibling; const icon = button.querySelector('.faq-icon'); answer.classList.toggle('open'); icon.classList.toggle('open'); }
+        function toggleFaq(button) { 
+            const answer = button.nextElementSibling; 
+            const icon = button.querySelector('.faq-icon'); 
+            answer.classList.toggle('open'); 
+            icon.classList.toggle('open'); 
+        }
+
+        function toggleFaqModal() {
+            const modal = document.getElementById('faq-modal');
+            modal.classList.toggle('hidden');
+        }
 
         function setPrompt(text) { const input = document.getElementById('user-input'); input.value = text; input.focus(); input.style.height = 'auto'; input.style.height = input.scrollHeight + 'px'; }
 
@@ -444,6 +477,15 @@
 
         function createMessageElement(role, text = '', isStreaming = false) { const chat = document.getElementById('messages'); const welcome = document.getElementById('welcome-state'); if(welcome) welcome.style.display = 'none'; const wrapper = document.createElement('div'); wrapper.className = `w-full text-gray-800 dark:text-gray-100 border-b border-black/5 dark:border-white/5 py-6 ${role === 'user' ? 'bg-white dark:bg-[#444654]' : ''} ${role === 'user' ? 'animate-slide-in-right' : 'animate-slide-in-left'}`; const inner = document.createElement('div'); inner.className = `flex gap-4 md:gap-6 max-w-3xl mx-auto px-4 ${role === 'user' ? 'flex-row-reverse' : 'flex-row'}`; const avatar = document.createElement('div'); avatar.className = `w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center ${role === 'user' ? 'bg-brand-600 text-white mt-1' : 'bg-emerald-600 text-white'}`; avatar.innerHTML = role === 'user' ? 'U' : 'AI'; const bubble = document.createElement('div'); bubble.className = `prose-content leading-7 text-[15px] w-full overflow-hidden ${isStreaming ? 'cursor-blink' : ''}`; if (!isStreaming && text) bubble.innerHTML = DOMPurify.sanitize(marked.parse(text, { renderer })); inner.appendChild(avatar); inner.appendChild(bubble); wrapper.appendChild(inner); chat.appendChild(wrapper); requestAnimationFrame(() => { chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' }); }); return { wrapper, bubble }; }
 
+        function readFileAsText(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsText(file);
+            });
+        }
+
         async function handleSend() { 
             const input = document.getElementById('user-input'); 
             const btn = document.getElementById('send-btn'); 
@@ -487,57 +529,35 @@
                 bubble.classList.add('cursor-blink'); 
                 bubble.innerHTML = ''; 
                 
-                const reader = response.body.getReader(); 
-                const decoder = new TextDecoder(); 
-                let buffer = ''; 
-                
-                while (true) { 
-                    const { done, value } = await reader.read(); 
-                    if (done) break; 
-                    buffer += decoder.decode(value, { stream: true }); 
-                    const lines = buffer.split('\n'); 
-                    buffer = lines.pop(); 
-                    
-                    for (const line of lines) { 
-                        if (line.startsWith('data: ')) { 
-                            const data = line.slice(6).trim(); 
-                            if (data === '[DONE]') continue; 
-                            try { 
-                                const parsed = JSON.parse(data); 
-                                if (parsed.content) { 
-                                    aiResponseText += parsed.content; 
-                                    bubble.textContent = aiResponseText; 
-                                    chat.scrollTop = chat.scrollHeight; 
-                                } 
-                                if (parsed.error) throw new Error(parsed.error); 
-                            } catch (e) { 
-                                console.error("Stream Parse Error:", e); 
-                            } 
-                        } 
-                    } 
-                } 
-            } catch (error) { 
-                bubble.textContent = "Connection error: " + error.message; 
-                bubble.classList.add('text-red-500'); 
-                bubble.classList.remove('cursor-blink', 'thinking-dots'); 
-                console.error(error); 
-            } finally { 
-                bubble.classList.remove('cursor-blink'); 
-                conversationHistory.push({ role: 'assistant', content: aiResponseText.trim() }); 
-                saveCurrentChat(); 
-                bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText.trim(), { renderer })); 
-                chat.scrollTop = chat.scrollHeight; 
-                
-                if (conversationHistory.length === 2 && chats[currentChatId].title.includes("...")) { 
-                    generateTitle(text); 
-                } 
-                btn.disabled = false; 
-                input.focus(); 
-            } 
-        }
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
 
-        function readFileAsText(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsText(file); }); }
-        document.getElementById('user-input').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        break;
+                    }
+                    const chunk = decoder.decode(value, { stream: true });
+                    aiResponseText += chunk;
+                    bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText, { renderer }));
+                    
+                    // Auto-scroll chat while streaming
+                    chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
+                }
+
+                bubble.classList.remove('cursor-blink');
+                conversationHistory.push({ role: 'assistant', content: aiResponseText });
+                saveCurrentChat();
+                generateTitle(text);
+
+            } catch (error) {
+                console.error("Error fetching AI response:", error);
+                bubble.classList.remove('thinking-dots', 'cursor-blink');
+                bubble.innerHTML = `<span class="text-red-500">Failed to get response. Please try again.</span>`;
+            } finally {
+                btn.disabled = false;
+            }
+        }
     </script>
 </body>
 </html>
