@@ -462,21 +462,49 @@
         function getShortTitle(text) {
             if (!text) return "New Chat";
             let cleanText = text.replace(/[\n\r]+/g, ' ').trim();
+            
             // Extract the first sentence
             const firstSentence = cleanText.split(/[.!?]/)[0];
             cleanText = firstSentence.trim();
             
-            // Truncate if too long
-            if (cleanText.length > 30) {
-                cleanText = cleanText.substring(0, 30).trim() + '...';
+            // Common filler/stop words to filter out
+            const stopWords = new Set([
+                'i', 'me', 'my', 'we', 'our', 'you', 'your', 'it', 'its', 'he', 'she', 'they', 'them',
+                'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those',
+                'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
+                'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing',
+                'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while',
+                'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'through',
+                'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off',
+                'could', 'should', 'would', 'shall', 'may', 'might', 'must', 'can', 'will',
+                'please', 'help', 'want', 'need', 'make', 'create', 'write', 'give', 'tell', 'show', 'explain', 'let',
+                'just', 'also', 'really', 'simply', 'simple', 'terms', 'something', 'anything', 'everything', 'nothing',
+                'like', 'get', 'got', 'know', 'think', 'use', 'using', 'used', 'way', 'many', 'much', 'more', 'most',
+                'some', 'such', 'no', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 'even', 'still', 'already'
+            ]);
+            
+            // Split into words, filter out stop words and short punctuation
+            let words = cleanText.split(/\s+/)
+                .map(w => w.replace(/[^a-zA-Z0-9]/g, '')) // strip punctuation
+                .filter(w => w.length > 0 && !stopWords.has(w.toLowerCase()));
+            
+            // If we filtered out everything, fallback to the first 4 raw words
+            if (words.length === 0) {
+                words = cleanText.split(/\s+/).slice(0, 4);
             }
             
-            // Capitalize first letter
-            if (cleanText.length > 0) {
-                cleanText = cleanText.charAt(0).toUpperCase() + cleanText.slice(1);
+            // Take the top 4 most meaningful words
+            let title = words.slice(0, 4).join(' ');
+            
+            // Capitalize first letter of each word for a Title Case look
+            title = title.replace(/\b\w/g, c => c.toUpperCase());
+            
+            // Truncate if somehow still too long
+            if (title.length > 40) {
+                title = title.substring(0, 40).trim() + '...';
             }
             
-            return cleanText || "New Chat";
+            return title || "New Chat";
         }
 
         const fileInput = document.getElementById('file-input');
