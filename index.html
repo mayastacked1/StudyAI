@@ -617,6 +617,79 @@
             } finally {
                 bubble.classList.remove('cursor-blink', 'thinking-dots');
                 btn.disabled = false;
+         // ✅ FIX: Enter key sends message (add this to your existing script)
+(function() {
+    // Wait for page to load
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🔧 Applying Enter key fix...');
+        
+        // Find input/textarea (tries multiple selectors)
+        const input = document.querySelector('input[type="text"]') || 
+                      document.querySelector('textarea') ||
+                      document.querySelector('[contenteditable="true"]') ||
+                      document.getElementById('messageInput') ||
+                      document.getElementById('chatInput') ||
+                      document.getElementById('input') ||
+                      document.querySelector('.message-input') ||
+                      document.querySelector('.chat-input') ||
+                      document.querySelector('input[name="message"]');
+        
+        if (!input) {
+            console.warn('⚠️ Could not find input element');
+            return;
+        }
+        
+        console.log('✅ Found input:', input);
+        
+        // Add Enter key handler
+        input.addEventListener('keydown', function(e) {
+            // Enter sends message (Shift+Enter = new line)
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                console.log('🚀 Enter pressed - sending message...');
+                
+                // Method 1: Submit form
+                const form = this.closest('form');
+                if (form) {
+                    form.dispatchEvent(new Event('submit'));
+                    return;
+                }
+                
+                // Method 2: Click submit button
+                const submitBtn = document.querySelector('button[type="submit"]') ||
+                                  document.querySelector('#sendButton') ||
+                                  document.querySelector('.send-btn') ||
+                                  document.querySelector('[onclick*="send"]');
+                if (submitBtn) {
+                    submitBtn.click();
+                    return;
+                }
+                
+                // Method 3: Call send function directly
+                if (typeof sendMessage === 'function') {
+                    sendMessage();
+                    return;
+                }
+                if (typeof handleSubmit === 'function') {
+                    handleSubmit();
+                    return;
+                }
+                if (typeof submitMessage === 'function') {
+                    submitMessage();
+                    return;
+                }
+                
+                console.log('⚠️ No submit method found');
+            }
+        });
+        
+        // Auto-focus input
+        input.focus();
+        
+        console.log('✅ Enter key fix applied successfully!');
+        console.log('💡 Press Enter to send, Shift+Enter for new line');
+    });
+})();
             }
         }
     </script>
