@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aiserie by Vision</title>
+    <title>StudyAI by Vision</title>
     
     <link rel="icon" type="image/png" href="logo.png">
     
@@ -85,8 +85,22 @@
         
         .mode-toggle svg { transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .mode-toggle:hover svg { transform: rotate(30deg); }
-        .history-item { transition: all 0.2s ease; border-left: 3px solid transparent; }
-        .history-item:hover { border-left-color: #3b82f6; padding-left: 12px; }
+        
+        /* Revamped History Item */
+        .history-item { transition: all 0.2s ease; }
+        .history-item:hover { background-color: rgba(0, 0, 0, 0.04); }
+        .dark .history-item:hover { background-color: rgba(255, 255, 255, 0.05); }
+        
+        /* Delete Animation */
+        .deleting { 
+            animation: deleteAnim 0.3s forwards cubic-bezier(0.4, 0, 1, 1); 
+            pointer-events: none; 
+        }
+        @keyframes deleteAnim {
+            0% { opacity: 1; transform: translateX(0); max-height: 50px; }
+            50% { opacity: 0; transform: translateX(-30px); }
+            100% { opacity: 0; max-height: 0; padding-top: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 0; border-width: 0; }
+        }
         
         .input-ring { transition: all 0.2s ease; }
         .input-ring:focus-within { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.5); }
@@ -136,48 +150,48 @@
             <div class="flex items-center gap-3 mb-5">
                 <img src="logo.png" alt="Aiserie Logo" class="w-10 h-10 rounded-xl object-cover">
                 <div>
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">Aiserie Info & FAQ</h2>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">StudyAI Info & FAQ</h2>
                     <p class="text-xs text-gray-500 dark:text-gray-400">by Vision</p>
                 </div>
             </div>
 
             <div class="bg-brand-50 dark:bg-brand-900/20 border border-brand-100 dark:border-brand-800/40 p-4 rounded-xl mb-6">
-                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Aiserie was built to make learning accessible for everyone. We believe students should be able to get instant study help without creating accounts, paying subscriptions, or dealing with unnecessary friction.</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">StudyAI was built to make learning accessible for everyone. We believe students should be able to get instant study help without creating accounts, paying subscriptions, or dealing with unnecessary friction.</p>
             </div>
 
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h3>
             <div class="space-y-2">
                 <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
                     <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Is Aiserie completely free?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. Aiserie is completely free to use with no subscriptions or hidden fees.</div></div>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. StudyAI is completely free to use with no subscriptions or hidden fees.</div></div>
                 </div>
                 <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
                     <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Do I need to create an account?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No. You can start using Aiserie immediately without signing up or logging in.</div></div>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No. You can start using StudyAI immediately without signing up or logging in.</div></div>
                 </div>
                 <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>What can Aiserie help me with?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Aiserie can help with homework, concept explanations, note summaries, quiz generation, research, and exam preparation.</div></div>
+                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>What can StudyAI help me with?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">StudyAI can help with homework, concept explanations, note summaries, quiz generation, research, and exam preparation.</div></div>
                 </div>
                 <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
                     <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Which subjects are supported?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Aiserie supports a wide range of subjects including Math, Science, English, History, Computer Science, Business, and more.</div></div>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">StudyAI supports a wide range of subjects including Math, Science, English, History, Computer Science, Business, and more.</div></div>
                 </div>
                 <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Can Aiserie solve math problems?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. Aiserie can provide step-by-step explanations to help you understand how answers are reached.</div></div>
+                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Can StudyAI solve math problems?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. StudyAI can provide step-by-step explanations to help you understand how answers are reached.</div></div>
                 </div>
                 <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
                     <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Is my information stored?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No account is required, so you can use Aiserie without providing personal information. Conversations are saved locally in your browser.</div></div>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No account is required, so you can use StudyAI without providing personal information. Conversations are saved locally in your browser.</div></div>
                 </div>
                 <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Can I use Aiserie on mobile devices?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. Aiserie works on desktops, tablets, and smartphones.</div></div>
+                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Can I use StudyAI on mobile devices?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. StudyAI works on desktops, tablets, and smartphones.</div></div>
                 </div>
                 <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Does Aiserie replace teachers?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No. Aiserie is designed to support and enhance learning, not replace teachers or textbooks.</div></div>
+                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Does StudyAI replace teachers?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No. StudyAI is designed to support and enhance learning, not replace teachers or textbooks.</div></div>
                 </div>
             </div>
         </div>
@@ -215,7 +229,7 @@
                     </button>
                     <img src="logo.png" alt="Aiserie Logo" class="w-8 h-8 rounded-lg object-cover logo-hover">
                     <h1 class="font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
-                        Aiserie 
+                        StudyAI 
                         <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">by Vision</span>
                     </h1>
                 </div>
@@ -249,7 +263,7 @@
                         </div>
                         <div class="flex-1 w-full max-w-md relative">
                             <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-700/50 transform md:rotate-2 hover:rotate-0 transition-transform duration-500">
-                                <img src="banner.png" alt="Aiserie Platform Preview" class="w-full h-64 object-cover">
+                                <img src="banner.png" alt="StudyAI Platform Preview" class="w-full h-64 object-cover">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                             </div>
                             <div class="absolute -bottom-5 -left-5 bg-white dark:bg-[#2A2B32] p-3 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 hidden sm:flex items-center gap-3">
@@ -299,7 +313,7 @@
 
                     <!-- How It Works -->
                     <div class="max-w-4xl w-full mb-24">
-                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-10 text-center">How Aiserie Works</h3>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-10 text-center">How StudyAI Works</h3>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div class="flex flex-col items-center text-center">
                                 <div class="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xl mb-4 shadow-sm">1</div>
@@ -351,7 +365,7 @@
                             <div class="p-6 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
                                 <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20 text-xl mb-4">📱</div>
                                 <h4 class="font-semibold text-gray-900 dark:text-white mb-1.5">Works Anywhere</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Use Aiserie on your phone, tablet, or desktop anytime.</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Use StudyAI on your phone, tablet, or desktop anytime.</p>
                             </div>
                         </div>
                     </div>
@@ -360,17 +374,17 @@
                     <footer class="max-w-5xl w-full border-t border-gray-200 dark:border-gray-700 pt-8 pb-4 flex flex-col items-center text-center">
                         <div class="flex items-center gap-2 mb-3">
                             <img src="logo.png" alt="Aiserie Logo" class="w-6 h-6 rounded-md object-cover">
-                            <span class="font-bold text-gray-900 dark:text-white">Aiserie</span>
+                            <span class="font-bold text-gray-900 dark:text-white">StudyAI</span>
                         </div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 max-w-xs mb-4">Free AI-powered study assistance for students everywhere.</p>
                         <div class="text-xs text-gray-400 dark:text-gray-500">
-                            © 2026 Aiserie. All rights reserved. Created by Vision.
+                            © 2026 StudyAI All rights reserved. Created by Vision.
                         </div>
                     </footer>
                 </div>
             </div>
 
-            <!-- Chat Input (Removed glowing lights) -->
+            <!-- Chat Input -->
             <div class="absolute bottom-0 left-0 right-0 p-4 pb-8 bg-gradient-to-t from-gpt-bg via-gpt-bg to-transparent dark:from-[#343541] dark:via-[#343541]">
                 <div class="max-w-3xl mx-auto w-full relative group">
                     <div class="input-ring relative bg-white dark:bg-[#40414f] rounded-xl shadow-lg dark:shadow-[0_0_15px_rgba(0,0,0,0.3)] border border-black/10 dark:border-white/10 overflow-hidden transition-all duration-300">
@@ -389,7 +403,7 @@
                         </div>
                     </div>
                     <div class="text-center mt-2 px-1">
-                        <p class="text-[10px] text-gray-400">Aiserie can make mistakes. Consider checking important information.</p>
+                        <p class="text-[10px] text-gray-400">StudyAI can make mistakes. Consider checking important information.</p>
                     </div>
                 </div>
             </div>
@@ -413,7 +427,7 @@
             if (Object.keys(chats).length > 0) { const lastId = Object.keys(chats)[Object.keys(chats).length - 1]; loadChat(lastId); } else { renderHistoryList(); }
         } catch (e) { console.error("Failed to load last chat, starting fresh.", e); createNewChat(); }
 
-        // Instantly remove loader without artificial delay
+        // Instantly remove loader
         window.addEventListener('load', () => { 
             const loader = document.getElementById('loading-screen'); 
             if (loader) loader.classList.add('hidden-loader'); 
@@ -444,7 +458,26 @@
             }, 10);
         }
 
-        function getShortTitle(text) { if (!text) return "New Chat"; const words = text.replace(/[\n\r]/g, ' ').trim().split(/\s+/); const shortText = words.slice(0, 3).join(' '); return words.length > 3 ? shortText + '...' : shortText; }
+        // Smarter Title Generation
+        function getShortTitle(text) {
+            if (!text) return "New Chat";
+            let cleanText = text.replace(/[\n\r]+/g, ' ').trim();
+            // Extract the first sentence
+            const firstSentence = cleanText.split(/[.!?]/)[0];
+            cleanText = firstSentence.trim();
+            
+            // Truncate if too long
+            if (cleanText.length > 30) {
+                cleanText = cleanText.substring(0, 30).trim() + '...';
+            }
+            
+            // Capitalize first letter
+            if (cleanText.length > 0) {
+                cleanText = cleanText.charAt(0).toUpperCase() + cleanText.slice(1);
+            }
+            
+            return cleanText || "New Chat";
+        }
 
         const fileInput = document.getElementById('file-input');
         const fileNameDisplay = document.getElementById('file-name');
@@ -452,9 +485,54 @@
 
         function saveCurrentChat() { if (conversationHistory.length === 0) return; chats[currentChatId] = { id: currentChatId, title: chats[currentChatId]?.title || "New Chat", history: conversationHistory, timestamp: Date.now() }; try { localStorage.setItem('aiserie_chats', JSON.stringify(chats)); } catch (e) { console.error("Could not save.", e); } renderHistoryList(); }
 
-        function renderHistoryList() { const list = document.getElementById('history-list'); list.innerHTML = ''; const sortedChats = Object.values(chats).sort((a, b) => b.timestamp - a.timestamp); sortedChats.forEach(chat => { const btn = document.createElement('button'); const isActive = chat.id === currentChatId; btn.className = `history-item flex-1 text-left px-3 py-2 rounded-lg text-sm transition-colors truncate flex items-center justify-between group ${isActive ? 'bg-gray-200 dark:bg-[#2A2B32] text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#2A2B32]'}`; const textSpan = document.createElement('span'); textSpan.className = "truncate"; textSpan.textContent = chat.title; const delIcon = document.createElement('span'); delIcon.innerHTML = '&times;'; delIcon.className = "text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 px-2 text-lg font-light transition-all"; delIcon.onclick = (e) => { e.stopPropagation(); deleteChat(chat.id); }; btn.appendChild(textSpan); btn.appendChild(delIcon); btn.onclick = () => loadChat(chat.id); list.appendChild(btn); }); }
+        function renderHistoryList() { 
+            const list = document.getElementById('history-list'); 
+            list.innerHTML = ''; 
+            const sortedChats = Object.values(chats).sort((a, b) => b.timestamp - a.timestamp); 
+            sortedChats.forEach(chat => { 
+                const btn = document.createElement('div'); 
+                btn.setAttribute('data-chat-id', chat.id);
+                const isActive = chat.id === currentChatId; 
+                btn.className = `history-item group w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm transition-colors cursor-pointer ${isActive ? 'bg-gray-100 dark:bg-[#2A2B32] text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#2A2B32]/50'}`; 
+                
+                btn.innerHTML = `
+                    <svg class="w-4 h-4 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                    <span class="truncate flex-1 text-left font-medium">${chat.title}</span>
+                    <button class="del-btn p-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-500 transition-all" title="Delete">
+                        <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </button>
+                `;
+                
+                btn.querySelector('.del-btn').onclick = (e) => deleteChat(chat.id, e);
+                btn.onclick = () => loadChat(chat.id); 
+                
+                list.appendChild(btn); 
+            }); 
+        }
 
-        function deleteChat(id) { if(confirm('Delete this conversation?')) { delete chats[id]; localStorage.setItem('aiserie_chats', JSON.stringify(chats)); if (id === currentChatId) createNewChat(); else renderHistoryList(); } }
+        function deleteChat(id, event) { 
+            if (event) event.stopPropagation(); // Prevent triggering loadChat
+            if (!confirm('Delete this conversation?')) return;
+
+            const list = document.getElementById('history-list');
+            const btn = list.querySelector(`[data-chat-id="${id}"]`);
+            
+            // Trigger delete animation
+            if (btn) {
+                btn.classList.add('deleting');
+                setTimeout(() => {
+                    delete chats[id]; 
+                    localStorage.setItem('aiserie_chats', JSON.stringify(chats)); 
+                    if (id === currentChatId) createNewChat(); 
+                    else renderHistoryList(); 
+                }, 300); // Match animation duration
+            } else {
+                delete chats[id]; 
+                localStorage.setItem('aiserie_chats', JSON.stringify(chats)); 
+                if (id === currentChatId) createNewChat(); 
+                else renderHistoryList(); 
+            }
+        }
 
         async function generateTitle(firstPrompt) { setTimeout(() => { if(chats[currentChatId]) { chats[currentChatId].title = getShortTitle(firstPrompt); localStorage.setItem('aiserie_chats', JSON.stringify(chats)); renderHistoryList(); } }, 500); }
 
