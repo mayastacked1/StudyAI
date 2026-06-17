@@ -39,8 +39,12 @@ app.post('/api/chat', async (req, res) => {
         });
 
         if (!response.ok) {
-            const errData = await response.json().catch(() => ({}));
-            return res.status(response.status).json({ error: errData.error?.message || 'Upstream API Error' });
+            // FIX: Get the exact error text from Cerebras and log it
+            const errorText = await response.text();
+            console.error("CEREBRAS API REJECTED REQUEST:", errorText);
+            
+            // Send the exact error back to the frontend
+            return res.status(response.status).json({ error: errorText || 'Upstream API Error' });
         }
 
         // Set headers for SSE streaming
