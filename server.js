@@ -1,6 +1,8 @@
 async function handleSend() {
     const input = document.getElementById('user-input');
     const sendBtn = document.getElementById('send-btn');
+    // Cache the chat container outside the loop to prevent layout thrashing
+    const chat = document.getElementById('messages');
     const text = input.value.trim();
     
     // Don't send if input is empty and no file is attached
@@ -16,7 +18,10 @@ async function handleSend() {
     if (attachedFile) {
         try {
             const fileContent = await readFileAsText(attachedFile);
-            fullMessage += `\n\n--- Attached File: ${attachedFile.name} ---\n${fileContent}`;
+            // Prevent leading newlines if text is empty
+            fullMessage = fullMessage 
+                ? `${fullMessage}\n\n--- Attached File: ${attachedFile.name} ---\n${fileContent}` 
+                : `--- Attached File: ${attachedFile.name} ---\n${fileContent}`;
         } catch (e) {
             console.error("Failed to read file", e);
         }
@@ -46,11 +51,12 @@ async function handleSend() {
         });
 
         if (!response.ok) {
-            const errData = await response.json();
+            // Add a catch here in case the error response isn't valid JSON
+            const errData = await response.json().catch(() => ({}));
             throw new Error(errData.error || `Server Error: ${response.status}`);
         }
 
-        // ====== THIS IS THE FIX: PROPER SSE PARSING ======
+        // ====== PROPER SSE PARSING ======
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';
@@ -59,63 +65,76 @@ async function handleSend() {
             const { done, value } = await reader.read();
             if (done) break;
 
-            // Decode the chunk and add to buffer
             buffer += decoder.decode(value, { stream: true });
             
-            // Split by newlines to process each SSE line
-            const lines = buffer.split('\n');
-            
-            // Keep the last incomplete line in the buffer
-            buffer = lines.pop() || '';
+            // SSE events are separated by double newlines
+            const events = buffer.split('\n\n');
+            // Keep the last incomplete chunk in the buffer
+            buffer = events.pop() || '';
 
-            for (const line of lines) {
-                const trimmed = line.trim();
-                
-                // Skip empty lines and heartbeat comments from your server
-                if (!trimmed || trimmed.startsWith(':')) continue;
-                
-                // Check if it's an SSE data line
-                if (trimmed.startsWith('data: ')) {
-                    const dataStr = trimmed.slice(6); // Remove "data: " prefix
+            for (const event of events) {
+                const lines = event.split('\n');
+                for (const line of lines) {
+                    const trimmed = line.trim();
                     
-                    // Check for stream end
-                    if (dataStr === '[DONE]') continue;
+                    // Skip empty lines and heartbeat comments
+                    if (!trimmed || trimmed.startsWith(':')) continue;
                     
-                    try {
-                        const parsed = JSON.parse(dataStr);
-                        // Your backend sends { content: "..." }, so we extract it here
-                        const delta = parsed.content; 
+                    if (trimmed.startsWith('data: ')) {
+                        const dataStr = trimmed.slice(6); // Remove "data: " prefix
                         
-                        if (delta) {
-                            fullResponse += delta;
-                            // Render markdown safely
-                            bubble.innerHTML = DOMPurify.sanitize(
-                                marked.parse(fullResponse, { renderer })
-                            );
-                            // Auto-scroll to bottom
-                            const chat = document.getElementById('messages');
-                            chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
+                        if (dataStr === '[DONE]') continue;
+                        
+                        try {
+                            const parsed = JSON.parse(dataStr);
+                            
+                            // Foolproof extraction: checks common key names just in case
+                            const delta = parsed.content || parsed.text || parsed.delta || parsed.message;
+                            
+                            if (delta) {
+                                fullResponse += delta;
+                                
+                                // Render markdown safely
+                                bubble.innerHTML = DOMPurify.sanitize(
+                                    marked.parse(fullResponse, { renderer })
+                                );
+                                
+                                // Auto-scroll to bottom
+                                chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
+                            } else if (typeof parsed === 'string') {
+                                // Fallback if backend sends a raw string instead of an object
+                                fullResponse += parsed;
+                                bubble.innerHTML = DOMPurify.sanitize(
+                                    marked.parse(fullResponse, { renderer })
+                                );
+                                chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
+                            }
+                        } catch (parseErr) {
+                            console.warn('Could not parse SSE chunk:', dataStr, parseErr);
                         }
-                    } catch (parseErr) {
-                        console.warn('Could not parse SSE chunk:', trimmed);
                     }
                 }
             }
         }
-        // ====== END SSE FIX ======
+        // ====== END SSE PARSING ======
 
     } catch (error) {
         console.error('Stream error:', error);
-        fullResponse = fullResponse || `⚠️ Error: ${error.message}`;
+        // Append error to existing response, or replace if empty
+        if (!fullResponse) {
+            fullResponse = `⚠️ Error: ${error.message}`;
+        } else {
+            fullResponse += `\n\n⚠️ Error: Stream interrupted: ${error.message}`;
+        }
         bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
+    } finally {
+        // Use finally to guarantee cleanup happens even if an error is thrown
+        bubble.classList.remove('cursor-blink');
+        bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
+        
+        // Save to history
+        conversationHistory.push({ role: 'assistant', content: fullResponse });
+        saveCurrentChat();
+        sendBtn.disabled = false;
     }
-
-    // Remove cursor blink, do final render
-    bubble.classList.remove('cursor-blink');
-    bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
-
-    // Save to history
-    conversationHistory.push({ role: 'assistant', content: fullResponse });
-    saveCurrentChat();
-    sendBtn.disabled = false;
 }
