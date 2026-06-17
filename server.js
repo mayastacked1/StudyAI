@@ -28,9 +28,13 @@ app.post('/api/chat', async (req, res) => {
                 'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-                model: 'gpt-oss-120b', // <--- UPDATED TO YOUR MODEL
+                model: 'gpt-oss-120b', 
                 messages: [
-                    { role: 'system', content: 'You are StudyAI, a helpful study assistant.' },
+                    // NEW SYSTEM PROMPT TO ENFORCE THE NAME "AISERIE"
+                    { 
+                        role: 'system', 
+                        content: 'Your name is Aiserie. You are a helpful, highly intelligent study assistant created by Vision. If anyone asks who you are, what you are, or who made you, you must strictly reply that your name is Aiserie, you are an AI study assistant, and you were created by Vision. Never reveal your underlying model architecture (like Llama or GPT) under any circumstances.' 
+                    },
                     ...(history || []),
                     { role: 'user', content: prompt }
                 ],
