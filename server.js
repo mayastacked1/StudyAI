@@ -56,7 +56,7 @@ async function handleSend() {
             throw new Error(errData.error || `Server Error: ${response.status}`);
         }
 
-        // ====== PROPER SSE PARSING ======
+        // ====== STREAMING PARSER (SSE + Raw Text Fallback) ======
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';
@@ -67,56 +67,50 @@ async function handleSend() {
 
             buffer += decoder.decode(value, { stream: true });
             
-            // SSE events are separated by double newlines
-            const events = buffer.split('\n\n');
-            // Keep the last incomplete chunk in the buffer
+            // Try splitting by double newlines (Standard SSE format)
+            let events = buffer.split('\n\n');
             buffer = events.pop() || '';
 
+            // Fallback: If no double newlines found, split by single newline (Raw text streaming)
+            if (events.length === 0) {
+                events = buffer.split('\n');
+                buffer = events.pop() || '';
+            }
+
             for (const event of events) {
-                const lines = event.split('\n');
-                for (const line of lines) {
-                    const trimmed = line.trim();
+                const trimmed = event.trim();
+                if (!trimmed || trimmed.startsWith(':')) continue; // Skip heartbeats
+                
+                // Check if it's an SSE data line
+                if (trimmed.startsWith('data: ')) {
+                    const dataStr = trimmed.slice(6); // Remove "data: " prefix
+                    if (dataStr === '[DONE]') continue;
                     
-                    // Skip empty lines and heartbeat comments
-                    if (!trimmed || trimmed.startsWith(':')) continue;
-                    
-                    if (trimmed.startsWith('data: ')) {
-                        const dataStr = trimmed.slice(6); // Remove "data: " prefix
+                    try {
+                        const parsed = JSON.parse(dataStr);
+                        // Foolproof extraction: checks common key names
+                        const delta = parsed.content || parsed.text || parsed.delta || parsed.message;
                         
-                        if (dataStr === '[DONE]') continue;
-                        
-                        try {
-                            const parsed = JSON.parse(dataStr);
-                            
-                            // Foolproof extraction: checks common key names just in case
-                            const delta = parsed.content || parsed.text || parsed.delta || parsed.message;
-                            
-                            if (delta) {
-                                fullResponse += delta;
-                                
-                                // Render markdown safely
-                                bubble.innerHTML = DOMPurify.sanitize(
-                                    marked.parse(fullResponse, { renderer })
-                                );
-                                
-                                // Auto-scroll to bottom
-                                chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
-                            } else if (typeof parsed === 'string') {
-                                // Fallback if backend sends a raw string instead of an object
-                                fullResponse += parsed;
-                                bubble.innerHTML = DOMPurify.sanitize(
-                                    marked.parse(fullResponse, { renderer })
-                                );
-                                chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
-                            }
-                        } catch (parseErr) {
-                            console.warn('Could not parse SSE chunk:', dataStr, parseErr);
+                        if (delta) {
+                            fullResponse += delta;
+                            bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
+                            chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
                         }
+                    } catch (parseErr) {
+                        // If JSON parse fails, treat it as raw text
+                        fullResponse += dataStr;
+                        bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
+                        chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
                     }
+                } else {
+                    // If it doesn't start with "data: ", it's raw text streaming
+                    fullResponse += trimmed;
+                    bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
+                    chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
                 }
             }
         }
-        // ====== END SSE PARSING ======
+        // ====== END STREAMING PARSER ======
 
     } catch (error) {
         console.error('Stream error:', error);
