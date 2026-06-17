@@ -531,7 +531,19 @@
                     body: JSON.stringify({ prompt: text, history: conversationHistory.slice(-5, -1) }) 
                 }); 
                 
-                if (!response.ok) throw new Error("Network response was not ok"); 
+                // EXACT ERROR LOGGING ADDED HERE
+                if (!response.ok) {
+                    let errorMsg = `Server Error: ${response.status}`;
+                    try {
+                        const errData = await response.json();
+                        errorMsg = errData.error || errData.message || JSON.stringify(errData);
+                    } catch (e) {
+                        const errText = await response.text();
+                        if (errText) errorMsg = errText;
+                    }
+                    console.error("Backend Error:", errorMsg);
+                    throw new Error(errorMsg);
+                }
                 
                 bubble.classList.remove('thinking-dots'); 
                 bubble.innerHTML = ''; 
