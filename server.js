@@ -14,13 +14,13 @@ app.use(express.static(__dirname));
 app.post('/api/chat', async (req, res) => {
     try {
         const { prompt, history } = req.body;
-        const apiKey = process.env.CEREBRAS_API_KEY; // Make sure to set this in Render!
+        const apiKey = process.env.CEREBRAS_API_KEY; 
 
         if (!apiKey) {
             return res.status(500).json({ error: 'Missing CEREBRAS_API_KEY environment variable' });
         }
 
-        // Call Cerebras API (It is compatible with OpenAI SDK format)
+        // Call Cerebras API
         const response = await fetch('https://api.cerebras.ai/v1/chat/completions', {
             method: 'POST',
             headers: {
@@ -28,7 +28,7 @@ app.post('/api/chat', async (req, res) => {
                 'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-                model: 'llama3.1-8b', // or whatever model you are using
+                model: 'llama3.1-70b', // <--- CHANGED TO 70B HERE
                 messages: [
                     { role: 'system', content: 'You are StudyAI, a helpful study assistant.' },
                     ...(history || []),
@@ -39,11 +39,8 @@ app.post('/api/chat', async (req, res) => {
         });
 
         if (!response.ok) {
-            // FIX: Get the exact error text from Cerebras and log it
             const errorText = await response.text();
             console.error("CEREBRAS API REJECTED REQUEST:", errorText);
-            
-            // Send the exact error back to the frontend
             return res.status(response.status).json({ error: errorText || 'Upstream API Error' });
         }
 
@@ -55,8 +52,6 @@ app.post('/api/chat', async (req, res) => {
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
 
-        // Pipe the stream directly to the client
-        // Your frontend handleSend() will parse this perfectly!
         while (true) {
             const { done, value } = await reader.read();
             if (done) {
@@ -64,7 +59,7 @@ app.post('/api/chat', async (req, res) => {
                 break;
             }
             const chunk = decoder.decode(value, { stream: true });
-            res.write(chunk); // Forward raw chunks to frontend
+            res.write(chunk); 
         }
 
         res.end();
@@ -79,7 +74,6 @@ app.post('/api/chat', async (req, res) => {
     }
 });
 
-// Start the server
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
 });
