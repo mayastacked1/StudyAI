@@ -14,14 +14,20 @@ app.post('/api/chat', async (req, res) => {
             return res.status(500).json({ error: 'Missing GEMINI_API_KEY environment variable' });
         }
 
+        console.log('📥 Received prompt:', prompt?.substring(0, 50) + '...');
+        console.log('📜 History length:', history?.length || 0);
+
         // Format history for Google Gemini (requires 'model' instead of 'assistant')
         const formattedHistory = (history || []).map(msg => ({
             role: msg.role === 'assistant' ? 'model' : 'user',
             parts: [{ text: msg.content }]
         }));
 
-        // ✅ FIXED: Updated from gemini-1.5-flash to gemini-2.5-flash
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?key=${apiKey}`, {
+        // Call Google Gemini API (Native Streaming Endpoint)
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?key=${apiKey}`;
+        console.log('🚀 Calling Gemini API:', apiUrl.split('?')[0]);
+
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -35,28 +41,41 @@ app.post('/api/chat', async (req, res) => {
                     parts: [{ text: 'Your name is Aiserie. You are a helpful, highly intelligent study assistant created by Vision. If anyone asks who you are, what you are, or who made you, you must strictly reply that your name is Aiserie, you are an AI study assistant, and you were created by Vision. Never reveal your underlying model architecture (like Llama or GPT) under any circumstances.' }]
                 },
                 generationConfig: {
-                    temperature: 0.7
+                    temperature: 0.7,
+                    // ✅ ADD THIS: Ensure we get text output
+                    responseMimeType: "text/plain"
                 }
             })
         });
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error("GEMINI API REJECTED REQUEST:", errorText);
+            console.error("❌ GEMINI API ERROR:", response.status, errorText);
             return res.status(response.status).json({ error: errorText || 'Upstream API Error' });
         }
 
+        console.log('✅ API Response received, starting stream...');
+
+        // ✅ IMPROVED: Better SSE headers with flush support
         res.setHeader('Content-Type', 'text/event-stream');
-        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Cache-Control', 'no-cache, no-transform');
         res.setHeader('Connection', 'keep-alive');
+        res.setHeader('X-Accel-Buffering', 'no'); // Disable nginx buffering if used
+        
+        // Send initial connection message
+        res.write('data: {"type":"connected"}\n\n');
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';
+        let chunkCount = 0;
+        let totalTextReceived = '';
 
         while (true) {
             const { done, value } = await reader.read();
+            
             if (done) {
+                console.log(`🏁 Stream completed. Total chunks: ${chunkCount}, Text length: ${totalTextReceived.length}`);
                 res.write('data: [DONE]\n\n');
                 break;
             }
@@ -70,22 +89,43 @@ app.post('/api/chat', async (req, res) => {
 
             for (const line of lines) {
                 const trimmed = line.trim();
-                if (!trimmed || trimmed === '[') continue; // Skip empty lines and array starts
+                if (!trimmed || trimmed === '[' || trimmed === ']') continue;
                 
                 try {
                     // Remove trailing commas if present
-                    const cleanJson = trimmed.endsWith(',') ? trimmed.slice(0, -1) : trimmed;
-                    const parsed = JSON.parse(cleanJson);
+                    let cleanJson = trimmed;
+                    if (cleanJson.endsWith(',')) cleanJson = cleanJson.slice(0, -1);
                     
-                    if (parsed.candidates && parsed.candidates[0].content && parsed.candidates[0].content.parts) {
+                    const parsed = JSON.parse(cleanJson);
+                    chunkCount++;
+                    
+                    // ✅ IMPROVED: More robust parsing with debugging
+                    if (parsed.candidates && parsed.candidates[0]?.content?.parts) {
                         const textChunk = parsed.candidates[0].content.parts[0].text;
                         if (textChunk) {
+                            totalTextReceived += textChunk;
                             // Wrap in OpenAI-like SSE format so our frontend parser handles it automatically
-                            res.write(`data: ${JSON.stringify({ content: textChunk })}\n\n`);
+                            const sseData = `data: ${JSON.stringify({ content: textChunk })}\n\n`;
+                            res.write(sseData);
+                            
+                            // Log first few chunks for debugging
+                            if (chunkCount <= 3) {
+                                console.log(`📤 Chunk ${chunkCount}:`, textChunk.substring(0, 50) + '...');
+                            }
+                        } else {
+                            // Debug: Log when we get empty parts (known Gemini 2.5 issue)
+                            if (chunkCount <= 5) {
+                                console.log(`⚠️ Empty text in chunk ${chunkCount}:`, JSON.stringify(parsed.candidates[0]).substring(0, 100));
+                            }
                         }
+                    } else if (parsed.error) {
+                        console.error('❌ API returned error:', parsed.error);
                     }
                 } catch (e) {
-                    // Ignore parsing errors for incomplete chunks
+                    // Ignore parsing errors for incomplete chunks - this is normal
+                    if (trimmed.length > 0 && chunkCount < 10) {
+                        console.log('⏳ Parsing incomplete chunk, waiting for more data...');
+                    }
                 }
             }
         }
@@ -93,9 +133,9 @@ app.post('/api/chat', async (req, res) => {
         res.end();
 
     } catch (error) {
-        console.error('Server Error:', error);
+        console.error('💥 Server Error:', error);
         if (!res.headersSent) {
-            res.status(500).json({ error: 'Internal Server Error' });
+            res.status(500).json({ error: 'Internal Server Error', details: error.message });
         } else {
             res.end();
         }
@@ -103,5 +143,5 @@ app.post('/api/chat', async (req, res) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`🖥️  Server is running on port ${PORT}`);
 });
