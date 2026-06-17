@@ -28,7 +28,7 @@ app.post('/api/chat', async (req, res) => {
                 'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-                model: 'llama3.1-70b', // <--- CHANGED TO 70B HERE
+                model: 'gpt-oss-120b', // <--- UPDATED TO YOUR MODEL
                 messages: [
                     { role: 'system', content: 'You are StudyAI, a helpful study assistant.' },
                     ...(history || []),
