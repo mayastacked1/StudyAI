@@ -1,134 +1,81 @@
-async function handleSend() {
-    const input = document.getElementById('user-input');
-    const sendBtn = document.getElementById('send-btn');
-    // Cache the chat container outside the loop to prevent layout thrashing
-    const chat = document.getElementById('messages');
-    const text = input.value.trim();
-    
-    // Don't send if input is empty and no file is attached
-    if (!text && !attachedFile) return;
+const express = require('express');
+const path = require('path');
 
-    sendBtn.disabled = true;
-    input.value = '';
-    input.style.height = 'auto';
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-    let fullMessage = text;
-    
-    // Handle file attachments
-    if (attachedFile) {
-        try {
-            const fileContent = await readFileAsText(attachedFile);
-            // Prevent leading newlines if text is empty
-            fullMessage = fullMessage 
-                ? `${fullMessage}\n\n--- Attached File: ${attachedFile.name} ---\n${fileContent}` 
-                : `--- Attached File: ${attachedFile.name} ---\n${fileContent}`;
-        } catch (e) {
-            console.error("Failed to read file", e);
-        }
-        attachedFile = null;
-        fileNameDisplay.classList.add('hidden');
-        fileInput.value = '';
-    }
+// Middleware to parse JSON bodies
+app.use(express.json());
 
-    // Add user message to UI and history
-    conversationHistory.push({ role: 'user', content: fullMessage });
-    createMessageElement('user', fullMessage, false);
-    generateTitle(fullMessage);
+// Serve your frontend HTML file
+app.use(express.static(__dirname));
 
-    // Create AI message placeholder with streaming cursor
-    const { bubble } = createMessageElement('assistant', '', true);
-    let fullResponse = '';
-
+// Your API endpoint
+app.post('/api/chat', async (req, res) => {
     try {
-        // Call your backend API
-        const response = await fetch('/api/chat', {
+        const { prompt, history } = req.body;
+        const apiKey = process.env.CEREBRAS_API_KEY; // Make sure to set this in Render!
+
+        if (!apiKey) {
+            return res.status(500).json({ error: 'Missing CEREBRAS_API_KEY environment variable' });
+        }
+
+        // Call Cerebras API (It is compatible with OpenAI SDK format)
+        const response = await fetch('https://api.cerebras.ai/v1/chat/completions', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
             body: JSON.stringify({
-                prompt: fullMessage,
-                history: conversationHistory // Send the history your backend expects
+                model: 'llama3.1-8b', // or whatever model you are using
+                messages: [
+                    { role: 'system', content: 'You are StudyAI, a helpful study assistant.' },
+                    ...(history || []),
+                    { role: 'user', content: prompt }
+                ],
+                stream: true
             })
         });
 
         if (!response.ok) {
-            // Add a catch here in case the error response isn't valid JSON
             const errData = await response.json().catch(() => ({}));
-            throw new Error(errData.error || `Server Error: ${response.status}`);
+            return res.status(response.status).json({ error: errData.error?.message || 'Upstream API Error' });
         }
 
-        // ====== STREAMING PARSER (SSE + Raw Text Fallback) ======
+        // Set headers for SSE streaming
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
-        let buffer = '';
 
+        // Pipe the stream directly to the client
+        // Your frontend handleSend() will parse this perfectly!
         while (true) {
             const { done, value } = await reader.read();
-            if (done) break;
-
-            buffer += decoder.decode(value, { stream: true });
-            
-            // Try splitting by double newlines (Standard SSE format)
-            let events = buffer.split('\n\n');
-            buffer = events.pop() || '';
-
-            // Fallback: If no double newlines found, split by single newline (Raw text streaming)
-            if (events.length === 0) {
-                events = buffer.split('\n');
-                buffer = events.pop() || '';
+            if (done) {
+                res.write('data: [DONE]\n\n');
+                break;
             }
-
-            for (const event of events) {
-                const trimmed = event.trim();
-                if (!trimmed || trimmed.startsWith(':')) continue; // Skip heartbeats
-                
-                // Check if it's an SSE data line
-                if (trimmed.startsWith('data: ')) {
-                    const dataStr = trimmed.slice(6); // Remove "data: " prefix
-                    if (dataStr === '[DONE]') continue;
-                    
-                    try {
-                        const parsed = JSON.parse(dataStr);
-                        // Foolproof extraction: checks common key names
-                        const delta = parsed.content || parsed.text || parsed.delta || parsed.message;
-                        
-                        if (delta) {
-                            fullResponse += delta;
-                            bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
-                            chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
-                        }
-                    } catch (parseErr) {
-                        // If JSON parse fails, treat it as raw text
-                        fullResponse += dataStr;
-                        bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
-                        chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
-                    }
-                } else {
-                    // If it doesn't start with "data: ", it's raw text streaming
-                    fullResponse += trimmed;
-                    bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
-                    chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
-                }
-            }
+            const chunk = decoder.decode(value, { stream: true });
+            res.write(chunk); // Forward raw chunks to frontend
         }
-        // ====== END STREAMING PARSER ======
+
+        res.end();
 
     } catch (error) {
-        console.error('Stream error:', error);
-        // Append error to existing response, or replace if empty
-        if (!fullResponse) {
-            fullResponse = `⚠️ Error: ${error.message}`;
+        console.error('Server Error:', error);
+        if (!res.headersSent) {
+            res.status(500).json({ error: 'Internal Server Error' });
         } else {
-            fullResponse += `\n\n⚠️ Error: Stream interrupted: ${error.message}`;
+            res.end();
         }
-        bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
-    } finally {
-        // Use finally to guarantee cleanup happens even if an error is thrown
-        bubble.classList.remove('cursor-blink');
-        bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
-        
-        // Save to history
-        conversationHistory.push({ role: 'assistant', content: fullResponse });
-        saveCurrentChat();
-        sendBtn.disabled = false;
     }
-}
+});
+
+// Start the server
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running on port ${PORT}`);
+});
