@@ -347,7 +347,7 @@
 
             <div class="absolute bottom-0 left-0 right-0 p-4 pb-8 bg-gradient-to-t from-gpt-bg via-gpt-bg to-transparent dark:from-[#343541] dark:via-[#343541]">
                 <div class="max-w-3xl mx-auto w-full relative group">
-                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur opacity:20 group-hover:opacity-40 transition duration-500"></div>
                     <div class="input-ring relative bg-white dark:bg-[#40414f] rounded-xl shadow-lg dark:shadow-[0_0_15px_rgba(0,0,0,0.3)] border border-black/10 dark:border-white/10 overflow-hidden transition-all duration-300">
                         <input type="file" id="file-input" accept=".txt" class="hidden">
                         <textarea id="user-input" rows="1" placeholder="Ask anything..." class="w-full bg-transparent px-12 py-3 outline-none resize-none max-h-48 text-gray-900 dark:text-white placeholder-gray-500 scrollbar-hide text-base" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
@@ -378,6 +378,12 @@
         
         let chats = {};
         try { const storedChats = localStorage.getItem('studyai_chats'); if (storedChats) chats = JSON.parse(storedChats) || {}; } catch (e) { console.error("Failed to load chat history. Resetting data.", e); localStorage.removeItem('studyai_chats'); chats = {}; }
+
+        // FIX 1: Moved renderer initialization to the top so it exists when loadChat() is called
+        const renderer = new marked.Renderer(); 
+        const originalImage = renderer.image; 
+        renderer.image = function(href, title, text) { if (typeof href === 'string' && href.includes('pollinations.ai')) { return `<div class="my-4"><img src="${href}" alt="${text}" class="rounded-xl max-w-full shadow-lg border border-gray-200 dark:border-gray-700" onerror="this.alt='⚠️ Image failed to load'; this.style.display='none'"><p class="text-xs text-gray-500 mt-1 italic">${text || ''}</p></div>`; } return originalImage.call(this, href, title, text); };
+        DOMPurify.addHook('uponSanitizeAttribute', function(node, data) { if (data.attrName === 'src' && data.attrValue && data.attrValue.includes('pollinations.ai')) { data.forceKeepAttr = true; } });
 
         try {
             if (Object.keys(chats).length > 0) { const lastId = Object.keys(chats)[Object.keys(chats).length - 1]; loadChat(lastId); } else { renderHistoryList(); }
@@ -472,9 +478,6 @@
 
         function toggleSidebar(forceState) { const sidebar = document.getElementById('sidebar'); const overlay = document.getElementById('sidebar-overlay'); const isHidden = sidebar.classList.contains('-translate-x-full'); const shouldShow = forceState !== undefined ? forceState : isHidden; if (shouldShow) { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); setTimeout(() => overlay.classList.remove('opacity-0'), 10); document.body.style.overflow = 'hidden'; } else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('opacity-0'); setTimeout(() => overlay.classList.add('hidden'), 300); document.body.style.overflow = ''; } }
 
-        const renderer = new marked.Renderer(); const originalImage = renderer.image; renderer.image = function(href, title, text) { if (typeof href === 'string' && href.includes('pollinations.ai')) { return `<div class="my-4"><img src="${href}" alt="${text}" class="rounded-xl max-w-full shadow-lg border border-gray-200 dark:border-gray-700" onerror="this.alt='⚠️ Image failed to load'; this.style.display='none'"><p class="text-xs text-gray-500 mt-1 italic">${text || ''}</p></div>`; } return originalImage.call(this, href, title, text); };
-        DOMPurify.addHook('uponSanitizeAttribute', function(node, data) { if (data.attrName === 'src' && data.attrValue && data.attrValue.includes('pollinations.ai')) { data.forceKeepAttr = true; } });
-
         function createMessageElement(role, text = '', isStreaming = false) { const chat = document.getElementById('messages'); const welcome = document.getElementById('welcome-state'); if(welcome) welcome.style.display = 'none'; const wrapper = document.createElement('div'); wrapper.className = `w-full text-gray-800 dark:text-gray-100 border-b border-black/5 dark:border-white/5 py-6 ${role === 'user' ? 'bg-white dark:bg-[#444654]' : ''} ${role === 'user' ? 'animate-slide-in-right' : 'animate-slide-in-left'}`; const inner = document.createElement('div'); inner.className = `flex gap-4 md:gap-6 max-w-3xl mx-auto px-4 ${role === 'user' ? 'flex-row-reverse' : 'flex-row'}`; const avatar = document.createElement('div'); avatar.className = `w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center ${role === 'user' ? 'bg-brand-600 text-white mt-1' : 'bg-emerald-600 text-white'}`; avatar.innerHTML = role === 'user' ? 'U' : 'AI'; const bubble = document.createElement('div'); bubble.className = `prose-content leading-7 text-[15px] w-full overflow-hidden ${isStreaming ? 'cursor-blink' : ''}`; if (!isStreaming && text) bubble.innerHTML = DOMPurify.sanitize(marked.parse(text, { renderer })); inner.appendChild(avatar); inner.appendChild(bubble); wrapper.appendChild(inner); chat.appendChild(wrapper); requestAnimationFrame(() => { chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' }); }); return { wrapper, bubble }; }
 
         function readFileAsText(file) {
@@ -486,11 +489,15 @@
             });
         }
 
+        // FIX 2: Replaced with foolproof SSE + Raw Text fallback parser
         async function handleSend() { 
             const input = document.getElementById('user-input'); 
             const btn = document.getElementById('send-btn'); 
+            const chat = document.getElementById('messages');
             let text = input.value.trim(); 
+            
             if (!text && !attachedFile) return; 
+            
             if (attachedFile) { 
                 const fileText = await readFileAsText(attachedFile); 
                 text += `\n\n[File Attached: ${attachedFile.name}]\n${fileText}`; 
@@ -498,10 +505,12 @@
                 fileInput.value = ''; 
                 fileNameDisplay.classList.add('hidden'); 
             } 
+            
             if (!chats[currentChatId]) { 
                 chats[currentChatId] = { id: currentChatId, title: getShortTitle(text), history: [], timestamp: Date.now() }; 
                 renderHistoryList(); 
             } 
+            
             createMessageElement('user', text); 
             conversationHistory.push({ role: 'user', content: text }); 
             saveCurrentChat(); 
@@ -509,12 +518,11 @@
             input.style.height = 'auto'; 
             btn.disabled = true; 
             
-            const { bubble } = createMessageElement('assistant', '', false); 
+            const { bubble } = createMessageElement('assistant', '', true); 
             bubble.classList.add('thinking-dots'); 
             bubble.innerHTML = '<span></span><span></span><span></span>'; 
             
-            let aiResponseText = ''; 
-            const chat = document.getElementById('messages'); 
+            let fullResponse = ''; 
 
             try { 
                 const response = await fetch('/api/chat', { 
@@ -526,35 +534,76 @@
                 if (!response.ok) throw new Error("Network response was not ok"); 
                 
                 bubble.classList.remove('thinking-dots'); 
-                bubble.classList.add('cursor-blink'); 
                 bubble.innerHTML = ''; 
                 
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
+                let buffer = '';
 
                 while (true) {
                     const { done, value } = await reader.read();
-                    if (done) {
-                        break;
-                    }
-                    const chunk = decoder.decode(value, { stream: true });
-                    aiResponseText += chunk;
-                    bubble.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseText, { renderer }));
+                    if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
                     
-                    // Auto-scroll chat while streaming
-                    chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
+                    // Try splitting by double newlines (Standard SSE format)
+                    let events = buffer.split('\n\n');
+                    buffer = events.pop() || '';
+
+                    // Fallback: If no double newlines found, split by single newline (Raw text streaming)
+                    if (events.length === 0 && buffer.includes('\n')) {
+                        events = buffer.split('\n');
+                        buffer = events.pop() || '';
+                    }
+
+                    for (const event of events) {
+                        const trimmed = event.trim();
+                        if (!trimmed || trimmed.startsWith(':')) continue; // Skip heartbeats
+                        
+                        // Check if it's an SSE data line
+                        if (trimmed.startsWith('data: ')) {
+                            const dataStr = trimmed.slice(6); // Remove "data: " prefix
+                            if (dataStr === '[DONE]') continue;
+                            
+                            try {
+                                const parsed = JSON.parse(dataStr);
+                                // Foolproof extraction: checks common key names
+                                const delta = parsed.content || parsed.text || parsed.delta || parsed.message;
+                                
+                                if (delta) {
+                                    fullResponse += delta;
+                                    bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
+                                    chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
+                                }
+                            } catch (parseErr) {
+                                // If JSON parse fails, treat it as raw text
+                                fullResponse += dataStr;
+                                bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
+                                chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
+                            }
+                        } else {
+                            // If it doesn't start with "data: ", it's raw text streaming
+                            fullResponse += trimmed;
+                            bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
+                            chat.scrollTo({ top: chat.scrollHeight, behavior: 'auto' });
+                        }
+                    }
                 }
 
-                bubble.classList.remove('cursor-blink');
-                conversationHistory.push({ role: 'assistant', content: aiResponseText });
+                conversationHistory.push({ role: 'assistant', content: fullResponse });
                 saveCurrentChat();
                 generateTitle(text);
 
             } catch (error) {
                 console.error("Error fetching AI response:", error);
-                bubble.classList.remove('thinking-dots', 'cursor-blink');
-                bubble.innerHTML = `<span class="text-red-500">Failed to get response. Please try again.</span>`;
+                if (!fullResponse) {
+                    fullResponse = `⚠️ Error: ${error.message}`;
+                } else {
+                    fullResponse += `\n\n⚠️ Error: Stream interrupted.`;
+                }
+                bubble.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse, { renderer }));
             } finally {
+                bubble.classList.remove('cursor-blink', 'thinking-dots');
                 btn.disabled = false;
             }
         }
