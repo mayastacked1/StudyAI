@@ -86,12 +86,10 @@
         .mode-toggle svg { transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .mode-toggle:hover svg { transform: rotate(30deg); }
         
-        /* Revamped History Item */
         .history-item { transition: all 0.2s ease; }
         .history-item:hover { background-color: rgba(0, 0, 0, 0.04); }
         .dark .history-item:hover { background-color: rgba(255, 255, 255, 0.05); }
         
-        /* Delete Animation */
         .deleting { 
             animation: deleteAnim 0.3s forwards cubic-bezier(0.4, 0, 1, 1); 
             pointer-events: none; 
@@ -108,7 +106,6 @@
         .logo-hover { transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 0 0px rgba(59, 130, 246, 0); }
         .logo-hover:hover { transform: rotate(-10deg) scale(1.1); box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
 
-        /* Modern Sleek Loading Screen */
         #loading-screen { position: fixed; inset: 0; z-index: 9999; background-color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.3s ease, visibility 0.3s ease; }
         .dark #loading-screen { background-color: #343541; }
         #loading-screen.hidden-loader { opacity: 0; visibility: hidden; }
@@ -123,9 +120,9 @@
         .faq-icon { transition: transform 0.3s ease; }
         .faq-icon.open { transform: rotate(45deg); }
         
-        #faq-modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
-        #faq-modal.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        #faq-modal:not(.hidden) { opacity: 1; visibility: visible; pointer-events: auto; }
+        .app-modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .app-modal.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .app-modal:not(.hidden) { opacity: 1; visibility: visible; pointer-events: auto; }
     </style>
 </head>
 
@@ -140,7 +137,7 @@
     </div>
 
     <!-- FAQ & Info Popup Modal -->
-    <div id="faq-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div id="faq-modal" class="app-modal hidden fixed inset-0 z-50 flex items-center justify-center p-4">
         <div onclick="toggleFaqModal()" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
         <div class="animate-modal-in relative bg-white dark:bg-[#202123] rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto border border-gray-200 dark:border-gray-700 p-6">
             <button onclick="toggleFaqModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
@@ -197,6 +194,98 @@
         </div>
     </div>
 
+    <!-- Privacy Policy Modal -->
+    <div id="privacy-modal" class="app-modal hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div onclick="togglePrivacyModal()" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div class="animate-modal-in relative bg-white dark:bg-[#202123] rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto border border-gray-200 dark:border-gray-700 p-6">
+            <button onclick="togglePrivacyModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 dark:text-brand-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white">Privacy Policy</h2>
+            </div>
+
+            <div class="space-y-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p><strong class="text-gray-900 dark:text-white">Last updated:</strong> June 2024</p>
+                
+                <p>At StudyAI, accessible from our website, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by StudyAI and how we use it.</p>
+                
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Information We Collect</h3>
+                <p>We do not require you to create an account, and we do not collect personal identification information (name, email address, phone number) unless you voluntarily provide it through our feedback form.</p>
+                <p><strong class="text-gray-900 dark:text-white">Chat Data:</strong> Your conversations are processed in real-time by our AI provider to generate responses. We do not store your chat history on our servers. All chat history is saved exclusively in your browser's local storage (LocalStorage) and never leaves your device.</p>
+                
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">How We Use Information</h3>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>To provide, operate, and maintain our AI study assistant</li>
+                    <li>To improve and personalize your experience</li>
+                    <li>To respond to your feedback if you contact us</li>
+                </ul>
+
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Third-Party Services</h3>
+                <p>We use third-party AI services to process your questions and generate answers. These services may temporarily process your chat inputs to provide the service but do not store them long-term according to their API policies.</p>
+
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Local Storage</h3>
+                <p>StudyAI uses LocalStorage in your browser to save your conversation history so you can revisit past chats. This data is entirely controlled by you and can be cleared at any time by deleting your chat history or clearing your browser data.</p>
+
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Children's Information</h3>
+                <p>StudyAI is intended for users of all ages, particularly students. We do not knowingly collect personal information from children. If you are a parent or guardian and believe your child has provided us with personal information, please contact us so we can remove it.</p>
+
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Contact Us</h3>
+                <p>If you have any questions about this Privacy Policy, you can contact us at <a href="mailto:mayamayapay11@gmail.com" class="text-brand-600 dark:text-brand-400 hover:underline">mayamayapay11@gmail.com</a>.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact & Feedback Modal -->
+    <div id="feedback-modal" class="app-modal hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div onclick="toggleFeedbackModal()" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div class="animate-modal-in relative bg-white dark:bg-[#202123] rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto border border-gray-200 dark:border-gray-700 p-6">
+            <button onclick="toggleFeedbackModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 dark:text-brand-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">Contact & Feedback</h2>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">We'd love to hear from you</p>
+                </div>
+            </div>
+
+            <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 p-4 rounded-xl mb-6">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-brand-600 dark:text-brand-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Email us directly</p>
+                        <a href="mailto:mayamayapay11@gmail.com" class="text-sm font-medium text-brand-600 dark:text-brand-400 hover:underline">mayamayapay11@gmail.com</a>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-base font-bold text-gray-900 dark:text-white mb-4">Send Feedback</h3>
+            <form onsubmit="submitFeedback(event)" class="space-y-4">
+                <div>
+                    <label for="feedback-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name (Optional)</label>
+                    <input type="text" id="feedback-name" class="w-full px-3 py-2 bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none text-sm" placeholder="Your name">
+                </div>
+                <div>
+                    <label for="feedback-message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Message <span class="text-red-500">*</span></label>
+                    <textarea id="feedback-message" rows="4" required class="w-full px-3 py-2 bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none text-sm resize-none" placeholder="Tell us what you think, or report an issue..."></textarea>
+                </div>
+                <button type="submit" class="w-full px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl shadow-md transition-all text-sm">
+                    Send via Email
+                </button>
+                <p class="text-xs text-gray-400 text-center">Clicking send will open your default email app with the message pre-filled.</p>
+            </form>
+        </div>
+    </div>
+
     <div class="flex h-full w-full relative">
         <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/20 dark:bg-black/50 backdrop-blur-sm z-20 hidden md:hidden transition-opacity opacity-0"></div>
         <aside id="sidebar" class="absolute md:relative z-30 h-full w-[260px] bg-white dark:bg-[#202123] border-r border-black/10 dark:border-white/10 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out flex flex-col">
@@ -211,12 +300,19 @@
                 <div id="history-list" class="space-y-1 pb-4"></div>
             </div>
             
-            <!-- Updated User Tab -->
-            <div class="p-3 border-t border-black/10 dark:border-white/10">
+            <!-- Updated User Tab & Links -->
+            <div class="p-3 border-t border-black/10 dark:border-white/10 space-y-2">
                 <div onclick="toggleFaqModal()" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2A2B32] transition-colors cursor-pointer">
                     <div class="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs font-bold">U</div>
                     <div class="flex-1"><p class="text-sm font-medium text-black dark:text-white">User</p></div>
                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                
+                <!-- Bottom Links -->
+                <div class="flex items-center justify-center gap-4 pt-2">
+                    <button onclick="togglePrivacyModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Privacy Policy</button>
+                    <span class="text-gray-300 dark:text-gray-600">•</span>
+                    <button onclick="toggleFeedbackModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Contact</button>
                 </div>
             </div>
         </aside>
@@ -377,6 +473,12 @@
                             <span class="font-bold text-gray-900 dark:text-white">StudyAI</span>
                         </div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 max-w-xs mb-4">Free AI-powered study assistance for students everywhere.</p>
+                        <!-- Footer Links -->
+                        <div class="flex items-center gap-4 mb-4">
+                            <button onclick="togglePrivacyModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Privacy Policy</button>
+                            <span class="text-gray-300 dark:text-gray-600">•</span>
+                            <button onclick="toggleFeedbackModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Contact & Feedback</button>
+                        </div>
                         <div class="text-xs text-gray-400 dark:text-gray-500">
                             © 2026 StudyAI All rights reserved. Created by Vision.
                         </div>
@@ -441,8 +543,36 @@
         }
 
         function toggleFaqModal() {
-            const modal = document.getElementById('faq-modal');
-            modal.classList.toggle('hidden');
+            document.getElementById('faq-modal').classList.toggle('hidden');
+        }
+
+        function togglePrivacyModal() {
+            document.getElementById('privacy-modal').classList.toggle('hidden');
+        }
+
+        function toggleFeedbackModal() {
+            document.getElementById('feedback-modal').classList.toggle('hidden');
+        }
+
+        // Handle Feedback form submission
+        function submitFeedback(event) {
+            event.preventDefault();
+            const name = document.getElementById('feedback-name').value || 'Anonymous';
+            const message = document.getElementById('feedback-message').value;
+            
+            if (!message.trim()) {
+                alert('Please enter a message before sending.');
+                return;
+            }
+            
+            const subject = encodeURIComponent(`StudyAI Feedback from ${name}`);
+            const body = encodeURIComponent(`Name: ${name}\n\nMessage:\n${message}`);
+            window.location.href = `mailto:mayamayapay11@gmail.com?subject=${subject}&body=${body}`;
+            
+            // Close modal and reset form
+            document.getElementById('feedback-message').value = '';
+            document.getElementById('feedback-name').value = '';
+            toggleFeedbackModal();
         }
 
         function setPrompt(text) { const input = document.getElementById('user-input'); input.value = text; input.focus(); input.style.height = 'auto'; input.style.height = input.scrollHeight + 'px'; }
@@ -701,6 +831,12 @@
                         <span class="font-bold text-gray-900 dark:text-white">Aiserie</span>
                     </div>
                     <p class="text-xs text-gray-500 dark:text-gray-400 max-w-xs mb-4">Free AI-powered study assistance for students everywhere.</p>
+                    <!-- Footer Links -->
+                    <div class="flex items-center gap-4 mb-4">
+                        <button onclick="togglePrivacyModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Privacy Policy</button>
+                        <span class="text-gray-300 dark:text-gray-600">•</span>
+                        <button onclick="toggleFeedbackModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Contact & Feedback</button>
+                    </div>
                     <div class="text-xs text-gray-400 dark:text-gray-500">
                         © 2026 Aiserie. All rights reserved. Created by Vision.
                     </div>
