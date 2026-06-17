@@ -94,15 +94,15 @@
         .logo-hover { transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 0 0px rgba(59, 130, 246, 0); }
         .logo-hover:hover { transform: rotate(-10deg) scale(1.1); box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
 
-        #loading-screen { position: fixed; inset: 0; z-index: 9999; background-color: #ffffff; background-image: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 60%); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-out, visibility 0.5s ease-out; }
-        .dark #loading-screen { background-color: #343541; background-image: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 60%); }
+        /* Modern Sleek Loading Screen */
+        #loading-screen { position: fixed; inset: 0; z-index: 9999; background-color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .dark #loading-screen { background-color: #343541; }
         #loading-screen.hidden-loader { opacity: 0; visibility: hidden; }
-        .loader-logo { animation: loaderPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.4); }
-        @keyframes loaderPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } }
-        .loader-bar-container { width: 120px; height: 3px; background-color: #e5e7eb; border-radius: 9999px; overflow: hidden; margin-top: 24px; }
-        .dark .loader-bar-container { background-color: #40414f; }
-        .loader-bar { height: 100%; width: 40%; background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: 9999px; animation: loaderSlide 1.5s ease-in-out infinite; }
-        @keyframes loaderSlide { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
+        .loader-wrapper { position: relative; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+        .loader-logo { width: 24px; height: 24px; border-radius: 6px; object-fit: cover; }
+        .loader-ring { position: absolute; inset: 0; border-radius: 50%; border: 3px solid transparent; border-top-color: #3b82f6; border-right-color: #8b5cf6; animation: spin 0.8s linear infinite; }
+        .dark .loader-ring { border-top-color: #60a5fa; border-right-color: #a78bfa; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out, padding 0.3s ease-out; }
         .faq-answer.open { max-height: 200px; }
@@ -117,9 +117,12 @@
 
 <body class="h-full bg-gpt-bg dark:bg-[#343541] text-gpt-textMain dark:text-gpt-textDark overflow-hidden">
 
+    <!-- Modern Loading Screen -->
     <div id="loading-screen">
-        <img src="logo.png" alt="Aiserie Logo" class="w-16 h-16 rounded-2xl object-cover loader-logo">
-        <div class="loader-bar-container"><div class="loader-bar"></div></div>
+        <div class="loader-wrapper">
+            <div class="loader-ring"></div>
+            <img src="logo.png" alt="Aiserie Logo" class="loader-logo">
+        </div>
     </div>
 
     <!-- FAQ & Info Popup Modal -->
@@ -353,34 +356,14 @@
                         </div>
                     </div>
 
-                    <!-- Footer -->
-                    <footer class="max-w-5xl w-full border-t border-gray-200 dark:border-gray-700 pt-8 pb-4">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                            <div class="text-left">
-                                <div class="flex items-center gap-2 mb-3">
-                                    <img src="logo.png" alt="Aiserie Logo" class="w-6 h-6 rounded-md object-cover">
-                                    <span class="font-bold text-gray-900 dark:text-white">Aiserie</span>
-                                </div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 max-w-xs">Free AI-powered study assistance for students everywhere.</p>
-                            </div>
-                            <div class="text-left">
-                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-3">Product</h4>
-                                <ul class="space-y-2 text-xs text-gray-500 dark:text-gray-400">
-                                    <li><a href="#" onclick="scrollToFeatures()" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Features</a></li>
-                                    <li><a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Pricing (It's Free!)</a></li>
-                                    <li><a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">API</a></li>
-                                </ul>
-                            </div>
-                            <div class="text-left">
-                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-3">Legal</h4>
-                                <ul class="space-y-2 text-xs text-gray-500 dark:text-gray-400">
-                                    <li><a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Privacy Policy</a></li>
-                                    <li><a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Terms of Service</a></li>
-                                    <li><a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Contact</a></li>
-                                </ul>
-                            </div>
+                    <!-- Simplified Footer -->
+                    <footer class="max-w-5xl w-full border-t border-gray-200 dark:border-gray-700 pt-8 pb-4 flex flex-col items-center text-center">
+                        <div class="flex items-center gap-2 mb-3">
+                            <img src="logo.png" alt="Aiserie Logo" class="w-6 h-6 rounded-md object-cover">
+                            <span class="font-bold text-gray-900 dark:text-white">Aiserie</span>
                         </div>
-                        <div class="text-center text-xs text-gray-400 dark:text-gray-500">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 max-w-xs mb-4">Free AI-powered study assistance for students everywhere.</p>
+                        <div class="text-xs text-gray-400 dark:text-gray-500">
                             © 2026 Aiserie. All rights reserved. Created by Vision.
                         </div>
                     </footer>
@@ -430,7 +413,11 @@
             if (Object.keys(chats).length > 0) { const lastId = Object.keys(chats)[Object.keys(chats).length - 1]; loadChat(lastId); } else { renderHistoryList(); }
         } catch (e) { console.error("Failed to load last chat, starting fresh.", e); createNewChat(); }
 
-        window.addEventListener('load', () => { setTimeout(() => { const loader = document.getElementById('loading-screen'); if (loader) loader.classList.add('hidden-loader'); }, 800); });
+        // Instantly remove loader without artificial delay
+        window.addEventListener('load', () => { 
+            const loader = document.getElementById('loading-screen'); 
+            if (loader) loader.classList.add('hidden-loader'); 
+        });
 
         function toggleFaq(button) { 
             const answer = button.nextElementSibling; 
@@ -602,33 +589,13 @@
                     </div>
                 </div>
                 
-                <footer class="max-w-5xl w-full border-t border-gray-200 dark:border-gray-700 pt-8 pb-4">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                        <div class="text-left">
-                            <div class="flex items-center gap-2 mb-3">
-                                <img src="logo.png" alt="Aiserie Logo" class="w-6 h-6 rounded-md object-cover">
-                                <span class="font-bold text-gray-900 dark:text-white">Aiserie</span>
-                            </div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 max-w-xs">Free AI-powered study assistance for students everywhere.</p>
-                        </div>
-                        <div class="text-left">
-                            <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-3">Product</h4>
-                            <ul class="space-y-2 text-xs text-gray-500 dark:text-gray-400">
-                                <li><a href="#" onclick="scrollToFeatures()" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Features</a></li>
-                                <li><a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Pricing (It's Free!)</a></li>
-                                <li><a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">API</a></li>
-                            </ul>
-                        </div>
-                        <div class="text-left">
-                            <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-3">Legal</h4>
-                            <ul class="space-y-2 text-xs text-gray-500 dark:text-gray-400">
-                                <li><a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Privacy Policy</a></li>
-                                <li><a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Terms of Service</a></li>
-                                <li><a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Contact</a></li>
-                            </ul>
-                        </div>
+                <footer class="max-w-5xl w-full border-t border-gray-200 dark:border-gray-700 pt-8 pb-4 flex flex-col items-center text-center">
+                    <div class="flex items-center gap-2 mb-3">
+                        <img src="logo.png" alt="Aiserie Logo" class="w-6 h-6 rounded-md object-cover">
+                        <span class="font-bold text-gray-900 dark:text-white">Aiserie</span>
                     </div>
-                    <div class="text-center text-xs text-gray-400 dark:text-gray-500">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 max-w-xs mb-4">Free AI-powered study assistance for students everywhere.</p>
+                    <div class="text-xs text-gray-400 dark:text-gray-500">
                         © 2026 Aiserie. All rights reserved. Created by Vision.
                     </div>
                 </footer>
