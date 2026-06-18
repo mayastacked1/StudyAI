@@ -86,7 +86,7 @@
         .prose-content pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 0.75rem; }
         .prose-content pre code { background: transparent; color: inherit; padding: 0; font-size: 0.9em; word-break: normal; white-space: pre; }
         .prose-content blockquote { border-left: 4px solid #cbd5e1; padding-left: 1rem; color: #64748b; font-style: italic; }
-        .dark .prose-content blockquote { border-left-color: #475569; color: #94a3b8'; }
+        .dark .prose-content blockquote { border-left-color: #475569; color: #94a3b8; }
 
         .btn-glow { transition: all 0.2s ease; }
         .btn-glow:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); transform: translateY(-1px); }
@@ -117,7 +117,7 @@
 
         #loading-screen { position: fixed; inset: 0; z-index: 9999; background-color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.3s ease, visibility 0.3s ease; }
         .dark #loading-screen { background-color: #343541; }
-        #loading-screen.hidden-loader { opacity: 0; visibility: hidden; }
+        #loading-screen.hidden-loader { opacity: 0; visibility: hidden; pointer-events: none; }
         .loader-wrapper { position: relative; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
         .loader-logo { width: 24px; height: 24px; border-radius: 6px; object-fit: cover; }
         .loader-ring { position: absolute; inset: 0; border-radius: 50%; border: 3px solid transparent; border-top-color: #3b82f6; border-right-color: #8b5cf6; animation: spin 0.8s linear infinite; }
@@ -206,7 +206,7 @@
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white">Privacy Policy</h2>
             </div>
             <div class="space-y-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                <p><strong class="text-gray-900 dark:text-white">Last updated:</strong> June 2024</p>
+                <p><strong class="text-gray-900 dark:text-white">Last updated:</strong> June 2026</p>
                 <p>At StudyAI, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by StudyAI and how we use it.</p>
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Information We Collect</h3>
                 <p>We do not require you to create an account, and we do not collect personal identification information unless you voluntarily provide it through our feedback form.</p>
@@ -237,7 +237,7 @@
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white">Terms of Service</h2>
             </div>
             <div class="space-y-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                <p><strong class="text-gray-900 dark:text-white">Last updated:</strong> June 2024</p>
+                <p><strong class="text-gray-900 dark:text-white">Last updated:</strong> June 2026</p>
                 <p>Welcome to StudyAI. By accessing and using this website, you accept and agree to be bound by the terms and provisions of this agreement.</p>
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Use of Service</h3>
                 <p>StudyAI provides an AI-powered study assistant named Aiserie for educational purposes only. You must be at least 13 years old to use this service. You agree not to misuse the service, including but not limited to generating harmful, illegal, or explicit content.</p>
@@ -513,6 +513,12 @@
         try {
             if (Object.keys(chats).length > 0) { const lastId = Object.keys(chats)[Object.keys(chats).length - 1]; loadChat(lastId); } else { renderHistoryList(); }
         } catch (e) { console.error("Failed to load last chat, starting fresh.", e); createNewChat(); }
+
+        // Safety timeout to ensure loader always disappears even if scripts delay
+        setTimeout(() => { 
+            const loader = document.getElementById('loading-screen'); 
+            if (loader && !loader.classList.contains('hidden-loader')) loader.classList.add('hidden-loader'); 
+        }, 3000);
 
         window.addEventListener('load', () => { 
             const loader = document.getElementById('loading-screen'); 
@@ -835,7 +841,6 @@
             contentDiv.appendChild(roleTitle);
             contentDiv.appendChild(textDiv);
 
-            // Add Action Buttons for AI messages only when fully generated
             if (role === 'assistant' && !isStream && text) {
                 const actionsDiv = document.createElement('div');
                 actionsDiv.className = 'msg-actions flex items-center gap-2 mt-3 -ml-2';
@@ -858,7 +863,6 @@
             msgDiv.appendChild(avatar);
             msgDiv.appendChild(contentDiv);
             
-            // Return the wrapper div AND the text div so we can stream into it
             return { msgDiv, textDiv };
         }
 
@@ -951,7 +955,7 @@
                 conversationHistory.push({ role: 'assistant', content: aiResponse });
                 saveCurrentChat();
 
-                // Replace the streaming message div with a finalized one that has action buttons
+                // Replace the streaming message with a finalized one that includes action buttons
                 const { msgDiv: finalMsgDiv } = createMessageElement('assistant', aiResponse, false);
                 aiMsgDiv.replaceWith(finalMsgDiv);
                 
