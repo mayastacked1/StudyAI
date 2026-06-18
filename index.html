@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>StudyAI by Vision</title>
+    <title>StudyAI - Your Free AI Study Partner</title>
     
     <link rel="icon" type="image/png" href="logo.png">
     
@@ -11,6 +11,16 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
     
+    <!-- Priority 10: Analytics Placeholder -->
+    <!-- Replace UA-XXXXXXXXX-X with your actual Google Analytics Tracking ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXXXXXX-X"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-XXXXXXXXX-X');
+    </script>
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -128,34 +138,31 @@
 
 <body class="h-full bg-gpt-bg dark:bg-[#343541] text-gpt-textMain dark:text-gpt-textDark overflow-hidden">
 
-    <!-- Modern Loading Screen -->
+    <!-- Priority 9: Loading Screen -->
     <div id="loading-screen">
         <div class="loader-wrapper">
             <div class="loader-ring"></div>
-            <img src="logo.png" alt="Aiserie Logo" class="loader-logo">
+            <img src="logo.png" alt="StudyAI Logo" class="loader-logo">
         </div>
     </div>
 
-    <!-- FAQ & Info Popup Modal -->
+    <!-- FAQ Modal -->
     <div id="faq-modal" class="app-modal hidden fixed inset-0 z-50 flex items-center justify-center p-4">
         <div onclick="toggleFaqModal()" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
         <div class="animate-modal-in relative bg-white dark:bg-[#202123] rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto border border-gray-200 dark:border-gray-700 p-6">
             <button onclick="toggleFaqModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
-            
             <div class="flex items-center gap-3 mb-5">
-                <img src="logo.png" alt="Aiserie Logo" class="w-10 h-10 rounded-xl object-cover">
+                <img src="logo.png" alt="StudyAI Logo" class="w-10 h-10 rounded-xl object-cover">
                 <div>
                     <h2 class="text-xl font-bold text-gray-900 dark:text-white">StudyAI Info & FAQ</h2>
                     <p class="text-xs text-gray-500 dark:text-gray-400">by Vision</p>
                 </div>
             </div>
-
             <div class="bg-brand-50 dark:bg-brand-900/20 border border-brand-100 dark:border-brand-800/40 p-4 rounded-xl mb-6">
                 <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">StudyAI was built to make learning accessible for everyone. We believe students should be able to get instant study help without creating accounts, paying subscriptions, or dealing with unnecessary friction.</p>
             </div>
-
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h3>
             <div class="space-y-2">
                 <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
@@ -174,22 +181,6 @@
                     <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Which subjects are supported?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
                     <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">StudyAI supports a wide range of subjects including Math, Science, English, History, Computer Science, Business, and more.</div></div>
                 </div>
-                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Can StudyAI solve math problems?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. StudyAI can provide step-by-step explanations to help you understand how answers are reached.</div></div>
-                </div>
-                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Is my information stored?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No account is required, so you can use StudyAI without providing personal information. Conversations are saved locally in your browser.</div></div>
-                </div>
-                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Can I use StudyAI on mobile devices?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. StudyAI works on desktops, tablets, and smartphones.</div></div>
-                </div>
-                <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Does StudyAI replace teachers?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No. StudyAI is designed to support and enhance learning, not replace teachers or textbooks.</div></div>
-                </div>
             </div>
         </div>
     </div>
@@ -201,41 +192,62 @@
             <button onclick="togglePrivacyModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
-            
             <div class="flex items-center gap-3 mb-6">
                 <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 dark:text-brand-400">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                 </div>
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white">Privacy Policy</h2>
             </div>
-
             <div class="space-y-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                 <p><strong class="text-gray-900 dark:text-white">Last updated:</strong> June 2024</p>
-                
-                <p>At StudyAI, accessible from our website, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by StudyAI and how we use it.</p>
-                
+                <p>At StudyAI, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by StudyAI and how we use it.</p>
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Information We Collect</h3>
                 <p>We do not require you to create an account, and we do not collect personal identification information (name, email address, phone number) unless you voluntarily provide it through our feedback form.</p>
                 <p><strong class="text-gray-900 dark:text-white">Chat Data:</strong> Your conversations are processed in real-time by our AI provider to generate responses. We do not store your chat history on our servers. All chat history is saved exclusively in your browser's local storage (LocalStorage) and never leaves your device.</p>
-                
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">How We Use Information</h3>
                 <ul class="list-disc pl-5 space-y-1">
                     <li>To provide, operate, and maintain our AI study assistant</li>
                     <li>To improve and personalize your experience</li>
                     <li>To respond to your feedback if you contact us</li>
                 </ul>
-
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Third-Party Services</h3>
                 <p>We use third-party AI services to process your questions and generate answers. These services may temporarily process your chat inputs to provide the service but do not store them long-term according to their API policies.</p>
-
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Local Storage</h3>
                 <p>StudyAI uses LocalStorage in your browser to save your conversation history so you can revisit past chats. This data is entirely controlled by you and can be cleared at any time by deleting your chat history or clearing your browser data.</p>
-
-                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Children's Information</h3>
-                <p>StudyAI is intended for users of all ages, particularly students. We do not knowingly collect personal information from children. If you are a parent or guardian and believe your child has provided us with personal information, please contact us so we can remove it.</p>
-
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Contact Us</h3>
                 <p>If you have any questions about this Privacy Policy, you can contact us at <a href="mailto:mayamayapay11@gmail.com" class="text-brand-600 dark:text-brand-400 hover:underline">mayamayapay11@gmail.com</a>.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div id="terms-modal" class="app-modal hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div onclick="toggleTermsModal()" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div class="animate-modal-in relative bg-white dark:bg-[#202123] rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto border border-gray-200 dark:border-gray-700 p-6">
+            <button onclick="toggleTermsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 dark:text-brand-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white">Terms of Service</h2>
+            </div>
+            <div class="space-y-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p><strong class="text-gray-900 dark:text-white">Last updated:</strong> June 2024</p>
+                <p>Welcome to StudyAI. By accessing and using this website, you accept and agree to be bound by the terms and provisions of this agreement.</p>
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Use of Service</h3>
+                <p>StudyAI provides an AI-powered study assistant for educational purposes only. You must be at least 13 years old to use this service. You agree not to misuse the service, including but not limited to generating harmful, illegal, or explicit content.</p>
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Accuracy of Information</h3>
+                <p>While StudyAI strives to provide accurate and helpful information, AI can make mistakes. You should not rely solely on StudyAI for critical academic decisions, grades, or professional advice. Always verify important information with trusted educational sources or instructors.</p>
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Intellectual Property</h3>
+                <p>The content, layout, design, data, and graphics on this website are protected by copyright and intellectual property laws. You may not copy, distribute, or modify any part of the service without prior written consent.</p>
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Limitation of Liability</h3>
+                <p>StudyAI and its creators shall not be held liable for any direct, indirect, incidental, or consequential damages arising from the use or inability to use the service, including academic performance or incorrect information provided by the AI.</p>
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Modifications</h3>
+                <p>We reserve the right to modify or terminate the service at any time without notice. We may also update these Terms of Service from time to time.</p>
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Contact Us</h3>
+                <p>For questions about these Terms, contact us at <a href="mailto:mayamayapay11@gmail.com" class="text-brand-600 dark:text-brand-400 hover:underline">mayamayapay11@gmail.com</a>.</p>
             </div>
         </div>
     </div>
@@ -247,7 +259,6 @@
             <button onclick="toggleFeedbackModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
-            
             <div class="flex items-center gap-3 mb-6">
                 <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 dark:text-brand-400">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
@@ -268,15 +279,23 @@
                 </div>
             </div>
 
-            <h3 class="text-base font-bold text-gray-900 dark:text-white mb-4">Send Feedback</h3>
+            <h3 class="text-base font-bold text-gray-900 dark:text-white mb-4">Send Feedback or Report an Issue</h3>
             <form onsubmit="submitFeedback(event)" class="space-y-4">
+                <div>
+                    <label for="feedback-type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
+                    <select id="feedback-type" class="w-full px-3 py-2 bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none text-sm">
+                        <option value="Feedback">General Feedback</option>
+                        <option value="Issue">Report an Issue / Bug</option>
+                        <option value="Feature">Feature Request</option>
+                    </select>
+                </div>
                 <div>
                     <label for="feedback-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name (Optional)</label>
                     <input type="text" id="feedback-name" class="w-full px-3 py-2 bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none text-sm" placeholder="Your name">
                 </div>
                 <div>
                     <label for="feedback-message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Message <span class="text-red-500">*</span></label>
-                    <textarea id="feedback-message" rows="4" required class="w-full px-3 py-2 bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none text-sm resize-none" placeholder="Tell us what you think, or report an issue..."></textarea>
+                    <textarea id="feedback-message" rows="4" required class="w-full px-3 py-2 bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none text-sm resize-none" placeholder="Tell us what you think..."></textarea>
                 </div>
                 <button type="submit" class="w-full px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl shadow-md transition-all text-sm">
                     Send via Email
@@ -300,19 +319,19 @@
                 <div id="history-list" class="space-y-1 pb-4"></div>
             </div>
             
-            <!-- Updated User Tab & Links -->
+            <!-- Sidebar Footer Links -->
             <div class="p-3 border-t border-black/10 dark:border-white/10 space-y-2">
                 <div onclick="toggleFaqModal()" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2A2B32] transition-colors cursor-pointer">
                     <div class="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs font-bold">U</div>
                     <div class="flex-1"><p class="text-sm font-medium text-black dark:text-white">User</p></div>
                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
-                
-                <!-- Bottom Links -->
                 <div class="flex items-center justify-center gap-4 pt-2">
-                    <button onclick="togglePrivacyModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Privacy Policy</button>
+                    <button onclick="togglePrivacyModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Privacy</button>
                     <span class="text-gray-300 dark:text-gray-600">•</span>
-                    <button onclick="toggleFeedbackModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Contact</button>
+                    <button onclick="toggleTermsModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Terms</button>
+                    <span class="text-gray-300 dark:text-gray-600">•</span>
+                    <button onclick="toggleFeedbackModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Feedback</button>
                 </div>
             </div>
         </aside>
@@ -323,7 +342,7 @@
                     <button onclick="toggleSidebar()" class="md:hidden p-1 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
-                    <img src="logo.png" alt="Aiserie Logo" class="w-8 h-8 rounded-lg object-cover logo-hover">
+                    <img src="logo.png" alt="StudyAI Logo" class="w-8 h-8 rounded-lg object-cover logo-hover">
                     <h1 class="font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
                         StudyAI 
                         <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">by Vision</span>
@@ -337,163 +356,129 @@
             
             <div id="messages" class="flex-1 h-full overflow-y-auto pt-24 pb-32 scroll-smooth no-scrollbar">
                 
-                <!-- LANDING PAGE -->
+                <!-- PRIORITY 1, 2, 3: LANDING PAGE OVERHAUL -->
                 <div id="welcome-state" class="flex flex-col items-center min-h-full py-12 px-4">
                     
-                    <!-- Hero Split Section -->
-                    <div class="flex flex-col md:flex-row items-center gap-12 max-w-6xl w-full mb-24 mt-8 relative z-10">
-                        <div class="flex-1 text-center md:text-left">
-                            <div class="flex flex-wrap justify-center md:justify-start gap-2 mb-6">
-                                <span class="px-3 py-1 text-xs font-semibold rounded-full bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400 border border-brand-100 dark:border-brand-800/50">100% Free</span>
-                                <span class="px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">No Signup Required</span>
-                            </div>
-                            <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-gray-900 dark:text-white tracking-tight leading-tight">
-                                Your free AI <br class="hidden md:block">
-                                <span class="text-brand-600 dark:text-brand-500">study partner.</span>
-                            </h2>
-                            <p class="text-lg text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto md:mx-0">Get instant explanations, summaries, and study help—no sign-up required.</p>
-                            <div class="flex flex-col sm:flex-row justify-center md:justify-start gap-3">
-                                <button onclick="scrollToFeatures()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all text-sm">Explore Features</button>
-                                <button onclick="setPrompt('Explain photosynthesis simply')" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-[#2A2B32] dark:hover:bg-[#3c3d45] text-gray-900 dark:text-white font-semibold rounded-xl transition-all text-sm">Try an Example</button>
-                            </div>
-                        </div>
-                        <div class="flex-1 w-full max-w-md relative">
-                            <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-700/50 transform md:rotate-2 hover:rotate-0 transition-transform duration-500">
-                                <img src="banner.png" alt="StudyAI Platform Preview" class="w-full h-64 object-cover">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-                            </div>
-                            <div class="absolute -bottom-5 -left-5 bg-white dark:bg-[#2A2B32] p-3 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 hidden sm:flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center text-green-600 dark:text-green-400 font-bold">✓</div>
-                                <div>
-                                    <p class="text-sm font-bold text-gray-900 dark:text-white">AI Powered</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Always available</p>
-                                </div>
-                            </div>
+                    <!-- Hero Section - Tagline & Description -->
+                    <div class="flex flex-col items-center text-center max-w-3xl w-full mb-16 mt-4 relative z-10">
+                        <img src="logo.png" alt="StudyAI Logo" class="w-20 h-20 rounded-2xl object-cover shadow-lg mb-6 logo-hover">
+                        <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-gray-900 dark:text-white tracking-tight leading-tight">
+                            Your free AI <span class="text-brand-600 dark:text-brand-500">study partner.</span>
+                        </h2>
+                        <p class="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto">Get instant explanations, quizzes, summaries, and homework help — no login required.</p>
+                        <div class="flex flex-wrap justify-center gap-3 mt-6">
+                            <span class="px-4 py-1.5 text-sm font-semibold rounded-full bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400 border border-brand-100 dark:border-brand-800/50">100% Free</span>
+                            <span class="px-4 py-1.5 text-sm font-semibold rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">No Login Required</span>
                         </div>
                     </div>
 
                     <!-- Suggested Prompts -->
-                    <div class="max-w-4xl w-full mb-24">
-                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">How can I help you today?</h3>
+                    <div class="max-w-4xl w-full mb-20">
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">Try asking...</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <button onclick="setPrompt('Summarize the key points of the French Revolution')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
-                                <div class="p-2.5 bg-brand-50 dark:bg-brand-900/30 rounded-lg text-brand-600 dark:text-brand-400 text-xl">📝</div>
+                            <button onclick="setPrompt('Explain photosynthesis in simple terms')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
+                                <div class="p-2.5 bg-green-50 dark:bg-green-900/30 rounded-lg text-green-600 dark:text-green-400 text-xl">🌱</div>
                                 <div>
-                                    <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Summarize Notes</h4>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Get the key points of the French Revolution</p>
+                                    <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Explain photosynthesis</h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">In simple terms</p>
                                 </div>
                             </button>
-                            <button onclick="setPrompt('Explain quantum computing in simple terms')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
-                                <div class="p-2.5 bg-purple-50 dark:bg-purple-900/30 rounded-lg text-purple-600 dark:text-purple-400 text-xl">🧠</div>
-                                <div>
-                                    <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Explain a Concept</h4>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Understand quantum computing simply</p>
-                                </div>
-                            </button>
-                            <button onclick="setPrompt('Create a practice quiz on World War 2')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
+                            <button onclick="setPrompt('Create a 10-question algebra quiz')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
                                 <div class="p-2.5 bg-orange-50 dark:bg-orange-900/30 rounded-lg text-orange-600 dark:text-orange-400 text-xl">⚡</div>
                                 <div>
-                                    <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Generate a Quiz</h4>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Test your knowledge on World War 2</p>
+                                    <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Create an algebra quiz</h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">10 practice questions</p>
                                 </div>
                             </button>
-                            <button onclick="setPrompt('Help me write an essay outline about climate change')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
-                                <div class="p-2.5 bg-green-50 dark:bg-green-900/30 rounded-lg text-green-600 dark:text-green-400 text-xl">📄</div>
+                            <button onclick="setPrompt('Help me study for my history exam')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
+                                <div class="p-2.5 bg-brand-50 dark:bg-brand-900/30 rounded-lg text-brand-600 dark:text-brand-400 text-xl">🏛️</div>
                                 <div>
-                                    <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Essay Outline</h4>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Structure an essay on climate change</p>
+                                    <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Study for history exam</h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Review key concepts</p>
+                                </div>
+                            </button>
+                            <button onclick="setPrompt('Generate flashcards for cell biology')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
+                                <div class="p-2.5 bg-purple-50 dark:bg-purple-900/30 rounded-lg text-purple-600 dark:text-purple-400 text-xl">🧬</div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Generate flashcards</h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">For cell biology</p>
                                 </div>
                             </button>
                         </div>
                     </div>
 
-                    <!-- How It Works -->
-                    <div class="max-w-4xl w-full mb-24">
-                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-10 text-center">How StudyAI Works</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div class="flex flex-col items-center text-center">
-                                <div class="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xl mb-4 shadow-sm">1</div>
-                                <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Ask a question</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs">Type any question, topic, or homework problem into the chat.</p>
-                            </div>
-                            <div class="flex flex-col items-center text-center">
-                                <div class="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xl mb-4 shadow-sm">2</div>
-                                <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Get AI help instantly</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs">Receive explanations, summaries, examples, and solutions in seconds.</p>
-                            </div>
-                            <div class="flex flex-col items-center text-center">
-                                <div class="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xl mb-4 shadow-sm">3</div>
-                                <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Learn and practice</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs">Use quizzes, study guides, and follow-up questions to master the topic.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Feature Grid -->
-                    <div id="features" class="max-w-5xl w-full mb-24">
+                    <!-- Feature Cards -->
+                    <div id="features" class="max-w-5xl w-full mb-20">
                         <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-10 text-center">Everything you need to study smarter</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
-                            <div class="p-6 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
-                                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-900/20 text-xl mb-4">⚡</div>
-                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1.5">Instant Explanations</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Get clear answers to any study question in seconds.</p>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                            <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
+                                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-900/20 text-xl mb-3">📝</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Step-by-Step Explanations</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Understand complex concepts easily.</p>
                             </div>
-                            <div class="p-6 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
-                                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-purple-50 dark:bg-purple-900/20 text-xl mb-4">📝</div>
-                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1.5">Homework Help</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Understand assignments step-by-step instead of just copying answers.</p>
+                            <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
+                                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-orange-50 dark:bg-orange-900/20 text-xl mb-3">⚡</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Quiz Generation</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Test your knowledge instantly.</p>
                             </div>
-                            <div class="p-6 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
-                                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-orange-50 dark:bg-orange-900/20 text-xl mb-4">🧠</div>
-                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1.5">Quiz Generator</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Create practice quizzes from any topic to test your knowledge.</p>
+                            <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
+                                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-purple-50 dark:bg-purple-900/20 text-xl mb-3">🧠</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Flashcard Creator</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Memorize key facts fast.</p>
                             </div>
-                            <div class="p-6 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
-                                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20 text-xl mb-4">📄</div>
-                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1.5">Note Summaries</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Turn long notes into concise, easy-to-review summaries.</p>
+                            <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
+                                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20 text-xl mb-3">📄</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Study Summaries</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Condense long topics quickly.</p>
                             </div>
-                            <div class="p-6 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
-                                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/20 text-xl mb-4">🎓</div>
-                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1.5">Exam Prep</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Review key concepts and practice before tests and exams.</p>
+                            <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
+                                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/20 text-xl mb-3">📚</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Multiple Subjects</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Math, Science, History & more.</p>
                             </div>
-                            <div class="p-6 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
-                                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20 text-xl mb-4">📱</div>
-                                <h4 class="font-semibold text-gray-900 dark:text-white mb-1.5">Works Anywhere</h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Use StudyAI on your phone, tablet, or desktop anytime.</p>
+                            <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
+                                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20 text-xl mb-3">📎</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">File Upload Support</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Upload text files directly.</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Simplified Footer -->
+                    <!-- Trust Footer -->
                     <footer class="max-w-5xl w-full border-t border-gray-200 dark:border-gray-700 pt-8 pb-4 flex flex-col items-center text-center">
-                        <div class="flex items-center gap-2 mb-3">
-                            <img src="logo.png" alt="Aiserie Logo" class="w-6 h-6 rounded-md object-cover">
+                        <div class="flex items-center gap-2 mb-4">
+                            <img src="logo.png" alt="StudyAI Logo" class="w-6 h-6 rounded-md object-cover">
                             <span class="font-bold text-gray-900 dark:text-white">StudyAI</span>
                         </div>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 max-w-xs mb-4">Free AI-powered study assistance for students everywhere.</p>
-                        <!-- Footer Links -->
-                        <div class="flex items-center gap-4 mb-4">
+                        
+                        <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 p-3 rounded-xl mb-6 max-w-md">
+                            <p class="text-xs text-gray-500 dark:text-gray-400">AI can make mistakes. Consider checking important information.</p>
+                        </div>
+
+                        <div class="flex items-center gap-4 mb-4 flex-wrap justify-center">
                             <button onclick="togglePrivacyModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Privacy Policy</button>
                             <span class="text-gray-300 dark:text-gray-600">•</span>
-                            <button onclick="toggleFeedbackModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Contact & Feedback</button>
+                            <button onclick="toggleTermsModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Terms of Service</button>
+                            <span class="text-gray-300 dark:text-gray-600">•</span>
+                            <button onclick="toggleFeedbackModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Send Feedback</button>
+                            <span class="text-gray-300 dark:text-gray-600">•</span>
+                            <a href="mailto:mayamayapay11@gmail.com?subject=StudyAI%20Issue%20Report" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Report an Issue</a>
                         </div>
                         <div class="text-xs text-gray-400 dark:text-gray-500">
-                            © 2026 StudyAI All rights reserved. Created by Vision.
+                            © 2026 StudyAI. All rights reserved. Created by Vision.
                         </div>
                     </footer>
                 </div>
             </div>
 
-            <!-- Chat Input -->
-            <div class="absolute bottom-0 left-0 right-0 p-4 pb-8 bg-gradient-to-t from-gpt-bg via-gpt-bg to-transparent dark:from-[#343541] dark:via-[#343541]">
+            <!-- Chat Input - P8: Mobile Optimized -->
+            <div class="absolute bottom-0 left-0 right-0 p-3 md:p-4 pb-4 md:pb-6 bg-gradient-to-t from-gpt-bg via-gpt-bg to-transparent dark:from-[#343541] dark:via-[#343541]">
                 <div class="max-w-3xl mx-auto w-full relative group">
                     <div class="input-ring relative bg-white dark:bg-[#40414f] rounded-xl shadow-lg dark:shadow-[0_0_15px_rgba(0,0,0,0.3)] border border-black/10 dark:border-white/10 overflow-hidden transition-all duration-300">
                         <input type="file" id="file-input" accept=".txt" class="hidden">
-                        <textarea id="user-input" rows="1" placeholder="Ask anything..." class="w-full bg-transparent px-12 py-3 outline-none resize-none max-h-48 text-gray-900 dark:text-white placeholder-gray-500 scrollbar-hide text-base" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+                        <textarea id="user-input" rows="1" placeholder="Ask anything..." class="w-full bg-transparent px-4 md:px-12 py-3 outline-none resize-none max-h-48 text-gray-900 dark:text-white placeholder-gray-500 scrollbar-hide text-base" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
                         <div class="flex items-center justify-between px-2 pb-2">
-                            <div class="flex items-center pl-1">
+                            <div class="flex items-center pl-2">
                                 <button onclick="document.getElementById('file-input').click()" class="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md transition-colors active:scale-90" title="Upload TXT file">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
                                 </button>
@@ -504,7 +489,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="text-center mt-2 px-1">
+                    <div class="text-center mt-1.5 px-1 hidden md:block">
                         <p class="text-[10px] text-gray-400">StudyAI can make mistakes. Consider checking important information.</p>
                     </div>
                 </div>
@@ -529,7 +514,7 @@
             if (Object.keys(chats).length > 0) { const lastId = Object.keys(chats)[Object.keys(chats).length - 1]; loadChat(lastId); } else { renderHistoryList(); }
         } catch (e) { console.error("Failed to load last chat, starting fresh.", e); createNewChat(); }
 
-        // Instantly remove loader
+        // Priority 9: Instant loader removal
         window.addEventListener('load', () => { 
             const loader = document.getElementById('loading-screen'); 
             if (loader) loader.classList.add('hidden-loader'); 
@@ -542,21 +527,15 @@
             icon.classList.toggle('open'); 
         }
 
-        function toggleFaqModal() {
-            document.getElementById('faq-modal').classList.toggle('hidden');
-        }
+        function toggleFaqModal() { document.getElementById('faq-modal').classList.toggle('hidden'); }
+        function togglePrivacyModal() { document.getElementById('privacy-modal').classList.toggle('hidden'); }
+        function toggleTermsModal() { document.getElementById('terms-modal').classList.toggle('hidden'); }
+        function toggleFeedbackModal() { document.getElementById('feedback-modal').classList.toggle('hidden'); }
 
-        function togglePrivacyModal() {
-            document.getElementById('privacy-modal').classList.toggle('hidden');
-        }
-
-        function toggleFeedbackModal() {
-            document.getElementById('feedback-modal').classList.toggle('hidden');
-        }
-
-        // Handle Feedback form submission
+        // Priority 7: Upgraded Feedback form handler
         function submitFeedback(event) {
             event.preventDefault();
+            const type = document.getElementById('feedback-type').value;
             const name = document.getElementById('feedback-name').value || 'Anonymous';
             const message = document.getElementById('feedback-message').value;
             
@@ -565,39 +544,30 @@
                 return;
             }
             
-            const subject = encodeURIComponent(`StudyAI Feedback from ${name}`);
-            const body = encodeURIComponent(`Name: ${name}\n\nMessage:\n${message}`);
+            const subject = encodeURIComponent(`StudyAI ${type} from ${name}`);
+            const body = encodeURIComponent(`Type: ${type}\nName: ${name}\n\nMessage:\n${message}`);
             window.location.href = `mailto:mayamayapay11@gmail.com?subject=${subject}&body=${body}`;
             
-            // Close modal and reset form
             document.getElementById('feedback-message').value = '';
             document.getElementById('feedback-name').value = '';
             toggleFeedbackModal();
         }
 
-        function setPrompt(text) { const input = document.getElementById('user-input'); input.value = text; input.focus(); input.style.height = 'auto'; input.style.height = input.scrollHeight + 'px'; }
-
-        function scrollToFeatures() {
-            setTimeout(() => {
-                const features = document.getElementById('features');
-                const chatContainer = document.getElementById('messages');
-                if (features && chatContainer) {
-                    const scrollPosition = features.offsetTop - chatContainer.offsetTop;
-                    chatContainer.scrollTo({ top: scrollPosition, behavior: 'smooth' });
-                }
-            }, 10);
+        function setPrompt(text) { 
+            const input = document.getElementById('user-input'); 
+            input.value = text; 
+            input.focus(); 
+            input.style.height = 'auto'; 
+            input.style.height = input.scrollHeight + 'px'; 
         }
 
         // Smarter Title Generation
         function getShortTitle(text) {
             if (!text) return "New Chat";
             let cleanText = text.replace(/[\n\r]+/g, ' ').trim();
-            
-            // Extract the first sentence
             const firstSentence = cleanText.split(/[.!?]/)[0];
             cleanText = firstSentence.trim();
             
-            // Common filler/stop words to filter out
             const stopWords = new Set([
                 'i', 'me', 'my', 'we', 'our', 'you', 'your', 'it', 'its', 'he', 'she', 'they', 'them',
                 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those',
@@ -613,23 +583,17 @@
                 'some', 'such', 'no', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 'even', 'still', 'already'
             ]);
             
-            // Split into words, filter out stop words and short punctuation
             let words = cleanText.split(/\s+/)
-                .map(w => w.replace(/[^a-zA-Z0-9]/g, '')) // strip punctuation
+                .map(w => w.replace(/[^a-zA-Z0-9]/g, ''))
                 .filter(w => w.length > 0 && !stopWords.has(w.toLowerCase()));
             
-            // If we filtered out everything, fallback to the first 4 raw words
             if (words.length === 0) {
                 words = cleanText.split(/\s+/).slice(0, 4);
             }
             
-            // Take the top 4 most meaningful words
             let title = words.slice(0, 4).join(' ');
-            
-            // Capitalize first letter of each word for a Title Case look
             title = title.replace(/\b\w/g, c => c.toUpperCase());
             
-            // Truncate if somehow still too long
             if (title.length > 40) {
                 title = title.substring(0, 40).trim() + '...';
             }
@@ -663,19 +627,15 @@
                 
                 btn.querySelector('.del-btn').onclick = (e) => deleteChat(chat.id, e);
                 btn.onclick = () => loadChat(chat.id); 
-                
                 list.appendChild(btn); 
             }); 
         }
 
         function deleteChat(id, event) { 
-            if (event) event.stopPropagation(); // Prevent triggering loadChat
+            if (event) event.stopPropagation();
             if (!confirm('Delete this conversation?')) return;
-
             const list = document.getElementById('history-list');
             const btn = list.querySelector(`[data-chat-id="${id}"]`);
-            
-            // Trigger delete animation
             if (btn) {
                 btn.classList.add('deleting');
                 setTimeout(() => {
@@ -683,7 +643,7 @@
                     localStorage.setItem('aiserie_chats', JSON.stringify(chats)); 
                     if (id === currentChatId) createNewChat(); 
                     else renderHistoryList(); 
-                }, 300); // Match animation duration
+                }, 300);
             } else {
                 delete chats[id]; 
                 localStorage.setItem('aiserie_chats', JSON.stringify(chats)); 
@@ -703,139 +663,104 @@
             
             chatContainer.innerHTML = `
             <div id="welcome-state" class="flex flex-col items-center min-h-full py-12 px-4">
-                <div class="flex flex-col md:flex-row items-center gap-12 max-w-6xl w-full mb-24 mt-8 relative z-10">
-                    <div class="flex-1 text-center md:text-left">
-                        <div class="flex flex-wrap justify-center md:justify-start gap-2 mb-6">
-                            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400 border border-brand-100 dark:border-brand-800/50">100% Free</span>
-                            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">No Signup Required</span>
-                        </div>
-                        <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-gray-900 dark:text-white tracking-tight leading-tight">
-                            Your free AI <br class="hidden md:block">
-                            <span class="text-brand-600 dark:text-brand-500">study partner.</span>
-                        </h2>
-                        <p class="text-lg text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto md:mx-0">Get instant explanations, summaries, and study help—no sign-up required.</p>
-                        <div class="flex flex-col sm:flex-row justify-center md:justify-start gap-3">
-                            <button onclick="scrollToFeatures()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all text-sm">Explore Features</button>
-                            <button onclick="setPrompt('Explain photosynthesis simply')" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-[#2A2B32] dark:hover:bg-[#3c3d45] text-gray-900 dark:text-white font-semibold rounded-xl transition-all text-sm">Try an Example</button>
-                        </div>
-                    </div>
-                    <div class="flex-1 w-full max-w-md relative">
-                        <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-700/50 transform md:rotate-2 hover:rotate-0 transition-transform duration-500">
-                            <img src="banner.png" alt="StudyAI Platform Preview" class="w-full h-64 object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-                        </div>
-                        <div class="absolute -bottom-5 -left-5 bg-white dark:bg-[#2A2B32] p-3 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 hidden sm:flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center text-green-600 dark:text-green-400 font-bold">✓</div>
-                            <div>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white">AI Powered</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Always available</p>
-                            </div>
-                        </div>
+                <div class="flex flex-col items-center text-center max-w-3xl w-full mb-16 mt-4 relative z-10">
+                    <img src="logo.png" alt="StudyAI Logo" class="w-20 h-20 rounded-2xl object-cover shadow-lg mb-6 logo-hover">
+                    <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-gray-900 dark:text-white tracking-tight leading-tight">
+                        Your free AI <span class="text-brand-600 dark:text-brand-500">study partner.</span>
+                    </h2>
+                    <p class="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto">Get instant explanations, quizzes, summaries, and homework help — no login required.</p>
+                    <div class="flex flex-wrap justify-center gap-3 mt-6">
+                        <span class="px-4 py-1.5 text-sm font-semibold rounded-full bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400 border border-brand-100 dark:border-brand-800/50">100% Free</span>
+                        <span class="px-4 py-1.5 text-sm font-semibold rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">No Login Required</span>
                     </div>
                 </div>
 
-                <div class="max-w-4xl w-full mb-24">
-                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">How can I help you today?</h3>
+                <div class="max-w-4xl w-full mb-20">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">Try asking...</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <button onclick="setPrompt('Summarize the key points of the French Revolution')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
-                            <div class="p-2.5 bg-brand-50 dark:bg-brand-900/30 rounded-lg text-brand-600 dark:text-brand-400 text-xl">📝</div>
+                        <button onclick="setPrompt('Explain photosynthesis in simple terms')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
+                            <div class="p-2.5 bg-green-50 dark:bg-green-900/30 rounded-lg text-green-600 dark:text-green-400 text-xl">🌱</div>
                             <div>
-                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Summarize Notes</h4>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Get the key points of the French Revolution</p>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Explain photosynthesis</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">In simple terms</p>
                             </div>
                         </button>
-                        <button onclick="setPrompt('Explain quantum computing in simple terms')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
-                            <div class="p-2.5 bg-purple-50 dark:bg-purple-900/30 rounded-lg text-purple-600 dark:text-purple-400 text-xl">🧠</div>
-                            <div>
-                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Explain a Concept</h4>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Understand quantum computing simply</p>
-                            </div>
-                        </button>
-                        <button onclick="setPrompt('Create a practice quiz on World War 2')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
+                        <button onclick="setPrompt('Create a 10-question algebra quiz')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
                             <div class="p-2.5 bg-orange-50 dark:bg-orange-900/30 rounded-lg text-orange-600 dark:text-orange-400 text-xl">⚡</div>
                             <div>
-                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Generate a Quiz</h4>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Test your knowledge on World War 2</p>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Create an algebra quiz</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">10 practice questions</p>
                             </div>
                         </button>
-                        <button onclick="setPrompt('Help me write an essay outline about climate change')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
-                            <div class="p-2.5 bg-green-50 dark:bg-green-900/30 rounded-lg text-green-600 dark:text-green-400 text-xl">📄</div>
+                        <button onclick="setPrompt('Help me study for my history exam')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
+                            <div class="p-2.5 bg-brand-50 dark:bg-brand-900/30 rounded-lg text-brand-600 dark:text-brand-400 text-xl">🏛️</div>
                             <div>
-                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Essay Outline</h4>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Structure an essay on climate change</p>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Study for history exam</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Review key concepts</p>
+                            </div>
+                        </button>
+                        <button onclick="setPrompt('Generate flashcards for cell biology')" class="group flex items-start gap-4 p-4 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 hover:shadow-md transition-all text-left">
+                            <div class="p-2.5 bg-purple-50 dark:bg-purple-900/30 rounded-lg text-purple-600 dark:text-purple-400 text-xl">🧬</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Generate flashcards</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">For cell biology</p>
                             </div>
                         </button>
                     </div>
                 </div>
 
-                <div class="max-w-4xl w-full mb-24">
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-10 text-center">How StudyAI Works</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div class="flex flex-col items-center text-center">
-                            <div class="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xl mb-4 shadow-sm">1</div>
-                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Ask a question</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs">Type any question, topic, or homework problem into the chat.</p>
-                        </div>
-                        <div class="flex flex-col items-center text-center">
-                            <div class="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xl mb-4 shadow-sm">2</div>
-                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Get AI help instantly</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs">Receive explanations, summaries, examples, and solutions in seconds.</p>
-                        </div>
-                        <div class="flex flex-col items-center text-center">
-                            <div class="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xl mb-4 shadow-sm">3</div>
-                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Learn and practice</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xs">Use quizzes, study guides, and follow-up questions to master the topic.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="features" class="max-w-5xl w-full mb-24">
+                <div id="features" class="max-w-5xl w-full mb-20">
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-10 text-center">Everything you need to study smarter</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
-                        <div class="p-6 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
-                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-900/20 text-xl mb-4">⚡</div>
-                            <h4 class="font-semibold text-gray-900 dark:text-white mb-1.5">Instant Explanations</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Get clear answers to any study question in seconds.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                        <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-900/20 text-xl mb-3">📝</div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Step-by-Step Explanations</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Understand complex concepts easily.</p>
                         </div>
-                        <div class="p-6 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
-                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-purple-50 dark:bg-purple-900/20 text-xl mb-4">📝</div>
-                            <h4 class="font-semibold text-gray-900 dark:text-white mb-1.5">Homework Help</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Understand assignments step-by-step instead of just copying answers.</p>
+                        <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-orange-50 dark:bg-orange-900/20 text-xl mb-3">⚡</div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Quiz Generation</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Test your knowledge instantly.</p>
                         </div>
-                        <div class="p-6 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
-                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-orange-50 dark:bg-orange-900/20 text-xl mb-4">🧠</div>
-                            <h4 class="font-semibold text-gray-900 dark:text-white mb-1.5">Quiz Generator</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Create practice quizzes from any topic to test your knowledge.</p>
+                        <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-purple-50 dark:bg-purple-900/20 text-xl mb-3">🧠</div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Flashcard Creator</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Memorize key facts fast.</p>
                         </div>
-                        <div class="p-6 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
-                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20 text-xl mb-4">📄</div>
-                            <h4 class="font-semibold text-gray-900 dark:text-white mb-1.5">Note Summaries</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Turn long notes into concise, easy-to-review summaries.</p>
+                        <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-green-50 dark:bg-green-900/20 text-xl mb-3">📄</div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Study Summaries</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Condense long topics quickly.</p>
                         </div>
-                        <div class="p-6 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
-                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/20 text-xl mb-4">🎓</div>
-                            <h4 class="font-semibold text-gray-900 dark:text-white mb-1.5">Exam Prep</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Review key concepts and practice before tests and exams.</p>
+                        <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/20 text-xl mb-3">📚</div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">Multiple Subjects</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Math, Science, History & more.</p>
                         </div>
-                        <div class="p-6 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
-                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20 text-xl mb-4">📱</div>
-                            <h4 class="font-semibold text-gray-900 dark:text-white mb-1.5">Works Anywhere</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Use StudyAI on your phone, tablet, or desktop anytime.</p>
+                        <div class="p-5 bg-white dark:bg-[#2A2B32] rounded-xl border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all text-left">
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20 text-xl mb-3">📎</div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white text-sm mb-1">File Upload Support</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Upload text files directly.</p>
                         </div>
                     </div>
                 </div>
                 
                 <footer class="max-w-5xl w-full border-t border-gray-200 dark:border-gray-700 pt-8 pb-4 flex flex-col items-center text-center">
-                    <div class="flex items-center gap-2 mb-3">
-                        <img src="logo.png" alt="Aiserie Logo" class="w-6 h-6 rounded-md object-cover">
+                    <div class="flex items-center gap-2 mb-4">
+                        <img src="logo.png" alt="StudyAI Logo" class="w-6 h-6 rounded-md object-cover">
                         <span class="font-bold text-gray-900 dark:text-white">StudyAI</span>
                     </div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 max-w-xs mb-4">Free AI-powered study assistance for students everywhere.</p>
-                    <!-- Footer Links -->
-                    <div class="flex items-center gap-4 mb-4">
+                    <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 p-3 rounded-xl mb-6 max-w-md">
+                        <p class="text-xs text-gray-500 dark:text-gray-400">AI can make mistakes. Consider checking important information.</p>
+                    </div>
+                    <div class="flex items-center gap-4 mb-4 flex-wrap justify-center">
                         <button onclick="togglePrivacyModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Privacy Policy</button>
                         <span class="text-gray-300 dark:text-gray-600">•</span>
-                        <button onclick="toggleFeedbackModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Contact & Feedback</button>
+                        <button onclick="toggleTermsModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Terms of Service</button>
+                        <span class="text-gray-300 dark:text-gray-600">•</span>
+                        <button onclick="toggleFeedbackModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Send Feedback</button>
+                        <span class="text-gray-300 dark:text-gray-600">•</span>
+                        <a href="mailto:mayamayapay11@gmail.com?subject=StudyAI%20Issue%20Report" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Report an Issue</a>
                     </div>
                     <div class="text-xs text-gray-400 dark:text-gray-500">
                         © 2026 StudyAI. All rights reserved. Created by Vision.
@@ -866,7 +791,7 @@
             
             const roleTitle = document.createElement('p');
             roleTitle.className = 'text-sm font-semibold text-gray-900 dark:text-white mb-1';
-            roleTitle.textContent = role === 'user' ? 'You' : 'Aiserie';
+            roleTitle.textContent = role === 'user' ? 'You' : 'StudyAI';
             
             const textDiv = document.createElement('div');
             textDiv.className = 'prose-content text-gray-700 dark:text-gray-300';
@@ -879,10 +804,8 @@
             
             contentDiv.appendChild(roleTitle);
             contentDiv.appendChild(textDiv);
-            
             msgDiv.appendChild(avatar);
             msgDiv.appendChild(contentDiv);
-            
             chatContainer.appendChild(msgDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
             
@@ -894,31 +817,26 @@
             const text = input.value.trim();
             if (!text || text === 'Type a message...') return;
 
-            // Hide welcome state
             const welcome = document.getElementById('welcome-state');
             if (welcome) welcome.style.display = 'none';
 
-            // Add user message
             conversationHistory.push({ role: 'user', content: text });
             createMessageElement('user', text);
             
-            // Clear input
             input.value = '';
             input.style.height = 'auto';
             
-            // Generate title if first message
             if (conversationHistory.length === 1) {
                 generateTitle(text);
             }
 
-            // Show thinking indicator
             const thinkingDiv = document.createElement('div');
             thinkingDiv.className = 'flex gap-4 px-4 md:px-8 py-6 bg-gpt-bg dark:bg-[#2A2B32]';
             thinkingDiv.id = 'thinking-indicator';
             thinkingDiv.innerHTML = `
                 <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm font-bold">AI</div>
                 <div class="flex-1">
-                    <p class="text-sm font-semibold text-gray-900 dark:text-white mb-1">Aiserie</p>
+                    <p class="text-sm font-semibold text-gray-900 dark:text-white mb-1">StudyAI</p>
                     <div class="thinking-dots"><span></span><span></span><span></span></div>
                 </div>
             `;
@@ -926,15 +844,12 @@
             document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
 
             try {
-                // Call backend API
                 const response = await fetch('/api/chat', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         prompt: text,
-                        history: conversationHistory.slice(0, -1) // Exclude the latest user message since we pass it as 'prompt'
+                        history: conversationHistory.slice(0, -1)
                     })
                 });
 
@@ -944,12 +859,9 @@
                 }
 
                 thinkingDiv.remove();
-                
-                // Create AI message element to stream into
                 const messageTextDiv = createMessageElement('assistant', '', true);
                 let aiResponse = '';
                 
-                // Parse Server-Sent Events (SSE) response
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let buffer = '';
@@ -960,14 +872,12 @@
                     
                     buffer += decoder.decode(value, { stream: true });
                     const lines = buffer.split('\n');
-                    buffer = lines.pop(); // Keep the last partial line in the buffer
+                    buffer = lines.pop();
                     
                     for (const line of lines) {
                         if (line.startsWith('data: ')) {
                             const dataStr = line.slice(6).trim();
-                            if (dataStr === '[DONE]') {
-                                continue;
-                            }
+                            if (dataStr === '[DONE]') continue;
                             try {
                                 const data = JSON.parse(dataStr);
                                 if (data.content) {
@@ -992,7 +902,6 @@
             }
         }
 
-        // Enter key handling
         document.getElementById('user-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -1000,7 +909,6 @@
             }
         });
 
-        // Initial load
         if (Object.keys(chats).length === 0) {
             createNewChat();
         }
