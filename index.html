@@ -11,16 +11,6 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
     
-    <!-- Priority 10: Analytics Placeholder -->
-    <!-- Replace UA-XXXXXXXXX-X with your actual Google Analytics Tracking ID -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXXXXXX-X"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'UA-XXXXXXXXX-X');
-    </script>
-
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -55,7 +45,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; }
         html { scroll-behavior: smooth; }
-        body, aside, main, header, .glass, button, textarea, .prose-content, .chat-bubble { transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
+        body, aside, main, header, button, textarea, .prose-content, .chat-bubble { transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -73,8 +63,17 @@
         .thinking-dots span:nth-child(3) { animation-delay: 0s; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .dark .glass { background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        /* Glassmorphism Header */
+        .glass-header { 
+            background: rgba(255, 255, 255, 0.75); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px); 
+            border-bottom: 1px solid rgba(0,0,0,0.05); 
+        }
+        .dark .glass-header { 
+            background: rgba(52, 53, 65, 0.75); 
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+        }
 
         .prose-content p { margin-bottom: 0.75rem; line-height: 1.6; }
         .prose-content p:last-child { margin-bottom: 0; }
@@ -133,12 +132,20 @@
         .app-modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
         .app-modal.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         .app-modal:not(.hidden) { opacity: 1; visibility: visible; pointer-events: auto; }
+
+        /* Action buttons on AI messages */
+        .msg-actions { opacity: 0; transition: opacity 0.2s ease; }
+        .group:hover .msg-actions { opacity: 1; }
+        .msg-action-btn { transition: all 0.15s ease; }
+        .msg-action-btn:hover { background-color: rgba(0,0,0,0.05); }
+        .dark .msg-action-btn:hover { background-color: rgba(255,255,255,0.1); }
+        .msg-action-btn.active-feedback { color: #2563eb; }
+        .dark .msg-action-btn.active-feedback { color: #60a5fa; }
     </style>
 </head>
 
 <body class="h-full bg-gpt-bg dark:bg-[#343541] text-gpt-textMain dark:text-gpt-textDark overflow-hidden">
 
-    <!-- Priority 9: Loading Screen -->
     <div id="loading-screen">
         <div class="loader-wrapper">
             <div class="loader-ring"></div>
@@ -174,12 +181,12 @@
                     <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">No. You can start using StudyAI immediately without signing up or logging in.</div></div>
                 </div>
                 <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>What can StudyAI help me with?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">StudyAI can help with homework, concept explanations, note summaries, quiz generation, research, and exam preparation.</div></div>
+                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>What AI powers StudyAI?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">StudyAI is powered by our custom AI assistant named Aiserie, designed specifically to help students learn and study effectively.</div></div>
                 </div>
                 <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
-                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Which subjects are supported?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
-                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">StudyAI supports a wide range of subjects including Math, Science, English, History, Computer Science, Business, and more.</div></div>
+                    <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between p-4 text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#343541] transition-colors"><span>Can I use StudyAI on mobile devices?</span><span class="faq-icon text-xl text-gray-400">+</span></button>
+                    <div class="faq-answer px-4 text-sm text-gray-600 dark:text-gray-400"><div class="pb-4">Yes. StudyAI works on desktops, tablets, and smartphones.</div></div>
                 </div>
             </div>
         </div>
@@ -199,21 +206,17 @@
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white">Privacy Policy</h2>
             </div>
             <div class="space-y-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                <p><strong class="text-gray-900 dark:text-white">Last updated:</strong> June 2024</p>
+                <p><strong class="text-gray-900 dark:text-white">Last updated:</strong> June 2026</p>
                 <p>At StudyAI, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by StudyAI and how we use it.</p>
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Information We Collect</h3>
-                <p>We do not require you to create an account, and we do not collect personal identification information (name, email address, phone number) unless you voluntarily provide it through our feedback form.</p>
-                <p><strong class="text-gray-900 dark:text-white">Chat Data:</strong> Your conversations are processed in real-time by our AI provider to generate responses. We do not store your chat history on our servers. All chat history is saved exclusively in your browser's local storage (LocalStorage) and never leaves your device.</p>
+                <p>We do not require you to create an account, and we do not collect personal identification information unless you voluntarily provide it through our feedback form.</p>
+                <p><strong class="text-gray-900 dark:text-white">Chat Data:</strong> Your conversations are processed in real-time by Aiserie (our AI) to generate responses. We do not store your chat history on our servers. All chat history is saved exclusively in your browser's local storage and never leaves your device.</p>
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">How We Use Information</h3>
                 <ul class="list-disc pl-5 space-y-1">
                     <li>To provide, operate, and maintain our AI study assistant</li>
                     <li>To improve and personalize your experience</li>
                     <li>To respond to your feedback if you contact us</li>
                 </ul>
-                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Third-Party Services</h3>
-                <p>We use third-party AI services to process your questions and generate answers. These services may temporarily process your chat inputs to provide the service but do not store them long-term according to their API policies.</p>
-                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Local Storage</h3>
-                <p>StudyAI uses LocalStorage in your browser to save your conversation history so you can revisit past chats. This data is entirely controlled by you and can be cleared at any time by deleting your chat history or clearing your browser data.</p>
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Contact Us</h3>
                 <p>If you have any questions about this Privacy Policy, you can contact us at <a href="mailto:mayamayapay11@gmail.com" class="text-brand-600 dark:text-brand-400 hover:underline">mayamayapay11@gmail.com</a>.</p>
             </div>
@@ -234,18 +237,14 @@
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white">Terms of Service</h2>
             </div>
             <div class="space-y-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                <p><strong class="text-gray-900 dark:text-white">Last updated:</strong> June 2024</p>
+                <p><strong class="text-gray-900 dark:text-white">Last updated:</strong> June 2026</p>
                 <p>Welcome to StudyAI. By accessing and using this website, you accept and agree to be bound by the terms and provisions of this agreement.</p>
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Use of Service</h3>
-                <p>StudyAI provides an AI-powered study assistant for educational purposes only. You must be at least 13 years old to use this service. You agree not to misuse the service, including but not limited to generating harmful, illegal, or explicit content.</p>
+                <p>StudyAI provides an AI-powered study assistant named Aiserie for educational purposes only. You must be at least 13 years old to use this service. You agree not to misuse the service, including but not limited to generating harmful, illegal, or explicit content.</p>
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Accuracy of Information</h3>
-                <p>While StudyAI strives to provide accurate and helpful information, AI can make mistakes. You should not rely solely on StudyAI for critical academic decisions, grades, or professional advice. Always verify important information with trusted educational sources or instructors.</p>
-                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Intellectual Property</h3>
-                <p>The content, layout, design, data, and graphics on this website are protected by copyright and intellectual property laws. You may not copy, distribute, or modify any part of the service without prior written consent.</p>
+                <p>While Aiserie strives to provide accurate and helpful information, AI can make mistakes. You should not rely solely on StudyAI for critical academic decisions, grades, or professional advice. Always verify important information with trusted educational sources or instructors.</p>
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Limitation of Liability</h3>
                 <p>StudyAI and its creators shall not be held liable for any direct, indirect, incidental, or consequential damages arising from the use or inability to use the service, including academic performance or incorrect information provided by the AI.</p>
-                <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Modifications</h3>
-                <p>We reserve the right to modify or terminate the service at any time without notice. We may also update these Terms of Service from time to time.</p>
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Contact Us</h3>
                 <p>For questions about these Terms, contact us at <a href="mailto:mayamayapay11@gmail.com" class="text-brand-600 dark:text-brand-400 hover:underline">mayamayapay11@gmail.com</a>.</p>
             </div>
@@ -319,7 +318,6 @@
                 <div id="history-list" class="space-y-1 pb-4"></div>
             </div>
             
-            <!-- Sidebar Footer Links -->
             <div class="p-3 border-t border-black/10 dark:border-white/10 space-y-2">
                 <div onclick="toggleFaqModal()" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2A2B32] transition-colors cursor-pointer">
                     <div class="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-white text-xs font-bold">U</div>
@@ -337,7 +335,9 @@
         </aside>
 
         <main class="flex-1 flex flex-col relative w-full h-full bg-gpt-bg dark:bg-[#343541]">
-            <div class="absolute top-0 left-0 right-0 p-4 z-10 flex items-center justify-between">
+            
+            <!-- GLASSMORPHISM HEADER -->
+            <div class="absolute top-0 left-0 right-0 p-4 z-10 flex items-center justify-between glass-header">
                 <div class="flex items-center gap-2">
                     <button onclick="toggleSidebar()" class="md:hidden p-1 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -345,34 +345,39 @@
                     <img src="logo.png" alt="StudyAI Logo" class="w-8 h-8 rounded-lg object-cover logo-hover">
                     <h1 class="font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2">
                         StudyAI 
-                        <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">by Vision</span>
+                        <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-gray-200/80 dark:bg-gray-700/80 text-gray-600 dark:text-gray-300">by Vision</span>
                     </h1>
                 </div>
-                <button onclick="document.documentElement.classList.toggle('dark')" class="mode-toggle p-2 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors">
-                    <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-                    <svg class="w-5 h-5 hidden dark:block text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                </button>
+                
+                <!-- Header Right Actions -->
+                <div class="flex items-center gap-2">
+                    <button onclick="shareStudyAI()" class="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors" title="Share StudyAI">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                    </button>
+                    <button onclick="document.documentElement.classList.toggle('dark')" class="mode-toggle p-2 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors">
+                        <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                        <svg class="w-5 h-5 hidden dark:block text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    </button>
+                </div>
             </div>
             
             <div id="messages" class="flex-1 h-full overflow-y-auto pt-24 pb-32 scroll-smooth no-scrollbar">
                 
-                <!-- PRIORITY 1, 2, 3: LANDING PAGE OVERHAUL -->
+                <!-- LANDING PAGE -->
                 <div id="welcome-state" class="flex flex-col items-center min-h-full py-12 px-4">
                     
-                    <!-- Hero Section - Tagline & Description -->
                     <div class="flex flex-col items-center text-center max-w-3xl w-full mb-16 mt-4 relative z-10">
                         <img src="logo.png" alt="StudyAI Logo" class="w-20 h-20 rounded-2xl object-cover shadow-lg mb-6 logo-hover">
                         <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-gray-900 dark:text-white tracking-tight leading-tight">
                             Your free AI <span class="text-brand-600 dark:text-brand-500">study partner.</span>
                         </h2>
-                        <p class="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto">Get instant explanations, quizzes, summaries, and homework help — no login required.</p>
+                        <p class="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto">Powered by Aiserie — get instant explanations, quizzes, summaries, and homework help. No login required.</p>
                         <div class="flex flex-wrap justify-center gap-3 mt-6">
                             <span class="px-4 py-1.5 text-sm font-semibold rounded-full bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400 border border-brand-100 dark:border-brand-800/50">100% Free</span>
                             <span class="px-4 py-1.5 text-sm font-semibold rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">No Login Required</span>
                         </div>
                     </div>
 
-                    <!-- Suggested Prompts -->
                     <div class="max-w-4xl w-full mb-20">
                         <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">Try asking...</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -407,7 +412,6 @@
                         </div>
                     </div>
 
-                    <!-- Feature Cards -->
                     <div id="features" class="max-w-5xl w-full mb-20">
                         <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-10 text-center">Everything you need to study smarter</h3>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
@@ -444,17 +448,14 @@
                         </div>
                     </div>
 
-                    <!-- Trust Footer -->
                     <footer class="max-w-5xl w-full border-t border-gray-200 dark:border-gray-700 pt-8 pb-4 flex flex-col items-center text-center">
                         <div class="flex items-center gap-2 mb-4">
                             <img src="logo.png" alt="StudyAI Logo" class="w-6 h-6 rounded-md object-cover">
                             <span class="font-bold text-gray-900 dark:text-white">StudyAI</span>
                         </div>
-                        
                         <div class="bg-gpt-bg dark:bg-[#2A2B32] border border-gray-200 dark:border-gray-700 p-3 rounded-xl mb-6 max-w-md">
                             <p class="text-xs text-gray-500 dark:text-gray-400">AI can make mistakes. Consider checking important information.</p>
                         </div>
-
                         <div class="flex items-center gap-4 mb-4 flex-wrap justify-center">
                             <button onclick="togglePrivacyModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Privacy Policy</button>
                             <span class="text-gray-300 dark:text-gray-600">•</span>
@@ -471,12 +472,12 @@
                 </div>
             </div>
 
-            <!-- Chat Input - P8: Mobile Optimized -->
+            <!-- Chat Input -->
             <div class="absolute bottom-0 left-0 right-0 p-3 md:p-4 pb-4 md:pb-6 bg-gradient-to-t from-gpt-bg via-gpt-bg to-transparent dark:from-[#343541] dark:via-[#343541]">
                 <div class="max-w-3xl mx-auto w-full relative group">
                     <div class="input-ring relative bg-white dark:bg-[#40414f] rounded-xl shadow-lg dark:shadow-[0_0_15px_rgba(0,0,0,0.3)] border border-black/10 dark:border-white/10 overflow-hidden transition-all duration-300">
                         <input type="file" id="file-input" accept=".txt" class="hidden">
-                        <textarea id="user-input" rows="1" placeholder="Ask anything..." class="w-full bg-transparent px-4 md:px-12 py-3 outline-none resize-none max-h-48 text-gray-900 dark:text-white placeholder-gray-500 scrollbar-hide text-base" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+                        <textarea id="user-input" rows="1" placeholder="Ask Aiserie anything..." class="w-full bg-transparent px-4 md:px-12 py-3 outline-none resize-none max-h-48 text-gray-900 dark:text-white placeholder-gray-500 scrollbar-hide text-base" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
                         <div class="flex items-center justify-between px-2 pb-2">
                             <div class="flex items-center pl-2">
                                 <button onclick="document.getElementById('file-input').click()" class="p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md transition-colors active:scale-90" title="Upload TXT file">
@@ -490,7 +491,7 @@
                         </div>
                     </div>
                     <div class="text-center mt-1.5 px-1 hidden md:block">
-                        <p class="text-[10px] text-gray-400">StudyAI can make mistakes. Consider checking important information.</p>
+                        <p class="text-[10px] text-gray-400">Aiserie can make mistakes. Consider checking important information.</p>
                     </div>
                 </div>
             </div>
@@ -514,7 +515,6 @@
             if (Object.keys(chats).length > 0) { const lastId = Object.keys(chats)[Object.keys(chats).length - 1]; loadChat(lastId); } else { renderHistoryList(); }
         } catch (e) { console.error("Failed to load last chat, starting fresh.", e); createNewChat(); }
 
-        // Priority 9: Instant loader removal
         window.addEventListener('load', () => { 
             const loader = document.getElementById('loading-screen'); 
             if (loader) loader.classList.add('hidden-loader'); 
@@ -532,7 +532,65 @@
         function toggleTermsModal() { document.getElementById('terms-modal').classList.toggle('hidden'); }
         function toggleFeedbackModal() { document.getElementById('feedback-modal').classList.toggle('hidden'); }
 
-        // Priority 7: Upgraded Feedback form handler
+        // Share StudyAI
+        function shareStudyAI() {
+            const shareData = {
+                title: 'StudyAI - Free AI Study Partner',
+                text: 'Check out StudyAI! A free AI study assistant powered by Aiserie that helps with quizzes, summaries, and homework. No login required!',
+                url: window.location.href
+            };
+            if (navigator.share) {
+                navigator.share(shareData).catch(err => console.log('Share failed:', err));
+            } else {
+                navigator.clipboard.writeText(shareData.url).then(() => {
+                    showToast('Link copied to clipboard!');
+                }).catch(() => {
+                    showToast('Could not copy link');
+                });
+            }
+        }
+
+        // Copy Link to specific response
+        function copyChatLink() {
+            const url = window.location.href.split('?')[0] + '?chat=' + currentChatId;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('Chat link copied!');
+            }).catch(() => {
+                showToast('Could not copy link');
+            });
+        }
+
+        // Simple Toast Notification
+        function showToast(message) {
+            const existing = document.getElementById('toast-notification');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.id = 'toast-notification';
+            toast.className = 'fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-5 py-3 rounded-xl shadow-xl text-sm font-medium z-50 animate-modal-in';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.transition = 'opacity 0.3s ease';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+
+        // Handle "Was this helpful?" feedback
+        function submitMsgFeedback(btn, isHelpful) {
+            const parent = btn.closest('.msg-actions');
+            const buttons = parent.querySelectorAll('.msg-action-btn');
+            buttons.forEach(b => b.classList.remove('active-feedback'));
+            btn.classList.add('active-feedback');
+            
+            if (isHelpful) {
+                showToast('Thanks for your feedback!');
+            } else {
+                toggleFeedbackModal();
+            }
+        }
+
         function submitFeedback(event) {
             event.preventDefault();
             const type = document.getElementById('feedback-type').value;
@@ -561,13 +619,11 @@
             input.style.height = input.scrollHeight + 'px'; 
         }
 
-        // Smarter Title Generation
         function getShortTitle(text) {
             if (!text) return "New Chat";
             let cleanText = text.replace(/[\n\r]+/g, ' ').trim();
             const firstSentence = cleanText.split(/[.!?]/)[0];
             cleanText = firstSentence.trim();
-            
             const stopWords = new Set([
                 'i', 'me', 'my', 'we', 'our', 'you', 'your', 'it', 'its', 'he', 'she', 'they', 'them',
                 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those',
@@ -582,22 +638,13 @@
                 'like', 'get', 'got', 'know', 'think', 'use', 'using', 'used', 'way', 'many', 'much', 'more', 'most',
                 'some', 'such', 'no', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 'even', 'still', 'already'
             ]);
-            
             let words = cleanText.split(/\s+/)
                 .map(w => w.replace(/[^a-zA-Z0-9]/g, ''))
                 .filter(w => w.length > 0 && !stopWords.has(w.toLowerCase()));
-            
-            if (words.length === 0) {
-                words = cleanText.split(/\s+/).slice(0, 4);
-            }
-            
+            if (words.length === 0) { words = cleanText.split(/\s+/).slice(0, 4); }
             let title = words.slice(0, 4).join(' ');
             title = title.replace(/\b\w/g, c => c.toUpperCase());
-            
-            if (title.length > 40) {
-                title = title.substring(0, 40).trim() + '...';
-            }
-            
+            if (title.length > 40) { title = title.substring(0, 40).trim() + '...'; }
             return title || "New Chat";
         }
 
@@ -616,7 +663,6 @@
                 btn.setAttribute('data-chat-id', chat.id);
                 const isActive = chat.id === currentChatId; 
                 btn.className = `history-item group w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm transition-colors cursor-pointer ${isActive ? 'bg-gray-100 dark:bg-[#2A2B32] text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#2A2B32]/50'}`; 
-                
                 btn.innerHTML = `
                     <svg class="w-4 h-4 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
                     <span class="truncate flex-1 text-left font-medium">${chat.title}</span>
@@ -624,7 +670,6 @@
                         <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                     </button>
                 `;
-                
                 btn.querySelector('.del-btn').onclick = (e) => deleteChat(chat.id, e);
                 btn.onclick = () => loadChat(chat.id); 
                 list.appendChild(btn); 
@@ -638,17 +683,9 @@
             const btn = list.querySelector(`[data-chat-id="${id}"]`);
             if (btn) {
                 btn.classList.add('deleting');
-                setTimeout(() => {
-                    delete chats[id]; 
-                    localStorage.setItem('aiserie_chats', JSON.stringify(chats)); 
-                    if (id === currentChatId) createNewChat(); 
-                    else renderHistoryList(); 
-                }, 300);
+                setTimeout(() => { delete chats[id]; localStorage.setItem('aiserie_chats', JSON.stringify(chats)); if (id === currentChatId) createNewChat(); else renderHistoryList(); }, 300);
             } else {
-                delete chats[id]; 
-                localStorage.setItem('aiserie_chats', JSON.stringify(chats)); 
-                if (id === currentChatId) createNewChat(); 
-                else renderHistoryList(); 
+                delete chats[id]; localStorage.setItem('aiserie_chats', JSON.stringify(chats)); if (id === currentChatId) createNewChat(); else renderHistoryList(); 
             }
         }
 
@@ -668,7 +705,7 @@
                     <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-gray-900 dark:text-white tracking-tight leading-tight">
                         Your free AI <span class="text-brand-600 dark:text-brand-500">study partner.</span>
                     </h2>
-                    <p class="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto">Get instant explanations, quizzes, summaries, and homework help — no login required.</p>
+                    <p class="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto">Powered by Aiserie — get instant explanations, quizzes, summaries, and homework help. No login required.</p>
                     <div class="flex flex-wrap justify-center gap-3 mt-6">
                         <span class="px-4 py-1.5 text-sm font-semibold rounded-full bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400 border border-brand-100 dark:border-brand-800/50">100% Free</span>
                         <span class="px-4 py-1.5 text-sm font-semibold rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">No Login Required</span>
@@ -759,8 +796,6 @@
                         <button onclick="toggleTermsModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Terms of Service</button>
                         <span class="text-gray-300 dark:text-gray-600">•</span>
                         <button onclick="toggleFeedbackModal()" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Send Feedback</button>
-                        <span class="text-gray-300 dark:text-gray-600">•</span>
-                        <a href="mailto:mayamayapay11@gmail.com?subject=StudyAI%20Issue%20Report" class="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Report an Issue</a>
                     </div>
                     <div class="text-xs text-gray-400 dark:text-gray-500">
                         © 2026 StudyAI. All rights reserved. Created by Vision.
@@ -780,18 +815,18 @@
             if (welcome) welcome.style.display = 'none';
 
             const msgDiv = document.createElement('div');
-            msgDiv.className = `flex gap-4 px-4 md:px-8 py-6 group msg-anim ${role === 'user' ? 'bg-white dark:bg-[#343541]' : 'bg-gpt-bg dark:bg-[#2A2B32]'}`;
+            msgDiv.className = `group flex gap-4 px-4 md:px-8 py-6 ${role === 'user' ? 'bg-white dark:bg-[#343541]' : 'bg-gpt-bg dark:bg-[#2A2B32]'}`;
             
             const avatar = document.createElement('div');
             avatar.className = `w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0 ${role === 'user' ? 'bg-brand-600' : 'bg-emerald-600'}`;
-            avatar.textContent = role === 'user' ? 'U' : 'AI';
+            avatar.textContent = role === 'user' ? 'U' : 'A';
             
             const contentDiv = document.createElement('div');
             contentDiv.className = 'flex-1 overflow-hidden';
             
             const roleTitle = document.createElement('p');
             roleTitle.className = 'text-sm font-semibold text-gray-900 dark:text-white mb-1';
-            roleTitle.textContent = role === 'user' ? 'You' : 'StudyAI';
+            roleTitle.textContent = role === 'user' ? 'You' : 'Aiserie';
             
             const textDiv = document.createElement('div');
             textDiv.className = 'prose-content text-gray-700 dark:text-gray-300';
@@ -804,6 +839,27 @@
             
             contentDiv.appendChild(roleTitle);
             contentDiv.appendChild(textDiv);
+
+            // Add Action Buttons for AI messages
+            if (role === 'assistant' && !isStream) {
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'msg-actions flex items-center gap-2 mt-3 -ml-2';
+                actionsDiv.innerHTML = `
+                    <button onclick="copyChatLink()" class="msg-action-btn p-1.5 rounded-md text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" title="Copy link">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                    </button>
+                    <span class="text-gray-300 dark:text-gray-600 text-xs">|</span>
+                    <span class="text-xs text-gray-400">Was this helpful?</span>
+                    <button onclick="submitMsgFeedback(this, true)" class="msg-action-btn p-1.5 rounded-md text-gray-400 hover:text-green-500" title="Yes, helpful">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
+                    </button>
+                    <button onclick="submitMsgFeedback(this, false)" class="msg-action-btn p-1.5 rounded-md text-gray-400 hover:text-red-500" title="No, not helpful">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"/></svg>
+                    </button>
+                `;
+                contentDiv.appendChild(actionsDiv);
+            }
+            
             msgDiv.appendChild(avatar);
             msgDiv.appendChild(contentDiv);
             chatContainer.appendChild(msgDiv);
@@ -815,7 +871,7 @@
         async function handleSend() {
             const input = document.getElementById('user-input');
             const text = input.value.trim();
-            if (!text || text === 'Type a message...') return;
+            if (!text) return;
 
             const welcome = document.getElementById('welcome-state');
             if (welcome) welcome.style.display = 'none';
@@ -834,9 +890,9 @@
             thinkingDiv.className = 'flex gap-4 px-4 md:px-8 py-6 bg-gpt-bg dark:bg-[#2A2B32]';
             thinkingDiv.id = 'thinking-indicator';
             thinkingDiv.innerHTML = `
-                <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm font-bold">AI</div>
+                <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm font-bold">A</div>
                 <div class="flex-1">
-                    <p class="text-sm font-semibold text-gray-900 dark:text-white mb-1">StudyAI</p>
+                    <p class="text-sm font-semibold text-gray-900 dark:text-white mb-1">Aiserie</p>
                     <div class="thinking-dots"><span></span><span></span><span></span></div>
                 </div>
             `;
@@ -894,6 +950,13 @@
                 
                 conversationHistory.push({ role: 'assistant', content: aiResponse });
                 saveCurrentChat();
+
+                // Replace the streaming message div with a finalized one that has action buttons
+                const parentMsg = messageTextDiv.closest('.group');
+                if (parentMsg) {
+                    const finalDiv = createMessageElement('assistant', aiResponse, false);
+                    parentMsg.replaceWith(finalDiv);
+                }
                 
             } catch (error) {
                 console.error('Error:', error);
