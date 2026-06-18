@@ -86,7 +86,7 @@
         .prose-content pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 0.75rem; }
         .prose-content pre code { background: transparent; color: inherit; padding: 0; font-size: 0.9em; word-break: normal; white-space: pre; }
         .prose-content blockquote { border-left: 4px solid #cbd5e1; padding-left: 1rem; color: #64748b; font-style: italic; }
-        .dark .prose-content blockquote { border-left-color: #475569; color: #94a3b8; }
+        .dark .prose-content blockquote { border-left-color: #475569; color: #94a3b8'; }
 
         .btn-glow { transition: all 0.2s ease; }
         .btn-glow:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); transform: translateY(-1px); }
@@ -206,7 +206,7 @@
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white">Privacy Policy</h2>
             </div>
             <div class="space-y-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                <p><strong class="text-gray-900 dark:text-white">Last updated:</strong> June 2026</p>
+                <p><strong class="text-gray-900 dark:text-white">Last updated:</strong> June 2024</p>
                 <p>At StudyAI, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by StudyAI and how we use it.</p>
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Information We Collect</h3>
                 <p>We do not require you to create an account, and we do not collect personal identification information unless you voluntarily provide it through our feedback form.</p>
@@ -237,7 +237,7 @@
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white">Terms of Service</h2>
             </div>
             <div class="space-y-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                <p><strong class="text-gray-900 dark:text-white">Last updated:</strong> June 2026</p>
+                <p><strong class="text-gray-900 dark:text-white">Last updated:</strong> June 2024</p>
                 <p>Welcome to StudyAI. By accessing and using this website, you accept and agree to be bound by the terms and provisions of this agreement.</p>
                 <h3 class="text-base font-semibold text-gray-900 dark:text-white mt-4">Use of Service</h3>
                 <p>StudyAI provides an AI-powered study assistant named Aiserie for educational purposes only. You must be at least 13 years old to use this service. You agree not to misuse the service, including but not limited to generating harmful, illegal, or explicit content.</p>
@@ -349,7 +349,6 @@
                     </h1>
                 </div>
                 
-                <!-- Header Right Actions -->
                 <div class="flex items-center gap-2">
                     <button onclick="shareStudyAI()" class="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-white transition-colors" title="Share StudyAI">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
@@ -532,7 +531,6 @@
         function toggleTermsModal() { document.getElementById('terms-modal').classList.toggle('hidden'); }
         function toggleFeedbackModal() { document.getElementById('feedback-modal').classList.toggle('hidden'); }
 
-        // Share StudyAI
         function shareStudyAI() {
             const shareData = {
                 title: 'StudyAI - Free AI Study Partner',
@@ -550,7 +548,6 @@
             }
         }
 
-        // Copy Link to specific response
         function copyChatLink() {
             const url = window.location.href.split('?')[0] + '?chat=' + currentChatId;
             navigator.clipboard.writeText(url).then(() => {
@@ -560,7 +557,6 @@
             });
         }
 
-        // Simple Toast Notification
         function showToast(message) {
             const existing = document.getElementById('toast-notification');
             if (existing) existing.remove();
@@ -577,7 +573,6 @@
             }, 2000);
         }
 
-        // Handle "Was this helpful?" feedback
         function submitMsgFeedback(btn, isHelpful) {
             const parent = btn.closest('.msg-actions');
             const buttons = parent.querySelectorAll('.msg-action-btn');
@@ -691,7 +686,7 @@
 
         async function generateTitle(firstPrompt) { setTimeout(() => { if(chats[currentChatId]) { chats[currentChatId].title = getShortTitle(firstPrompt); localStorage.setItem('aiserie_chats', JSON.stringify(chats)); renderHistoryList(); } }, 500); }
 
-        function loadChat(id) { try { if (!chats[id] || !chats[id].history) { createNewChat(); return; } currentChatId = id; conversationHistory = chats[id].history || []; const chatContainer = document.getElementById('messages'); const welcome = document.getElementById('welcome-state'); if(welcome) welcome.style.display = 'none'; chatContainer.innerHTML = ''; conversationHistory.forEach(msg => { createMessageElement(msg.role, msg.content, false); }); renderHistoryList(); requestAnimationFrame(() => { setTimeout(() => { chatContainer.scrollTop = chatContainer.scrollHeight; }, 50); }); if (window.innerWidth < 768) toggleSidebar(false); } catch (e) { console.error("Error rendering history, starting fresh.", e); createNewChat(); } }
+        function loadChat(id) { try { if (!chats[id] || !chats[id].history) { createNewChat(); return; } currentChatId = id; conversationHistory = chats[id].history || []; const chatContainer = document.getElementById('messages'); const welcome = document.getElementById('welcome-state'); if(welcome) welcome.style.display = 'none'; chatContainer.innerHTML = ''; conversationHistory.forEach(msg => { const { msgDiv } = createMessageElement(msg.role, msg.content, false); chatContainer.appendChild(msgDiv); }); renderHistoryList(); requestAnimationFrame(() => { setTimeout(() => { chatContainer.scrollTop = chatContainer.scrollHeight; }, 50); }); if (window.innerWidth < 768) toggleSidebar(false); } catch (e) { console.error("Error rendering history, starting fresh.", e); createNewChat(); } }
 
         function createNewChat() { 
             currentChatId = Date.now().toString(); 
@@ -840,8 +835,8 @@
             contentDiv.appendChild(roleTitle);
             contentDiv.appendChild(textDiv);
 
-            // Add Action Buttons for AI messages
-            if (role === 'assistant' && !isStream) {
+            // Add Action Buttons for AI messages only when fully generated
+            if (role === 'assistant' && !isStream && text) {
                 const actionsDiv = document.createElement('div');
                 actionsDiv.className = 'msg-actions flex items-center gap-2 mt-3 -ml-2';
                 actionsDiv.innerHTML = `
@@ -862,10 +857,9 @@
             
             msgDiv.appendChild(avatar);
             msgDiv.appendChild(contentDiv);
-            chatContainer.appendChild(msgDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
             
-            return textDiv;
+            // Return the wrapper div AND the text div so we can stream into it
+            return { msgDiv, textDiv };
         }
 
         async function handleSend() {
@@ -876,8 +870,11 @@
             const welcome = document.getElementById('welcome-state');
             if (welcome) welcome.style.display = 'none';
 
+            const chatContainer = document.getElementById('messages');
+
             conversationHistory.push({ role: 'user', content: text });
-            createMessageElement('user', text);
+            const { msgDiv: userMsgDiv } = createMessageElement('user', text);
+            chatContainer.appendChild(userMsgDiv);
             
             input.value = '';
             input.style.height = 'auto';
@@ -890,14 +887,14 @@
             thinkingDiv.className = 'flex gap-4 px-4 md:px-8 py-6 bg-gpt-bg dark:bg-[#2A2B32]';
             thinkingDiv.id = 'thinking-indicator';
             thinkingDiv.innerHTML = `
-                <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm font-bold">A</div>
+                <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">A</div>
                 <div class="flex-1">
                     <p class="text-sm font-semibold text-gray-900 dark:text-white mb-1">Aiserie</p>
                     <div class="thinking-dots"><span></span><span></span><span></span></div>
                 </div>
             `;
-            document.getElementById('messages').appendChild(thinkingDiv);
-            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+            chatContainer.appendChild(thinkingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
 
             try {
                 const response = await fetch('/api/chat', {
@@ -915,7 +912,10 @@
                 }
 
                 thinkingDiv.remove();
-                const messageTextDiv = createMessageElement('assistant', '', true);
+                
+                const { msgDiv: aiMsgDiv, textDiv: messageTextDiv } = createMessageElement('assistant', '', true);
+                chatContainer.appendChild(aiMsgDiv);
+                
                 let aiResponse = '';
                 
                 const reader = response.body.getReader();
@@ -939,7 +939,7 @@
                                 if (data.content) {
                                     aiResponse += data.content;
                                     messageTextDiv.innerHTML = DOMPurify.sanitize(marked.parse(aiResponse, { renderer }));
-                                    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+                                    chatContainer.scrollTop = chatContainer.scrollHeight;
                                 }
                             } catch (e) {
                                 console.error("Parse error:", e, "Data:", dataStr);
@@ -952,16 +952,14 @@
                 saveCurrentChat();
 
                 // Replace the streaming message div with a finalized one that has action buttons
-                const parentMsg = messageTextDiv.closest('.group');
-                if (parentMsg) {
-                    const finalDiv = createMessageElement('assistant', aiResponse, false);
-                    parentMsg.replaceWith(finalDiv);
-                }
+                const { msgDiv: finalMsgDiv } = createMessageElement('assistant', aiResponse, false);
+                aiMsgDiv.replaceWith(finalMsgDiv);
                 
             } catch (error) {
                 console.error('Error:', error);
                 thinkingDiv.remove();
-                createMessageElement('assistant', `Sorry, I encountered an error: ${error.message}`);
+                const { msgDiv: errorMsgDiv } = createMessageElement('assistant', `Sorry, I encountered an error: ${error.message}`);
+                chatContainer.appendChild(errorMsgDiv);
             }
         }
 
